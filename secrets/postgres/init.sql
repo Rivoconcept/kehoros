@@ -1,0 +1,5 @@
+CREATE ROLE backend LOGIN PASSWORD 'dbadminpass';
+
+CREATE DATABASE kehoros OWNER backend;
+
+GRANT ALL PRIVILEGES ON DATABASE kehoros TO backend;

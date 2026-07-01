@@ -1,0 +1,134 @@
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-gamehub_db}
+      POSTGRES_USER: ${POSTGRES_USER:-gamehub}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gamehub_password_123}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gamehub}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    environment:
+      NODE_ENV: development
+      VAULT_ADDR: https://vault:8200
+
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+          condition: service_healthy
+      vault:
+        condition: service_started
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.backend.rule=Host(`api.localhost`)
+      - traefik.http.services.backend.loadbalancer.server.port=3000
+    volumes:
+      - ./backend/src:/app/src
+      - vault-approle:/vault/approle:ro
+      - vault-certs:/vault/certs:ro
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "4200:4200"
+    environment:
+      NODE_ENV: development
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.frontend.rule=Host(`frontend.localhost`)
+      - traefik.http.services.frontend.loadbalancer.server.port=4200
+    volumes:
+      - ./frontend/src:/app/src
+    networks:
+      - app-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    entrypoint: /custom-entrypoint.sh
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@gamehub.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin_password_123}
+      PGADMIN_SERVER_JSON_FILE: /tmp/servers.json
+      PGADMIN_REPLACE_SERVERS_ON_STARTUP: "True"
+    volumes:
+      - ./pgadmin/custom-entrypoint.sh:/custom-entrypoint.sh:ro
+      - vault-secrets:/run/secrets/GameHub:ro
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  vault:
+    build:
+      context: ./vault
+    container_name: vault
+    cap_add:
+      - IPC_LOCK
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.vault.rule=Host(`vault.localhost`)
+      - traefik.http.services.vault.loadbalancer.server.port=8200
+    volumes:
+      - vault-data:/vault/file
+      - vault-certs:/vault/certs
+      - vault-approle:/vault/file/approle
+      - ./secrets:/secrets:ro
+    networks:
+      - app-network
+
+
+  traefik: 
+    image: traefik:v3.6.1 
+    group_add: 
+      - "${DOCKER_GID}" 
+    command: 
+      - --api.dashboard=true 
+      - --api.insecure=true 
+      - --providers.docker=true 
+      - --providers.docker.exposedbydefault=false 
+      - --providers.docker.endpoint=unix:///var/run/docker.sock 
+      - --entrypoints.web.address=:80 
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock:ro 
+    ports: 
+      - "80:80" 
+      - "8080:8080" 
+    networks: 
+      - app-network
+
+volumes:
+  postgres_data:
+  vault-secrets:
+  vault-data:
+  vault-certs:
+  vault-approle:
+
+networks:
+  app-network:
+    driver: bridge
