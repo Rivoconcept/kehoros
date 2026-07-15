@@ -1,0 +1,223 @@
+
+<style>
+#erd { background: #1a1a2e; border-radius: 12px; padding: 16px; }
+#erd svg { width: 100%; }
+#erd svg text,
+#erd svg .entityLabel,
+#erd svg .attributeBoxOdd text,
+#erd svg .attributeBoxEven text,
+#erd svg tspan { fill: #e2e8f0 !important; color: #e2e8f0 !important; }
+#erd svg .attributeBoxOdd rect,
+#erd svg .attributeBoxOdd path { fill: #2d3748 !important; }
+#erd svg .attributeBoxEven rect,
+#erd svg .attributeBoxEven path { fill: #253044 !important; }
+#erd svg .er.entityBox { fill: #3a4a6b !important; stroke: #63b3ed !important; }
+#erd svg .er.entityLabel { fill: #90cdf4 !important; font-weight: bold; }
+#erd svg path.er { stroke: #63b3ed !important; }
+#erd svg .edgeLabel, #erd svg .edgeLabel span { background: #1a1a2e !important; color: #90cdf4 !important; fill: #90cdf4 !important; }
+</style>
+<div id="erd"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'dark',
+  fontFamily: 'monospace',
+  themeVariables: {
+    darkMode: true,
+    fontSize: '13px',
+    fontFamily: 'monospace',
+    primaryColor: '#3a4a6b',
+    primaryTextColor: '#e2e8f0',
+    primaryBorderColor: '#63b3ed',
+    lineColor: '#63b3ed',
+    textColor: 'black',
+    edgeLabelBackground: '#1a1a2e',
+    attributeBackgroundColorOdd: '#2d3748',
+    attributeBackgroundColorEven: '#253044',
+    fontFamily: 'monospace',
+  },
+});
+const { svg } = await mermaid.render('erd-svg', `erDiagram
+  users {
+    uuid id PK
+    string email
+    string password_hash
+    string first_name
+    string last_name
+    uuid department_id FK
+    uuid manager_id FK
+    string role
+    boolean is_active
+    timestamp created_at
+  }
+  departments {
+    uuid id PK
+    string name
+    string site
+    uuid manager_id FK
+  }
+  asset_types {
+    uuid id PK
+    string name
+    string category
+  }
+  assets {
+    uuid id PK
+    string inventory_number
+    string brand
+    string model
+    string serial_number
+    uuid asset_type_id FK
+    uuid supplier_id FK
+    date purchase_date
+    date warranty_until
+    string status
+    string location
+    timestamp created_at
+  }
+  assignments {
+    uuid id PK
+    uuid asset_id FK
+    uuid user_id FK
+    timestamp assigned_at
+    timestamp returned_at
+    string note
+  }
+  software {
+    uuid id PK
+    string name
+    string version
+    string publisher
+    string criticality
+  }
+  licenses {
+    uuid id PK
+    uuid software_id FK
+    int total_seats
+    int used_seats
+    date expires_at
+    decimal cost
+    boolean auto_assign
+  }
+  license_assignments {
+    uuid id PK
+    uuid license_id FK
+    uuid user_id FK
+    timestamp assigned_at
+    timestamp revoked_at
+  }
+  suppliers {
+    uuid id PK
+    string name
+    string contact_email
+    string phone
+  }
+  audit_logs {
+    uuid id PK
+    uuid user_id FK
+    string table_name
+    string action
+    jsonb old_value
+    jsonb new_value
+    timestamp created_at
+  }
+  form_templates {
+    uuid id PK
+    string title
+    string description
+    uuid created_by FK
+    boolean is_published
+    boolean is_exam
+    int time_limit_minutes
+    boolean shuffle_questions
+    boolean show_results
+    timestamp starts_at
+    timestamp ends_at
+    timestamp created_at
+  }
+  form_questions {
+    uuid id PK
+    uuid form_id FK
+    string label
+    string type
+    boolean required
+    int order_index
+    jsonb settings
+  }
+  form_question_options {
+    uuid id PK
+    uuid question_id FK
+    string label
+    string value
+    boolean is_correct
+    int order_index
+  }
+  form_sessions {
+    uuid id PK
+    uuid form_id FK
+    uuid user_id FK
+    string status
+    int score
+    timestamp started_at
+    timestamp submitted_at
+  }
+  form_answers {
+    uuid id PK
+    uuid session_id FK
+    uuid question_id FK
+    string answer_text
+    jsonb answer_json
+    boolean is_correct
+    timestamp answered_at
+  }
+
+  users }o--|| departments : "belongs to"
+  departments ||--o{ users : "has members"
+  users ||--o{ assignments : "receives"
+  assets ||--o{ assignments : "assigned via"
+  assets }o--|| asset_types : "typed as"
+  assets }o--|| suppliers : "sourced from"
+  licenses }o--|| software : "licenses"
+  licenses ||--o{ license_assignments : "allocated via"
+  users ||--o{ license_assignments : "holds"
+  users ||--o{ audit_logs : "triggers"
+  users ||--o{ form_templates : "creates"
+  form_templates ||--o{ form_questions : "has"
+  form_questions ||--o{ form_question_options : "has options"
+  form_templates ||--o{ form_sessions : "instance of"
+  users ||--o{ form_sessions : "fills"
+  form_sessions ||--o{ form_answers : "contains"
+  form_questions ||--o{ form_answers : "answered by"
+`);
+document.getElementById('erd').innerHTML = svg;
+setTimeout(() => {
+  document.querySelectorAll('#erd svg text, #erd svg tspan').forEach(el => {
+    el.style.fill = '#e2e8f0';
+    el.setAttribute('fill', '#e2e8f0');
+  });
+  document.querySelectorAll('#erd svg .node').forEach(node => {
+    const firstPath = node.querySelector('path[d]');
+    if (!firstPath) return;
+    const d = firstPath.getAttribute('d');
+    const nums = d.match(/-?[\d.]+/g)?.map(Number);
+    if (!nums || nums.length < 8) return;
+    const xs = [nums[0], nums[2], nums[4], nums[6]];
+    const ys = [nums[1], nums[3], nums[5], nums[7]];
+    const x = Math.min(...xs), y = Math.min(...ys);
+    const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', x); rect.setAttribute('y', y);
+    rect.setAttribute('width', w); rect.setAttribute('height', h);
+    rect.setAttribute('rx', '8');
+    for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+      if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+    }
+    firstPath.replaceWith(rect);
+  });
+  document.querySelectorAll('#erd svg .row-rect-odd path, #erd svg .row-rect-even path').forEach(p => {
+    p.setAttribute('stroke', 'none');
+  });
+}, 200);
+</script>

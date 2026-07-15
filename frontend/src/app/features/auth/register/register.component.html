@@ -1,0 +1,156 @@
+<div class="register-container">
+
+  <mat-card class="register-card">
+
+    <mat-card-header>
+
+      <mat-card-title>
+        Créer un compte
+      </mat-card-title>
+
+      <mat-card-subtitle>
+        Kehoros — Gestion d'inventaire IT
+      </mat-card-subtitle>
+
+    </mat-card-header>
+
+
+    <mat-card-content>
+
+      @if(error){
+        <div class="error">
+          {{error}}
+        </div>
+      }
+
+
+      <form (ngSubmit)="onSubmit()">
+
+
+        <div class="row">
+
+
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              Prénom
+            </mat-label>
+
+            <input
+              matInput
+              [(ngModel)]="first_name"
+              name="first_name">
+
+          </mat-form-field>
+
+
+
+          <mat-form-field appearance="outline">
+
+            <mat-label>
+              Nom
+            </mat-label>
+
+            <input
+              matInput
+              [(ngModel)]="last_name"
+              name="last_name">
+
+          </mat-form-field>
+
+
+        </div>
+
+
+
+        <mat-form-field appearance="outline" class="full">
+
+          <mat-label>Email</mat-label>
+
+          <input
+            matInput
+            type="email"
+            [(ngModel)]="email"
+            name="email">
+
+          <mat-icon matSuffix>
+            email
+          </mat-icon>
+
+        </mat-form-field>
+
+
+
+
+        <mat-form-field appearance="outline" class="full">
+
+          <mat-label>
+            Mot de passe
+          </mat-label>
+
+          <input
+            matInput
+            type="password"
+            [(ngModel)]="password"
+            name="password">
+
+          <mat-icon matSuffix>
+            lock
+          </mat-icon>
+
+        </mat-form-field>
+
+
+
+        <mat-form-field appearance="outline" class="full">
+
+          <mat-label>
+            Confirmer le mot de passe
+          </mat-label>
+
+          <input
+            matInput
+            type="password"
+            [(ngModel)]="confirmPassword"
+            name="confirmPassword">
+
+        </mat-form-field>
+
+
+
+        <button
+          mat-raised-button
+          color="primary"
+          class="submit"
+          [disabled]="loading">
+
+          @if(!loading){
+            Créer mon compte
+          }
+          @else {
+            Création...
+          }
+
+        </button>
+
+
+      </form>
+
+
+    </mat-card-content>
+
+
+
+    <mat-card-actions>
+
+      <a routerLink="/login">
+        Déjà un compte ? Se connecter
+      </a>
+
+    </mat-card-actions>
+
+
+  </mat-card>
+
+
+</div>

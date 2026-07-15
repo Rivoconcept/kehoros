@@ -7,11 +7,6 @@ import { RouterOutlet } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterOutlet],
   template: `
-    <div style="text-align: center; padding: 20px;">
-      <h1>🎮 Welcome to GameHub</h1>
-      <p>Frontend: Angular {{ angularVersion }}</p>
-      <p>Backend: NestJS</p>
-    </div>
     <router-outlet></router-outlet>
   `,
   styles: []

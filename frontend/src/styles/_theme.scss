@@ -1,0 +1,29 @@
+@use '@angular/material' as mat;
+
+// Initialise Material
+@include mat.core();
+
+// Palette personnalisée
+$primary: mat.$teal-palette;
+$tertiary: mat.$cyan-palette;
+
+// Définition du thème
+$theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: $primary,
+    tertiary: $tertiary,
+  ),
+  typography: (
+    brand-family: Roboto,
+    plain-family: Roboto,
+  ),
+  density: (
+    scale: 0,
+  ),
+));
+
+// Applique le thème à tous les composants
+html {
+  @include mat.all-component-themes($theme);
+}

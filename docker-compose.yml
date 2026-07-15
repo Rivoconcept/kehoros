@@ -4,17 +4,17 @@ services:
     image: postgres:16
     container_name: postgres
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-gamehub_db}
-      POSTGRES_USER: ${POSTGRES_USER:-gamehub}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gamehub_password_123}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ${DATA_PATH}/db_data:/var/lib/postgresql/data
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gamehub}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -43,6 +43,11 @@ services:
       - ./backend/src:/app/src
       - vault-approle:/vault/approle:ro
       - vault-certs:/vault/certs:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     networks:
       - app-network
 
@@ -69,8 +74,8 @@ services:
     container_name: pgadmin
     entrypoint: /custom-entrypoint.sh
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@gamehub.local}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin_password_123}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
       PGADMIN_SERVER_JSON_FILE: /tmp/servers.json
       PGADMIN_REPLACE_SERVERS_ON_STARTUP: "True"
     volumes:
@@ -102,7 +107,6 @@ services:
     networks:
       - app-network
 
-
   traefik: 
     image: traefik:v3.6.1 
     group_add: 
@@ -123,7 +127,6 @@ services:
       - app-network
 
 volumes:
-  postgres_data:
   vault-secrets:
   vault-data:
   vault-certs:
