@@ -1,69 +1,55 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
 import { AuthService } from '../../core/services/auth.service';
+
+interface MenuItem {
+  icon: string;
+  label: string;
+  route: string;
+}
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
-  template: `
-    <div class="dashboard">
-      <header>
-        <h1>Kehoros</h1>
-        <button (click)="logout()">Déconnexion</button>
-      </header>
-      <main>
-        <h2>Tableau de bord</h2>
-        <div class="cards">
-          <div class="card">
-            <span class="icon">📋</span>
-            <h3>Formulaires</h3>
-            <p>Gérer les formulaires</p>
-          </div>
-          <div class="card">
-            <span class="icon">💻</span>
-            <h3>Matériels</h3>
-            <p>Inventaire matériel</p>
-          </div>
-          <div class="card">
-            <span class="icon">👥</span>
-            <h3>Utilisateurs</h3>
-            <p>Gérer les comptes</p>
-          </div>
-        </div>
-      </main>
-    </div>
-  `,
-  styles: [`
-    .dashboard { min-height: 100vh; background: #f0f4f8; }
-    header {
-      background: white; padding: 1rem 2rem;
-      display: flex; justify-content: space-between; align-items: center;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    }
-    h1 { margin: 0; color: #1a202c; }
-    header button {
-      background: #e53e3e; color: white;
-      border: none; padding: 0.5rem 1rem;
-      border-radius: 8px; cursor: pointer;
-    }
-    main { padding: 2rem; }
-    h2 { color: #2d3748; margin-bottom: 1.5rem; }
-    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-    .card {
-      background: white; padding: 1.5rem;
-      border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      cursor: pointer; transition: transform 0.2s;
-    }
-    .card:hover { transform: translateY(-2px); }
-    .icon { font-size: 2rem; }
-    h3 { margin: 0.5rem 0 0.25rem; color: #2d3748; }
-    p { margin: 0; color: #718096; font-size: 0.875rem; }
-  `]
+  imports: [
+    CommonModule,
+    RouterLink,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatSidenavModule,
+    MatListModule,
+  ],
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+  menuItems: MenuItem[] = [
+    { icon: 'dashboard',   label: 'Tableau de bord', route: '/dashboard' },
+    { icon: 'description', label: 'Formulaires',     route: '/forms' },
+    { icon: 'computer',    label: 'Matériels',        route: '/assets' },
+    { icon: 'people',      label: 'Utilisateurs',     route: '/users' },
+    { icon: 'key',         label: 'Licences',         route: '/licenses' },
+  ];
+
+  stats = [
+    { icon: 'computer',    label: 'Matériels',           value: 0, color: '#4299e1' },
+    { icon: 'people',      label: 'Collaborateurs',       value: 0, color: '#48bb78' },
+    { icon: 'key',         label: 'Licences actives',     value: 0, color: '#ed8936' },
+    { icon: 'description', label: 'Formulaires publiés',  value: 0, color: '#9f7aea' },
+  ];
+
   constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit() {}
 
   logout() {
     this.authService.logout();

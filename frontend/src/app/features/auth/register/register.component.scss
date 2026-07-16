@@ -8,21 +8,27 @@
 
   align-items:center;
 
-  background:#f5f7fb;
+  background: linear-gradient(
+    135deg,
+    #eefcff 0%,
+    #f8fffc 45%,
+    #effff6 100%
+  );
 
 }
 
 
 .register-card {
+  width: 100%;
+  max-width: 520px;
+  padding: 2rem;
+  border-radius: 20px;
 
-  width:100%;
+  box-shadow:
+    0 15px 45px rgba(0,0,0,.08),
+    0 4px 12px rgba(39,235,245,.08);
 
-  max-width:500px;
-
-  padding:25px;
-
-  border-radius:18px;
-
+  backdrop-filter: blur(8px);
 }
 
 
@@ -37,6 +43,35 @@
 }
 
 
+.register-card {
+
+  animation: appear .35s ease;
+}
+
+@keyframes appear {
+
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+
+  to{
+    opacity:1;
+    transform:none;
+  }
+}
+
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .register-card {
+    margin: 1rem;
+  }
+}
+
+
 .full {
 
   width:100%;
@@ -47,31 +82,63 @@
 .submit {
 
   width:100%;
+  height:52px;
 
-  height:48px;
+  font-size:16px;
+  font-weight:600;
 
-  margin-top:15px;
-
+  border-radius:12px;
 }
-
 
 .error {
 
-  background:#ffebee;
+  display:flex;
+  align-items:center;
 
-  color:#c62828;
+  padding:14px 16px;
 
-  padding:12px;
+  border-left:4px solid #e53935;
 
-  border-radius:8px;
-
-  margin-bottom:15px;
-
+  background:#fff5f5;
 }
 
 
 mat-card-title {
 
-  font-size:28px;
+  font-size:30px;
+  font-weight:700;
+  color:#183153;
+}
 
+.mat-mdc-form-field {
+
+  margin-bottom: 8px;
+}
+
+.mdc-text-field--focused {
+
+  transition: .2s;
+}
+
+.logo {
+
+  width:72px;
+  height:72px;
+
+  margin:0 auto 20px;
+
+  border-radius:50%;
+
+  background:linear-gradient(
+      135deg,
+      #27EBF5,
+      #27F573
+  );
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:white;
+  font-size:34px;
 }

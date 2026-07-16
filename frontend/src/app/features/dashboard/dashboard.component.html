@@ -1,0 +1,61 @@
+<mat-sidenav-container class="container">
+
+  <!-- Sidebar -->
+  <mat-sidenav mode="side" opened class="sidenav">
+
+    <div class="logo">
+      <span class="logo-icon">K</span>
+      <span class="logo-text">Kehoros</span>
+    </div>
+
+    <mat-nav-list>
+      @for (item of menuItems; track item.route) {
+        <a mat-list-item [routerLink]="item.route" routerLinkActive="active">
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+
+    <div class="sidenav-footer">
+      <button mat-button (click)="logout()" class="logout-btn">
+        <mat-icon>logout</mat-icon>
+        Déconnexion
+      </button>
+    </div>
+
+  </mat-sidenav>
+
+  <!-- Main content -->
+  <mat-sidenav-content class="content">
+
+    <mat-toolbar class="toolbar">
+      <span>Tableau de bord</span>
+    </mat-toolbar>
+
+    <div class="main">
+
+      <h2 class="section-title">Vue d'ensemble</h2>
+
+      <!-- KPI Cards -->
+      <div class="stats-grid">
+        @for (stat of stats; track stat.label) {
+          <mat-card class="stat-card">
+            <mat-card-content>
+              <div class="stat-icon" [style.background]="stat.color + '20'">
+                <mat-icon [style.color]="stat.color">{{ stat.icon }}</mat-icon>
+              </div>
+              <div class="stat-info">
+                <span class="stat-value">{{ stat.value }}</span>
+                <span class="stat-label">{{ stat.label }}</span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+
+    </div>
+
+  </mat-sidenav-content>
+
+</mat-sidenav-container>
