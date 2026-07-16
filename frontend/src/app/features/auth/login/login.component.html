@@ -1,0 +1,66 @@
+<div class="login-container">
+
+  <mat-card class="login-card">
+
+    <!-- Logo + Header -->
+    <div class="card-header">
+      <div class="logo">K</div>
+      <h1 class="card-title">Connexion</h1>
+      <p class="card-subtitle">Kehoros — Gestion d'inventaire IT</p>
+    </div>
+
+    <mat-card-content>
+
+      @if(error){
+        <div class="error">
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ error }}</span>
+        </div>
+      }
+
+      <form (ngSubmit)="onSubmit()">
+
+        <!-- Email -->
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" [(ngModel)]="email" name="email" placeholder="vous@kehoros.mg" required />
+          <mat-icon matSuffix>email</mat-icon>
+        </mat-form-field>
+
+        <!-- Mot de passe -->
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" required />
+          <button mat-icon-button matSuffix type="button" (click)="showPassword = !showPassword">
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <!-- Options -->
+        <div class="options-row">
+          <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe">Se souvenir de moi</mat-checkbox>
+          <a class="forgot-link" routerLink="/forgot-password">Mot de passe oublié ?</a>
+        </div>
+
+        <button mat-raised-button color="primary" class="submit" [disabled]="loading">
+          @if (!loading) {
+            <ng-container>
+              <mat-icon>login</mat-icon>
+              Se connecter
+            </ng-container>
+          } @else {
+            Connexion...
+          }
+        </button>
+
+      </form>
+
+    </mat-card-content>
+
+    <mat-card-actions>
+      <a routerLink="/register">Pas encore de compte ? <strong>S'inscrire</strong></a>
+    </mat-card-actions>
+
+  </mat-card>
+
+</div>

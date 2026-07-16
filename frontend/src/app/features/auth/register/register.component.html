@@ -2,155 +2,128 @@
 
   <mat-card class="register-card">
 
-    <mat-card-header>
-
-      <mat-card-title>
-        Créer un compte
-      </mat-card-title>
-
-      <mat-card-subtitle>
-        Kehoros — Gestion d'inventaire IT
-      </mat-card-subtitle>
-
-    </mat-card-header>
-
+    <!-- Logo + Header -->
+    <div class="card-header">
+      <div class="logo">K</div>
+      <h1 class="card-title">Créer un compte</h1>
+      <p class="card-subtitle">Kehoros — Gestion d'inventaire IT</p>
+    </div>
 
     <mat-card-content>
 
       @if(error){
         <div class="error">
-          {{error}}
+          <mat-icon>error_outline</mat-icon>
+          <span>{{ error }}</span>
         </div>
       }
 
-
       <form (ngSubmit)="onSubmit()">
 
+        <!-- Matricule -->
+        <div class="section-label">Identification</div>
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Matricule</mat-label>
+          <input matInput [(ngModel)]="matricule" name="matricule" placeholder="K0001" />
+          <mat-icon matSuffix>badge</mat-icon>
+        </mat-form-field>
 
+        <!-- Prénom / Nom -->
+        <div class="section-label">Identité</div>
         <div class="row">
-
-
           <mat-form-field appearance="outline">
-
-            <mat-label>
-              Prénom
-            </mat-label>
-
-            <input
-              matInput
-              [(ngModel)]="first_name"
-              name="first_name">
-
+            <mat-label>Prénom</mat-label>
+            <input matInput [(ngModel)]="first_name" name="first_name" placeholder="Rivo" />
           </mat-form-field>
 
-
-
           <mat-form-field appearance="outline">
-
-            <mat-label>
-              Nom
-            </mat-label>
-
-            <input
-              matInput
-              [(ngModel)]="last_name"
-              name="last_name">
-
+            <mat-label>Nom</mat-label>
+            <input matInput [(ngModel)]="last_name" name="last_name" placeholder="Dev" />
           </mat-form-field>
-
-
         </div>
 
-
-
+        <!-- Contact -->
+        <div class="section-label">Contact</div>
         <mat-form-field appearance="outline" class="full">
-
           <mat-label>Email</mat-label>
-
-          <input
-            matInput
-            type="email"
-            [(ngModel)]="email"
-            name="email">
-
-          <mat-icon matSuffix>
-            email
-          </mat-icon>
-
+          <input matInput type="email" [(ngModel)]="email" name="email" placeholder="vous@kehoros.mg" />
+          <mat-icon matSuffix>email</mat-icon>
         </mat-form-field>
 
+        <!-- Téléphone avec code pays -->
+        <div class="phone-row">
+          <mat-form-field appearance="outline" class="country-code">
+            <mat-label>Pays</mat-label>
+            <mat-select [(ngModel)]="countryCode" name="countryCode">
+              @for (country of countries; track country.code) {
+                <mat-option [value]="country.dial">
+                  {{ country.flag }} {{ country.dial }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
 
+          <mat-form-field appearance="outline" class="phone-number">
+            <mat-label>Téléphone</mat-label>
+            <input
+              matInput
+              [(ngModel)]="phoneNumber"
+              name="phoneNumber"
+              placeholder="34 00 000 00"
+              (input)="onPhoneInput()"
+            />
+            <mat-icon matSuffix>phone</mat-icon>
+            @if (phoneError) {
+              <mat-error>{{ phoneError }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
 
+        <!-- Sécurité -->
+        <div class="section-label">Sécurité</div>
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" />
+          <button mat-icon-button matSuffix type="button" (click)="showPassword = !showPassword">
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
 
         <mat-form-field appearance="outline" class="full">
-
-          <mat-label>
-            Mot de passe
-          </mat-label>
-
-          <input
-            matInput
-            type="password"
-            [(ngModel)]="password"
-            name="password">
-
-          <mat-icon matSuffix>
-            lock
-          </mat-icon>
-
+          <mat-label>Confirmer le mot de passe</mat-label>
+          <input matInput [type]="showConfirm ? 'text' : 'password'" [(ngModel)]="confirmPassword" name="confirmPassword" />
+          <button mat-icon-button matSuffix type="button" (click)="showConfirm = !showConfirm">
+            <mat-icon>{{ showConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
         </mat-form-field>
 
+        <!-- Password strength -->
+        @if (password) {
+          <div class="strength-bar">
+            <div class="strength-fill" [class]="strengthClass" [style.width]="strengthWidth"></div>
+          </div>
+          <p class="strength-label" [class]="strengthClass">{{ strengthLabel }}</p>
+        }
 
-
-        <mat-form-field appearance="outline" class="full">
-
-          <mat-label>
-            Confirmer le mot de passe
-          </mat-label>
-
-          <input
-            matInput
-            type="password"
-            [(ngModel)]="confirmPassword"
-            name="confirmPassword">
-
-        </mat-form-field>
-
-
-
-        <button
-          mat-raised-button
-          color="primary"
-          class="submit"
-          [disabled]="loading">
-
-          @if(!loading){
-            Créer mon compte
+        <button mat-raised-button color="primary" class="submit" [disabled]="loading">
+          @if (!loading) {
+            <ng-container>
+              <mat-icon>person_add</mat-icon>
+              Créer mon compte
+            </ng-container>
+          } @else {
+            Création en cours...
           }
-          @else {
-            Création...
-          }
-
         </button>
-
 
       </form>
 
-
     </mat-card-content>
 
-
-
     <mat-card-actions>
-
-      <a routerLink="/login">
-        Déjà un compte ? Se connecter
-      </a>
-
+      <a routerLink="/login">Déjà un compte ? <strong>Se connecter</strong></a>
     </mat-card-actions>
 
-
   </mat-card>
-
 
 </div>

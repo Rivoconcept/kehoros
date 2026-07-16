@@ -43,11 +43,11 @@ services:
       - ./backend/src:/app/src
       - vault-approle:/vault/approle:ro
       - vault-certs:/vault/certs:ro
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q -O- http://localhost:3000/health || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD-SHELL", "wget -q -O- http://localhost:3000/health || exit 1"]
+    #   interval: 30s
+    #   timeout: 5s
+    #   retries: 3
     networks:
       - app-network
 
@@ -95,6 +95,14 @@ services:
     container_name: vault
     cap_add:
       - IPC_LOCK
+    command:
+      - --log.level=DEBUG
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.endpoint=unix:///var/run/docker.sock
+      - --entrypoints.web.address=:80
     labels:
       - traefik.enable=true
       - traefik.http.routers.vault.rule=Host(`vault.localhost`)

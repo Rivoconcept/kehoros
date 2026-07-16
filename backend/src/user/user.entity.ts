@@ -26,6 +26,12 @@ export class User {
   @Column()
   last_name: string;
 
+  @Column({ nullable: true, unique: true })
+  matricule: string;
+
+  @Column({ nullable: true })
+  phone: string;
+
   @Column({ nullable: true })
   department_id: string;
 

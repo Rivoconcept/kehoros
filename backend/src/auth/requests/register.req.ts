@@ -1,6 +1,13 @@
-import { IsEmail, IsString, MinLength } from "class-validator";
+import { IsEmail, IsString, MinLength, IsOptional, Matches } from "class-validator";
 
 export class RegisterReq {
+  
+  @IsString()
+  first_name: string;
+
+  @IsString()
+  last_name: string;
+
   @IsEmail()
   email: string;
 
@@ -8,9 +15,12 @@ export class RegisterReq {
   @MinLength(6)
   password: string;
 
+  @IsOptional()
   @IsString()
-  first_name: string;
+  matricule?: string;
 
+  @IsOptional()
   @IsString()
-  last_name: string;
+  @Matches(/^[+]?[\d\s\-().]{6,20}$/, { message: 'Numéro de téléphone invalide' })
+  phone?: string;
 }

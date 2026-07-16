@@ -1,8 +1,11 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+
+  // Public
   {
     path: 'login',
     loadComponent: () =>
@@ -13,17 +16,21 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/auth/register/register.component').then(m => m.RegisterComponent),
   },
+
+  // Admin + Manager uniquement
   {
     path: 'dashboard',
-    canActivate: [authGuard],
+    canActivate: [roleGuard(['admin', 'manager'])],
     loadComponent: () =>
       import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
   },
-  { path: '**', redirectTo: '/dashboard' },
+
+  // Tous les utilisateurs connectés
   {
-    path: 'dashboard',
+    path: 'my-forms',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
+      import('./features/forms/forms-list/my-forms.component').then(m => m.MyFormsComponent),
   },
+  { path: '**', redirectTo: '/login' },
 ];

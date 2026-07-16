@@ -14,18 +14,27 @@ export interface RegisterDto {
   password: string;
   first_name: string;
   last_name: string;
+  matricule?: string;
+  phone?: string;
 }
 
 export interface AuthResponse {
   access_token: string;
 }
 
+export interface TokenPayload {
+  sub: string;
+  email: string;
+  role: string;
+  exp: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private baseUrl = environment.apiUrl;
 
-  // Signal — l'état de connexion réactif
   isLoggedIn = signal<boolean>(this.hasToken());
+  currentRole = signal<string>(this.getRole());
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -34,6 +43,7 @@ export class AuthService {
       tap(res => {
         localStorage.setItem('access_token', res.access_token);
         this.isLoggedIn.set(true);
+        this.currentRole.set(this.getRole());
       })
     );
   }
@@ -43,6 +53,7 @@ export class AuthService {
       tap(res => {
         localStorage.setItem('access_token', res.access_token);
         this.isLoggedIn.set(true);
+        this.currentRole.set(this.getRole());
       })
     );
   }
@@ -50,11 +61,35 @@ export class AuthService {
   logout() {
     localStorage.removeItem('access_token');
     this.isLoggedIn.set(false);
+    this.currentRole.set('');
     this.router.navigate(['/login']);
   }
 
   getToken(): string | null {
     return localStorage.getItem('access_token');
+  }
+
+  getPayload(): TokenPayload | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      return JSON.parse(atob(token.split('.')[1]));
+    } catch {
+      return null;
+    }
+  }
+
+  getRole(): string {
+    return this.getPayload()?.role || '';
+  }
+
+  redirectByRole() {
+    const role = this.getRole();
+    if (role === 'admin' || role === 'manager') {
+      this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/my-forms']);
+    }
   }
 
   private hasToken(): boolean {
