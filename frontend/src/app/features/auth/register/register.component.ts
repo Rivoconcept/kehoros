@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
+import { ApiService } from '../../../core/services/api.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -16,6 +18,14 @@ interface Country {
   dial: string;
   flag: string;
 }
+
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+interface DepartmentOption extends SelectOption {}
+interface ManagerOption extends SelectOption {}
 
 @Component({
   selector: 'app-register',
@@ -34,7 +44,7 @@ interface Country {
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
 
   // Champs
   matricule      = '';
@@ -45,6 +55,11 @@ export class RegisterComponent {
   confirmPassword = '';
   countryCode    = '+261';
   phoneNumber    = '';
+  manager_id = '';
+  department_id = '';
+
+  departmentOptions: DepartmentOption[] = [];
+  managerOptions: ManagerOption[] = [];
 
   // UI state
   loading      = false;
@@ -69,7 +84,34 @@ export class RegisterComponent {
     { code: 'IN', name: 'Inde',            dial: '+91',  flag: '🇮🇳' },
   ];
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private api: ApiService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.loadOptions();
+  }
+
+  private loadOptions() {
+    forkJoin({
+      departments: this.api.get<{ id: string; name: string }[]>('/departments'),
+      managers: this.api.get<{ id: string; first_name: string; last_name: string }[]>('/users/managers'),
+    }).subscribe({
+      next: ({ departments, managers }) => {
+        this.departmentOptions = departments.map(department => ({
+          value: department.id,
+          label: department.name,
+        }));
+
+        this.managerOptions = managers.map(manager => ({
+          value: manager.id,
+          label: `${manager.first_name} ${manager.last_name}`,
+        }));
+      },
+      error: () => {
+        this.departmentOptions = [];
+        this.managerOptions = [];
+      },
+    });
+  }
 
   // Validation téléphone
   onPhoneInput() {
@@ -138,6 +180,8 @@ export class RegisterComponent {
       password:    this.password,
       matricule:   this.matricule   || undefined,
       phone:       this.fullPhone   || undefined,
+      manager_id:  this.manager_id || undefined,
+      department_id: this.department_id || undefined,
     }).subscribe({
       next: () => this.authService.redirectByRole(),
       error: (err) => {

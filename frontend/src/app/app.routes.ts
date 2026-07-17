@@ -32,5 +32,12 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/forms/forms-list/my-forms.component').then(m => m.MyFormsComponent),
   },
+  {
+    path: 'users',
+    canActivate: [roleGuard(['admin', 'manager'])],
+    loadComponent: () =>
+      import('./features/users/users-list/users-list.component')
+        .then(m => m.UsersListComponent),
+  },
   { path: '**', redirectTo: '/login' },
 ];

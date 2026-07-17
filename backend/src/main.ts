@@ -20,6 +20,8 @@ async function bootstrap() {
       'http://frontend.localhost:4200',
       'http://localhost:4200',
     ],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });
   await app.listen(3000, '0.0.0.0');

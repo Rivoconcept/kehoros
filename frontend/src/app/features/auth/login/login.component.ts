@@ -55,7 +55,15 @@ export class LoginComponent {
       email:    this.email,
       password: this.password,
     }).subscribe({
-      next: () => this.authService.redirectByRole(),
+      next: async () => {
+        this.loading = false;
+
+        const ok = await this.authService.redirectByRole();
+
+        if (!ok) {
+          this.error = 'Impossible d’accéder à la page demandée.';
+        }
+      },
       error: (err) => {
         this.error   = err?.error?.message ?? err?.message ?? 'Email ou mot de passe incorrect.';
         this.loading = false;

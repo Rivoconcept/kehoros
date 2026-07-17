@@ -14,16 +14,18 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(req: RegisterReq) {
-    const existing = await this.userService.findByEmail(req.email);
+  async register(dto: RegisterReq) {
+    const existing = await this.userService.findByEmail(dto.email);
     if (existing) throw new ConflictException('Email already used');
 
-    const password_hash = await bcrypt.hash(req.password, 10);
+    const password_hash = await bcrypt.hash(dto.password, 10);
     const user = await this.userService.create({
-      email: req.email,
+      email: dto.email,
       password_hash,
-      first_name: req.first_name,
-      last_name: req.last_name,
+      first_name: dto.first_name,
+      last_name: dto.last_name,
+      manager_id: dto.manager_id,
+      department_id: dto.department_id,
     });
     
     return this.signToken(user.id, user.email, user.role);

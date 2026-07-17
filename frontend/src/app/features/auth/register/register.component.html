@@ -50,6 +50,28 @@
           <mat-icon matSuffix>email</mat-icon>
         </mat-form-field>
 
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Département</mat-label>
+          <mat-select [(ngModel)]="department_id" name="department_id">
+            <mat-option value="">Aucun</mat-option>
+            @for (option of departmentOptions; track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+          <mat-icon matSuffix>business</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Manager</mat-label>
+          <mat-select [(ngModel)]="manager_id" name="manager_id">
+            <mat-option value="">Aucun</mat-option>
+            @for (option of managerOptions; track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+          <mat-icon matSuffix>supervisor_account</mat-icon>
+        </mat-form-field>
+
         <!-- Téléphone avec code pays -->
         <div class="phone-row">
           <mat-form-field appearance="outline" class="country-code">

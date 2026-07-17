@@ -16,6 +16,8 @@ export interface RegisterDto {
   last_name: string;
   matricule?: string;
   phone?: string;
+  manager_id?: string;
+  department_id?: string;
 }
 
 export interface AuthResponse {
@@ -83,13 +85,21 @@ export class AuthService {
     return this.getPayload()?.role || '';
   }
 
-  redirectByRole() {
+  updateRole(id:string,role:string){
+    return this.http.patch(
+        `${environment.apiUrl}/users/${id}/role`,
+        {role}
+    );
+  }
+
+  redirectByRole(): Promise<boolean> {
     const role = this.getRole();
+
     if (role === 'admin' || role === 'manager') {
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.router.navigate(['/my-forms']);
+      return this.router.navigate(['/dashboard']);
     }
+
+    return this.router.navigate(['/my-forms']);
   }
 
   private hasToken(): boolean {
