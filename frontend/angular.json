@@ -13,6 +13,11 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "optimization": {
+              "fonts": {
+                "inline": false
+              }
+            },
             "outputPath": "dist/gamehub-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
