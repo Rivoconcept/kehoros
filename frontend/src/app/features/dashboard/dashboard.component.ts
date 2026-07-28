@@ -33,11 +33,31 @@ interface MenuItem {
 })
 export class DashboardComponent implements OnInit {
   menuItems: MenuItem[] = [
-    { icon: 'dashboard',   label: 'Tableau de bord', route: '/dashboard' },
-    { icon: 'description', label: 'Formulaires',     route: '/forms' },
-    { icon: 'computer',    label: 'Matériels',        route: '/assets' },
-    { icon: 'people',      label: 'Utilisateurs',     route: '/users' },
-    { icon: 'key',         label: 'Licences',         route: '/licenses' },
+    {
+      icon: 'dashboard',
+      label: 'Tableau de bord',
+      route: '/dashboard'
+    },
+    {
+      icon: 'description',
+      label: 'Formulaires',
+      route: '/forms/templates'
+    },
+    {
+      icon: 'computer',
+      label: 'Matériels',
+      route: '/assets'
+    },
+    {
+      icon: 'people',
+      label: 'Utilisateurs',
+      route: '/users'
+    },
+    {
+      icon: 'key',
+      label: 'Licences',
+      route: '/licenses'
+    },
   ];
 
   stats = [

@@ -1,0 +1,61 @@
+<div class="canvas">
+
+
+    <div
+
+        class="drop-zone"
+
+        cdkDropList
+
+        (cdkDropListDropped)="drop($event)"
+
+    >
+
+
+        @if(builder.template?.questions?.length){
+
+
+            @for(
+                question of builder.template?.questions;
+                track question.id
+            ){
+
+
+            <app-question-card
+
+                cdkDrag
+
+                [question]="question"
+
+                (questionSelected)="builder.selectQuestion($event)"
+
+                (duplicate)="builder.duplicateQuestion($event)"
+
+                (remove)="builder.removeQuestion($event)"
+
+            >
+            </app-question-card>
+
+
+            }
+
+
+        }
+
+        @else {
+
+
+            <div class="empty">
+
+                Glissez une question ici
+
+            </div>
+
+
+        }
+
+
+    </div>
+
+
+</div>

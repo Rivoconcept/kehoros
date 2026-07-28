@@ -1,0 +1,442 @@
+:host {
+  display: block;
+  min-height: 100%;
+  background: var(--background);
+}
+
+.page {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* =======================================================
+   HEADER
+======================================================= */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin-top: 8px;
+  color: var(--text-light);
+  font-size: .95rem;
+}
+
+.page-header button {
+  height: 48px;
+  border-radius: 14px;
+  padding-inline: 22px;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(39, 235, 245, .18);
+  transition: .25s;
+}
+
+.page-header button:hover {
+  transform: translateY(-2px);
+}
+
+/* =======================================================
+   TOOLBAR
+======================================================= */
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.search-field {
+  width: 420px;
+  max-width: 100%;
+}
+
+/* =======================================================
+   GRID
+======================================================= */
+
+.cards {
+  display: grid;
+
+  grid-template-columns:
+      repeat(auto-fill, minmax(360px,1fr));
+
+  gap: 24px;
+}
+
+/* =======================================================
+   CARD
+======================================================= */
+
+.template-card {
+
+  background: var(--surface);
+
+  border-radius: 18px;
+
+  border: 1px solid var(--border);
+
+  box-shadow:
+      0 10px 35px rgba(15,23,42,.05);
+
+  transition:
+      transform .25s,
+      box-shadow .25s;
+
+  overflow: hidden;
+
+}
+
+.template-card:hover {
+
+  transform: translateY(-6px);
+
+  box-shadow:
+      0 18px 45px rgba(15,23,42,.10);
+
+}
+
+/* =======================================================
+   HEADER
+======================================================= */
+
+.card-header {
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:flex-start;
+
+  gap:16px;
+
+}
+
+.card-header h2{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+
+  margin:0;
+
+  color:var(--text);
+
+  font-size:1.18rem;
+
+  font-weight:700;
+
+}
+
+.card-header h2 mat-icon{
+
+  color:var(--primary);
+
+}
+
+.card-header p{
+
+  margin-top:8px;
+
+  color:var(--text-light);
+
+  line-height:1.5;
+
+}
+
+/* =======================================================
+   CHIPS
+======================================================= */
+
+.chips{
+
+  margin-top:22px;
+
+  display:flex;
+
+  gap:10px;
+
+  flex-wrap:wrap;
+
+}
+
+mat-chip{
+
+  border-radius:999px !important;
+
+  font-weight:600;
+
+}
+
+/* =======================================================
+   STATS
+======================================================= */
+
+.stats{
+
+  margin-top:24px;
+
+  display:grid;
+
+  grid-template-columns:repeat(2,1fr);
+
+  gap:18px;
+
+}
+
+.stats>div{
+
+  background:#f8fbfd;
+
+  border:1px solid var(--border);
+
+  border-radius:14px;
+
+  padding:18px;
+
+  text-align:center;
+
+}
+
+.stats strong{
+
+  display:block;
+
+  color:var(--primary);
+
+  font-size:1.8rem;
+
+  font-weight:700;
+
+}
+
+.stats span{
+
+  color:var(--text-light);
+
+  font-size:.9rem;
+
+}
+
+/* =======================================================
+   FOOTER
+======================================================= */
+
+.footer{
+
+  margin-top:26px;
+
+  padding-top:20px;
+
+  border-top:1px solid var(--border);
+
+  display:flex;
+
+  justify-content:space-between;
+
+}
+
+.footer small{
+
+  display:block;
+
+  color:var(--text-light);
+
+  margin-bottom:6px;
+
+}
+
+.footer strong{
+
+  color:var(--text);
+
+  font-weight:600;
+
+}
+
+/* =======================================================
+   ACTIONS
+======================================================= */
+
+.actions{
+
+  margin-top:28px;
+
+  display:flex;
+
+  gap:14px;
+
+}
+
+.actions button{
+
+  flex:1;
+
+  height:44px;
+
+  border-radius:12px;
+
+  font-weight:600;
+
+  transition:.2s;
+
+}
+
+.actions button:hover{
+
+  transform:translateY(-2px);
+
+}
+
+/* =======================================================
+   EMPTY
+======================================================= */
+
+.empty-state{
+
+  padding:80px 20px;
+
+  text-align:center;
+
+  background:var(--surface);
+
+  border-radius:20px;
+
+  border:2px dashed var(--border);
+
+}
+
+.empty-state mat-icon{
+
+  font-size:72px;
+
+  width:72px;
+
+  height:72px;
+
+  color:var(--primary);
+
+}
+
+.empty-state h2{
+
+  margin-top:18px;
+
+  color:var(--text);
+
+}
+
+.empty-state p{
+
+  color:var(--text-light);
+
+  margin:16px 0 30px;
+
+}
+
+/* =======================================================
+   MATERIAL
+======================================================= */
+
+::ng-deep .mat-mdc-form-field-flex{
+
+  border-radius:14px !important;
+
+}
+
+::ng-deep .mat-mdc-card{
+
+  padding:24px;
+
+}
+
+::ng-deep .mat-mdc-menu-content{
+
+  padding:6px;
+
+}
+
+::ng-deep .mat-mdc-menu-item{
+
+  border-radius:10px;
+
+}
+
+/* =======================================================
+   RESPONSIVE
+======================================================= */
+
+@media (max-width:900px){
+
+.page{
+
+padding:20px;
+
+}
+
+.cards{
+
+grid-template-columns:1fr;
+
+}
+
+.page-header{
+
+align-items:flex-start;
+
+}
+
+.footer{
+
+flex-direction:column;
+
+gap:14px;
+
+}
+
+.actions{
+
+flex-direction:column;
+
+}
+
+}
+
+@media (max-width:600px){
+
+.page-header h1{
+
+font-size:1.6rem;
+
+}
+
+.search-field{
+
+width:100%;
+
+}
+
+.stats{
+
+grid-template-columns:1fr;
+
+}
+
+}

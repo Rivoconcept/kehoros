@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "gamehub-frontend": {
+    "Kehoros-frontend": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -18,7 +18,7 @@
                 "inline": false
               }
             },
-            "outputPath": "dist/gamehub-frontend",
+            "outputPath": "dist/Kehoros-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -37,7 +37,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "gamehub-frontend:build"
+            "buildTarget": "Kehoros-frontend:build"
           }
         }
       }

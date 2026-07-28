@@ -12,6 +12,6 @@ import { RouterOutlet } from '@angular/router';
   styles: []
 })
 export class AppComponent {
-  title = 'gamehub-frontend';
+  title = 'Kehoros-frontend';
   angularVersion = '17';
 }

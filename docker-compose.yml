@@ -80,7 +80,7 @@ services:
       PGADMIN_REPLACE_SERVERS_ON_STARTUP: "True"
     volumes:
       - ./pgadmin/custom-entrypoint.sh:/custom-entrypoint.sh:ro
-      - vault-secrets:/run/secrets/GameHub:ro
+      - vault-secrets:/run/secrets/Kehoros:ro
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     depends_on:

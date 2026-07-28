@@ -1,0 +1,145 @@
+<mat-card
+
+    class="question-card"
+
+    [class.selected]="selected"
+
+    (click)="select()"
+
+>
+
+
+
+<div class="header">
+
+
+    <div class="info">
+
+
+        <h3>
+
+            {{ question.title || 'Nouvelle question' }}
+
+        </h3>
+
+
+        <span class="type">
+
+            {{ question.type }}
+
+        </span>
+
+
+    </div>
+
+
+
+
+    <div class="actions">
+
+
+        <button
+
+            mat-icon-button
+
+            type="button"
+
+            (click)="duplicateQuestion($event)"
+
+        >
+
+            <mat-icon>
+                content_copy
+            </mat-icon>
+
+
+        </button>
+
+
+
+
+
+        <button
+
+            mat-icon-button
+
+            color="warn"
+
+            type="button"
+
+            (click)="deleteQuestion($event)"
+
+        >
+
+            <mat-icon>
+                delete
+            </mat-icon>
+
+
+        </button>
+
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+<div class="body">
+
+
+@if(question.description){
+
+
+<p>
+
+{{question.description}}
+
+</p>
+
+
+}
+
+
+
+<div class="status">
+
+
+@if(question.required){
+
+
+<span class="required">
+
+Obligatoire
+
+</span>
+
+
+}
+
+@else {
+
+
+<span>
+
+Optionnelle
+
+</span>
+
+
+}
+
+
+</div>
+
+
+</div>
+
+
+
+</mat-card>

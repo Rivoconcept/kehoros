@@ -24,3 +24,26 @@ Version 4
     Statistiques avancées.
     Notifications automatiques.
     API publique.
+
+
+| Action                        | USER | MANAGER  | ADMIN |
+| ----------------------------- | ---- | -------- | ----- |
+| Voir ses formulaires assignés | ✅    | ✅        | ✅     |
+| Créer un template             | ❌    | ✅        | ✅     |
+| Modifier un template          | ❌    | ✅        | ✅     |
+| Publier un template           | ❌    | ✅        | ✅     |
+| Assigner un formulaire        | ❌    | ✅        | ✅     |
+| Voir les résultats            | ❌    | ✅        | ✅     |
+| Gérer les utilisateurs        | ❌    | ❌/limité | ✅     |
+
+
+BuilderService
+
+    ├── créer un template
+    ├── gérer la liste des questions
+    ├── ajouter une question
+    ├── supprimer une question
+    ├── sélectionner une question
+    ├── réordonner les questions
+    ├── préparer la sauvegarde backend
+    └── notifier les composants Angular

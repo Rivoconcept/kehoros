@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   template: `
     <div style="padding: 20px;">
       <h2>Home Page</h2>
-      <p>GameHub is loading...</p>
+      <p>Kehoros is loading...</p>
     </div>
   `,
   styles: []

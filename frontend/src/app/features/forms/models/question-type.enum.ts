@@ -1,0 +1,44 @@
+export enum QuestionType {
+  TEXT = 'TEXT',
+  TEXTAREA = 'TEXTAREA',
+
+  NUMBER = 'NUMBER',
+
+  EMAIL = 'EMAIL',
+
+  PHONE = 'PHONE',
+
+  DATE = 'DATE',
+
+  TIME = 'TIME',
+
+  DATETIME = 'DATETIME',
+
+  SELECT = 'SELECT',
+
+  RADIO = 'RADIO',
+
+  CHECKBOX = 'CHECKBOX',
+
+  SWITCH = 'SWITCH',
+
+  FILE = 'FILE',
+
+  IMAGE = 'IMAGE',
+
+  SIGNATURE = 'SIGNATURE',
+
+  RATING = 'RATING',
+
+  SCALE = 'SCALE',
+
+  QR = 'QR',
+
+  BARCODE = 'BARCODE',
+
+  SECTION = 'SECTION',
+
+  TITLE = 'TITLE',
+
+  PARAGRAPH = 'PARAGRAPH'
+}

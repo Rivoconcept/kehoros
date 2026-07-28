@@ -1,18 +1,25 @@
 import {
-  Entity, PrimaryGeneratedColumn, Column,
-  ManyToOne, JoinColumn
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+
 import { FormQuestion } from './form-question.entity';
 
-@Entity('form_question_options')
-export class FormQuestionOption {
+@Entity('form_options')
+export class FormOption {
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
   question_id: string;
 
-  @ManyToOne(() => FormQuestion, q => q.options, { onDelete: 'CASCADE' })
+  @ManyToOne(() => FormQuestion, q => q.options, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'question_id' })
   question: FormQuestion;
 
@@ -26,5 +33,6 @@ export class FormQuestionOption {
   is_correct: boolean;
 
   @Column({ default: 0 })
-  order_index: number;
+  position: number;
+
 }

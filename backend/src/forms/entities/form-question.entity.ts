@@ -1,53 +1,62 @@
 import {
-  Entity, PrimaryGeneratedColumn, Column,
-  ManyToOne, OneToMany, JoinColumn
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
 } from 'typeorm';
-import { FormTemplate } from './form-template.entity';
-import { FormQuestionOption } from './form-question-option.entity';
-import { FormAnswer } from './form-answer.entity';
 
-export enum QuestionType {
-  TEXT      = 'text',
-  TEXTAREA  = 'textarea',
-  RADIO     = 'radio',
-  CHECKBOX  = 'checkbox',
-  SELECT    = 'select',
-  NUMBER    = 'number',
-  DATE      = 'date',
-  FILE      = 'file',
-  RATING    = 'rating',
-}
+import { FormTemplate } from './form-template.entity';
+import { FormOption } from './form-option.entity';
+import { QuestionType } from '../enums/question-type.enum';
 
 @Entity('form_questions')
 export class FormQuestion {
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
-  form_id: string;
+  template_id: string;
 
-  @ManyToOne(() => FormTemplate, f => f.questions, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'form_id' })
-  form: FormTemplate;
+  @ManyToOne(() => FormTemplate, t => t.questions, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'template_id' })
+  template: FormTemplate;
 
   @Column()
-  label: string;
+  title: string;
 
-  @Column({ type: 'enum', enum: QuestionType, default: QuestionType.TEXT })
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
+  description: string;
+
+  @Column({
+    type: 'enum',
+    enum: QuestionType,
+  })
   type: QuestionType;
 
   @Column({ default: false })
   required: boolean;
 
   @Column({ default: 0 })
-  order_index: number;
+  position: number;
 
-  @Column({ type: 'jsonb', nullable: true })
-  settings: Record<string, any>;
+  @Column({ default: 0 })
+  points: number;
 
-  @OneToMany(() => FormQuestionOption, o => o.question, { cascade: true })
-  options: FormQuestionOption[];
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  settings: any;
 
-  @OneToMany(() => FormAnswer, a => a.question)
-  answers: FormAnswer[];
+  @OneToMany(() => FormOption, o => o.question)
+  options: FormOption[];
+
 }

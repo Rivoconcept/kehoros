@@ -1,0 +1,224 @@
+<div class="page">
+
+  <!-- Header -->
+  <div class="page-header">
+
+    <div>
+      <h1>Questionnaires</h1>
+      <p>
+        Gérez les questionnaires, tests de compétences, enquêtes RH et inventaires.
+      </p>
+    </div>
+
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="createTemplate()">
+
+      <mat-icon>add</mat-icon>
+      Nouveau questionnaire
+
+    </button>
+
+  </div>
+
+  <!-- Toolbar -->
+
+  <div class="toolbar">
+
+    <mat-form-field appearance="outline" class="search-field">
+
+      <mat-label>Rechercher</mat-label>
+
+      <input
+        matInput
+        [(ngModel)]="search"
+        placeholder="Titre du questionnaire">
+
+      <mat-icon matSuffix>search</mat-icon>
+
+    </mat-form-field>
+
+  </div>
+
+  <!-- Empty -->
+
+  <div
+    class="empty-state"
+    *ngIf="filteredTemplates.length===0">
+
+    <mat-icon>description</mat-icon>
+
+    <h2>Aucun questionnaire</h2>
+
+    <p>
+      Commencez par créer votre premier formulaire.
+    </p>
+
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="createTemplate()">
+
+      Créer un questionnaire
+
+    </button>
+
+  </div>
+
+  <!-- Cards -->
+
+  <div
+    class="cards"
+    *ngIf="filteredTemplates.length">
+
+    <mat-card
+      class="template-card"
+      *ngFor="let template of filteredTemplates">
+
+      <div class="card-header">
+
+        <div>
+
+          <h2>
+
+            <mat-icon>description</mat-icon>
+
+            {{template.title}}
+
+          </h2>
+
+          <p>{{template.description}}</p>
+
+        </div>
+
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="menu">
+
+          <mat-icon>more_vert</mat-icon>
+
+        </button>
+
+        <mat-menu #menu="matMenu">
+
+          <button mat-menu-item (click)="edit(template)">
+
+            <mat-icon>edit</mat-icon>
+
+            Modifier
+
+          </button>
+
+          <button mat-menu-item (click)="duplicate(template)">
+
+            <mat-icon>content_copy</mat-icon>
+
+            Dupliquer
+
+          </button>
+
+          <button mat-menu-item (click)="archive(template)">
+
+            <mat-icon>archive</mat-icon>
+
+            Archiver
+
+          </button>
+
+          <button mat-menu-item (click)="delete(template)">
+
+            <mat-icon color="warn">delete</mat-icon>
+
+            Supprimer
+
+          </button>
+
+        </mat-menu>
+
+      </div>
+
+      <div class="chips">
+
+        <mat-chip color="primary" selected>
+
+          {{template.category}}
+
+        </mat-chip>
+
+        <mat-chip
+          [color]="template.published ? 'primary' : 'accent'"
+          selected>
+
+          {{template.published ? 'Publié' : 'Brouillon'}}
+
+        </mat-chip>
+
+      </div>
+
+      <div class="stats">
+
+        <div>
+
+          <strong>{{template.questions}}</strong>
+
+          <span>Questions</span>
+
+        </div>
+
+        <div>
+
+          <strong>{{template.responses}}</strong>
+
+          <span>Réponses</span>
+
+        </div>
+
+      </div>
+
+      <div class="footer">
+
+        <div>
+
+          <small>Créé par</small>
+
+          <strong>{{template.createdBy}}</strong>
+
+        </div>
+
+        <div>
+
+          <small>Mise à jour</small>
+
+          <strong>{{template.updatedAt}}</strong>
+
+        </div>
+
+      </div>
+
+      <div class="actions">
+
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="edit(template)">
+
+          Modifier
+
+        </button>
+
+        <button
+          mat-flat-button
+          color="primary">
+
+          Résultats
+
+        </button>
+
+      </div>
+
+    </mat-card>
+
+  </div>
+
+</div>

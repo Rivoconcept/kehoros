@@ -1,0 +1,49 @@
+.toolbar{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:20px;
+
+background:var(--surface);
+
+border-bottom:1px solid var(--border);
+
+}
+
+.title h2{
+
+margin:0;
+
+color:var(--text);
+
+}
+
+.actions button{
+
+background:var(--primary);
+
+color:white;
+
+border:none;
+
+padding:12px 22px;
+
+border-radius:12px;
+
+cursor:pointer;
+
+font-weight:600;
+
+transition:.25s;
+
+}
+
+.actions button:hover{
+
+background:var(--primary-hover);
+
+}

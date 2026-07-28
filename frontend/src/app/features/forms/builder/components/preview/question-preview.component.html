@@ -1,0 +1,217 @@
+@if(builder.getSelectedQuestion(); as question){
+
+<div class="preview">
+
+
+    <div class="preview-header">
+
+        <h3>
+            Aperçu
+        </h3>
+
+    </div>
+
+
+
+    <div class="question-preview">
+
+
+        <h4>
+            {{ question.title }}
+
+            @if(question.required){
+
+                <span class="required">
+                    *
+                </span>
+
+            }
+
+        </h4>
+
+
+
+        @if(question.description){
+
+            <p class="description">
+
+                {{ question.description }}
+
+            </p>
+
+        }
+
+
+
+
+        @switch(question.type){
+
+
+            @case(QuestionType.TEXT){
+
+                <mat-form-field appearance="outline">
+
+                    <mat-label>
+                        {{question.title}}
+                    </mat-label>
+
+                    <input
+                        matInput
+                        [placeholder]="question.placeholder || ''"
+                    >
+
+                </mat-form-field>
+
+            }
+
+
+
+            @case(QuestionType.TEXTAREA){
+
+
+                <mat-form-field appearance="outline">
+
+                    <mat-label>
+                        {{question.title}}
+                    </mat-label>
+
+
+                    <textarea
+
+                        matInput
+
+                        rows="4"
+
+                        [placeholder]="question.placeholder || ''">
+
+                    </textarea>
+
+
+                </mat-form-field>
+
+
+            }
+
+
+
+            @case(QuestionType.RADIO){
+
+
+                <mat-radio-group>
+
+
+                    @for(option of question.options; track option.id){
+
+
+                        <mat-radio-button
+                            [value]="option.value">
+
+
+                            {{option.label}}
+
+
+                        </mat-radio-button>
+
+
+                    }
+
+
+                </mat-radio-group>
+
+
+            }
+
+
+
+
+            @case(QuestionType.CHECKBOX){
+
+
+                @for(option of question.options; track option.id){
+
+
+                    <mat-checkbox>
+
+
+                        {{option.label}}
+
+
+                    </mat-checkbox>
+
+
+                }
+
+
+            }
+
+
+
+
+            @case(QuestionType.SELECT){
+
+
+                <mat-form-field appearance="outline">
+
+
+                    <mat-label>
+                        Sélection
+                    </mat-label>
+
+
+                    <mat-select>
+
+
+                        @for(option of question.options; track option.id){
+
+
+                            <mat-option
+                                [value]="option.value">
+
+                                {{option.label}}
+
+                            </mat-option>
+
+
+                        }
+
+
+                    </mat-select>
+
+
+                </mat-form-field>
+
+
+            }
+
+
+        }
+
+
+    </div>
+
+
+</div>
+
+
+}
+
+@else {
+
+
+<div class="empty">
+
+
+    <mat-icon>
+        touch_app
+    </mat-icon>
+
+
+    <p>
+        Sélectionnez une question pour voir l'aperçu.
+    </p>
+
+
+</div>
+
+
+}

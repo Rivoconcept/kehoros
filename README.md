@@ -1,4 +1,4 @@
-# GameHub - New Project Setup
+# Kehoros - New Project Setup
 
 Configuration clean et simple avec **Angular** (frontend) et **NestJS** (backend).
 

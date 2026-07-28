@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # Load secrets file if it exists
-if [ -f /run/secrets/GameHub/pgadmin/pgadmin.env ]; then
+if [ -f /run/secrets/Kehoros/pgadmin/pgadmin.env ]; then
   while IFS='=' read -r key value; do
     export "$key=$value"
-  done < /run/secrets/GameHub/pgadmin/pgadmin.env
+  done < /run/secrets/Kehoros/pgadmin/pgadmin.env
 fi
 
 

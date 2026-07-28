@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { VaultBootstrap } from './vault/vault.bootstrap';
 import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 
 async function bootstrap() {
@@ -24,8 +25,27 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });
+
+  const config = new DocumentBuilder()
+    .setTitle('Kehoros API')
+    .setDescription('API du moteur de formulaires Kehoros')
+    .setVersion('1.0.0')
+    .addBearerAuth()
+    .addTag('templates')
+    .addTag('questions')
+    .addTag('options')
+    .addTag('assignments')
+    .addTag('responses')
+    .addTag('results')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
   await app.listen(3000, '0.0.0.0');
   console.log(`Application is running on: http://localhost:3000`);
+  console.log(`Swagger API docs available at: http://localhost:3000/api`);
+
 
 }
 bootstrap();

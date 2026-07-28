@@ -1,0 +1,44 @@
+.canvas {
+  width: 100%;
+  min-height: 500px;
+  padding: 20px;
+}
+
+
+.drop-zone {
+
+  min-height: 300px;
+
+  padding: 20px;
+
+  border: 2px dashed #ccc;
+
+  border-radius: 8px;
+
+  background: #fafafa;
+
+}
+
+
+
+.empty {
+
+  text-align: center;
+
+  color: #777;
+
+  padding: 50px;
+
+  font-style: italic;
+
+}
+
+
+
+app-question-card {
+
+  display: block;
+
+  margin-bottom: 15px;
+
+}

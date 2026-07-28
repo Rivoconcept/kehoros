@@ -1,0 +1,42 @@
+<div class="properties">
+
+  @if (question) {
+    <h2>Propriétés</h2>
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Titre</mat-label>
+      <input matInput [(ngModel)]="question.title" (ngModelChange)="update()" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Description</mat-label>
+      <textarea matInput rows="3" [(ngModel)]="question.description" (ngModelChange)="update()"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Type</mat-label>
+      <input matInput [value]="question.type" readonly />
+    </mat-form-field>
+
+    <mat-slide-toggle [(ngModel)]="question.required" (ngModelChange)="update()">
+      Question obligatoire
+    </mat-slide-toggle>
+
+    @if (
+      question.type === QuestionType.RADIO ||
+      question.type === QuestionType.CHECKBOX ||
+      question.type === QuestionType.SELECT
+    ) {
+      <app-option-editor
+        [options]="question.options"
+        (optionsChange)="question.options = $event; update()">
+      </app-option-editor>
+    }
+
+  } @else {
+    <div class="empty">
+      Sélectionnez une question pour commencer.
+    </div>
+  }
+
+</div>
