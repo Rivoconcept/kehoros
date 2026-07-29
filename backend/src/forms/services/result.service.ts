@@ -22,7 +22,7 @@ export class ResultService {
     @InjectRepository(FormAnswer)
     private readonly answerRepo: Repository<FormAnswer>,
     @InjectRepository(FormQuestion)
-    private readonly questionRepo: Repository<FormQuestion>,
+    private readonly QuestionRepo: Repository<FormQuestion>,
   ) {}
 
   async evaluate(responseId: string, gradedBy?: string): Promise<FormResult> {
@@ -32,32 +32,32 @@ export class ResultService {
     }
 
     const answers = await this.answerRepo.find({ where: { response_id: response.id } });
-    const questions = await this.questionRepo.find();
+    const Questions = await this.QuestionRepo.find();
 
     let score = 0;
     let maxScore = 0;
 
-    for (const question of questions) {
-      maxScore += question.points ?? 0;
-      const answer = answers.find((item) => item.question_id === question.id);
+    for (const Question of Questions) {
+      maxScore += Question.points ?? 0;
+      const answer = answers.find((item) => item.question_id === Question.id);
       if (!answer) {
         continue;
       }
 
-      if (question.type === 'boolean' && answer.answer_boolean === true) {
-        score += question.points ?? 0;
+      if (Question.type === 'boolean' && answer.answer_boolean === true) {
+        score += Question.points ?? 0;
       }
 
-      if (question.type === 'number' && answer.answer_number !== undefined) {
-        score += question.points ?? 0;
+      if (Question.type === 'number' && answer.answer_number !== undefined) {
+        score += Question.points ?? 0;
       }
 
-      if ((question.type === 'radio' || question.type === 'select') && answer.selected_option_id) {
-        score += question.points ?? 0;
+      if ((Question.type === 'radio' || Question.type === 'select') && answer.selected_option_id) {
+        score += Question.points ?? 0;
       }
 
-      if ((question.type === 'text' || question.type === 'textarea') && answer.answer_text?.trim()) {
-        score += question.points ?? 0;
+      if ((Question.type === 'text' || Question.type === 'textarea') && answer.answer_text?.trim()) {
+        score += Question.points ?? 0;
       }
     }
 

@@ -15,13 +15,13 @@ export class FormOption {
   id: string;
 
   @Column()
-  question_id: string;
+  Question_id: string;
 
   @ManyToOne(() => FormQuestion, q => q.options, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'question_id' })
-  question: FormQuestion;
+  @JoinColumn({ name: 'Question_id' })
+  Question: FormQuestion;
 
   @Column()
   label: string;

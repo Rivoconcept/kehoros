@@ -10,7 +10,7 @@ export class PropertyService {
     private readonly propertyRepo: Repository<Property>,
   ) {}
 
-  // Logique : récupérer toutes les propriétés
+  // Logique : récupérer toutes les Properties
   findAll(): Promise<Property[]> {
     return this.propertyRepo.find();
   }

@@ -32,7 +32,7 @@ async function bootstrap() {
     .setVersion('1.0.0')
     .addBearerAuth()
     .addTag('templates')
-    .addTag('questions')
+    .addTag('Questions')
     .addTag('options')
     .addTag('assignments')
     .addTag('responses')

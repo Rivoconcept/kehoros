@@ -15,9 +15,9 @@ import { QuestionOption } from '../../../../models/question-option.model';
 
   selector: 'app-option-editor',
 
-  standalone:true,
+  standalone: true,
 
-  imports:[
+  imports: [
 
     CommonModule,
 
@@ -33,9 +33,9 @@ import { QuestionOption } from '../../../../models/question-option.model';
 
   ],
 
-  templateUrl:'./option-editor.component.html',
+  templateUrl: './option-editor.component.html',
 
-  styleUrl:'./option-editor.component.scss'
+  styleUrl: './option-editor.component.scss'
 
 })
 
@@ -44,33 +44,43 @@ export class OptionEditorComponent {
 
 
   @Input()
-
   options: QuestionOption[] = [];
 
 
 
   @Output()
-
   optionsChange =
     new EventEmitter<QuestionOption[]>();
 
 
 
 
+  updateLabel(
+    index:number,
+    value:string
+  ){
 
-  update(index:number,value:string){
+
+    const option = this.options[index];
 
 
-    if(!this.options[index])
+    if(!option)
       return;
 
 
-    this.options[index].label=value;
+
+    option.label = value;
 
 
-    this.optionsChange.emit(
-      [...this.options]
-    );
+    option.value =
+      value
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g,'-');
+
+
+
+    this.emit();
 
 
   }
@@ -85,11 +95,11 @@ export class OptionEditorComponent {
 
     this.options.push({
 
-      id:crypto.randomUUID(),
+      id: crypto.randomUUID(),
 
       label:'Nouvelle option',
 
-      value:`option-${this.options.length+1}`,
+      value:`option-${this.options.length + 1}`,
 
       order:this.options.length
 
@@ -97,13 +107,10 @@ export class OptionEditorComponent {
 
 
 
-    this.optionsChange.emit(
-      [...this.options]
-    );
+    this.emit();
 
 
   }
-
 
 
 
@@ -127,10 +134,20 @@ export class OptionEditorComponent {
 
 
 
+    this.emit();
+
+
+  }
+
+
+
+
+
+  private emit(){
+
     this.optionsChange.emit(
       [...this.options]
     );
-
 
   }
 

@@ -1,23 +1,53 @@
-.property-panel {
+.options-editor {
 
-    padding:20px;
+    margin-top:20px;
 
 }
 
 
-mat-form-field {
 
-    width:100%;
+.header {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
 
     margin-bottom:15px;
 
 }
 
 
+
+.option-row {
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:10px;
+
+}
+
+
+
+mat-form-field {
+
+    flex:1;
+
+}
+
+
+
 .empty {
 
-    padding:20px;
+    padding:15px;
 
     color:#777;
+
+    text-align:center;
 
 }

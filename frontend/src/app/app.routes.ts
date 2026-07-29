@@ -44,7 +44,7 @@ export const routes: Routes = [
     path: 'forms/builder',
     canActivate: [roleGuard(['admin', 'manager'])],
     loadComponent: () =>
-      import('./features/forms/builder/builder.component')
+      import('./features/forms/builder/components/builder.component')
         .then(m => m.BuilderComponent),
   },
 

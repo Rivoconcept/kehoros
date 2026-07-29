@@ -1,0 +1,108 @@
+<div class="radio-card">
+
+
+    <div class="card-header">
+
+
+        <div class="actions">
+
+
+            <button
+
+                mat-icon-button
+
+                type="button"
+
+                (click)="duplicateQuestion($event)"
+
+            >
+
+                <mat-icon>
+                    content_copy
+                </mat-icon>
+
+
+            </button>
+
+
+
+
+            <button
+
+                mat-icon-button
+
+                color="warn"
+
+                type="button"
+
+                (click)="deleteQuestion($event)"
+
+            >
+
+                <mat-icon>
+                    delete
+                </mat-icon>
+
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <div class="radio-preview">
+
+
+        @for(option of Question.options; track option.id){
+
+
+            <label>
+
+
+                <input
+
+                    type="radio"
+
+                    disabled
+
+                >
+
+
+                <span>
+
+                    {{ option.label }}
+
+                </span>
+
+
+            </label>
+
+
+        }
+
+
+
+
+        @if(!Question.options.length){
+
+
+            <div class="empty">
+
+                No options
+
+            </div>
+
+
+        }
+
+
+    </div>
+
+
+</div>

@@ -81,7 +81,7 @@ export VAULT_TOKEN="$ROOT_TOKEN"
 vault secrets enable -path=kehoros kv-v2 2>/dev/null || echo "kv already enabled"
 
 ##################################
-# écrire les secrets depuis les fichiers JSON
+# écrire les secrets depuis les Files JSON
 ##################################
 if [ -f /secrets/backend/database.json ]; then
   DB_HOST=$(jq -r '.host' /secrets/backend/database.json)

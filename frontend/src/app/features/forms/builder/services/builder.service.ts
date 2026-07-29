@@ -8,11 +8,14 @@ import { QuestionType } from '../../models/question-type.enum';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class BuilderService {
+
+
+  private readonly STORAGE_KEY = 'kehoros-template';
+
 
 
   private readonly templateSubject =
@@ -34,6 +37,17 @@ export class BuilderService {
 
 
 
+
+  constructor(){
+
+    this.load();
+
+  }
+
+
+
+
+
   get template(): Template | null {
 
     return this.templateSubject.value;
@@ -49,6 +63,7 @@ export class BuilderService {
     return this.template?.questions ?? [];
 
   }
+
 
 
 
@@ -82,7 +97,7 @@ export class BuilderService {
     };
 
 
-    this.templateSubject.next(template);
+    this.save(template);
 
   }
 
@@ -98,6 +113,17 @@ export class BuilderService {
     template.updatedAt = new Date();
 
 
+
+    localStorage.setItem(
+
+      this.STORAGE_KEY,
+
+      JSON.stringify(template)
+
+    );
+
+
+
     this.templateSubject.next({
 
       ...template,
@@ -111,6 +137,49 @@ export class BuilderService {
 
   }
 
+
+
+
+
+
+
+  load():void {
+
+
+    const data =
+      localStorage.getItem(
+        this.STORAGE_KEY
+      );
+
+
+
+    if(!data){
+
+      return;
+
+    }
+
+
+
+    const template:Template =
+      JSON.parse(data);
+
+
+
+    template.createdAt =
+      new Date(template.createdAt);
+
+
+
+    template.updatedAt =
+      new Date(template.updatedAt);
+
+
+
+    this.templateSubject.next(template);
+
+
+  }
 
 
 
@@ -143,14 +212,11 @@ export class BuilderService {
 
 
 
-
   getSelectedQuestion():Question | null {
 
     return this.selectedQuestionSubject.value;
 
   }
-
-
 
 
 
@@ -173,23 +239,33 @@ export class BuilderService {
 
       id:crypto.randomUUID(),
 
+
       templateId:template.id,
 
-      title:'Nouvelle question',
+
+      title:'New Question',
+
 
       description:'',
 
+
       type,
+
 
       required:false,
 
+
       placeholder:'',
+
 
       helpText:'',
 
+
       order:template.questions.length,
 
+
       score:1,
+
 
       options:[]
 
@@ -209,7 +285,6 @@ export class BuilderService {
 
 
   }
-
 
 
 
@@ -239,7 +314,8 @@ export class BuilderService {
 
 
 
-    template.questions[index] = updated;
+    template.questions[index] =
+      updated;
 
 
 
@@ -251,7 +327,6 @@ export class BuilderService {
 
 
   }
-
 
 
 
@@ -283,15 +358,12 @@ export class BuilderService {
 
     const copy:Question = {
 
-
       ...original,
-
 
       id:crypto.randomUUID(),
 
-
       title:
-        original.title + ' (copie)',
+        original.title + ' (copy)',
 
 
       order:
@@ -330,7 +402,6 @@ export class BuilderService {
 
 
 
-
   removeQuestion(id:string):void {
 
 
@@ -349,12 +420,11 @@ export class BuilderService {
 
 
     template.questions.forEach(
-      (q,index)=>{
+      (q: Question, index: number)=>{
 
-        q.order=index;
+        q.order = index;
 
       }
-
     );
 
 
@@ -367,7 +437,6 @@ export class BuilderService {
 
 
   }
-
 
 
 
@@ -407,7 +476,6 @@ export class BuilderService {
         q.order=index;
 
       }
-
     );
 
 

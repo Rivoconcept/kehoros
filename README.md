@@ -32,7 +32,7 @@ make logs           # Voir tous les logs
 make logs-backend   # Logs backend
 make logs-frontend  # Logs frontend
 make down           # Arrêter
-make clean          # Supprimer containers et volumes
+make clean          # Delete containers et volumes
 make build          # Rebuild images
 ```
 

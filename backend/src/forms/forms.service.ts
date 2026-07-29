@@ -10,7 +10,7 @@ export class FormsService {
     private readonly formRepo: Repository<FormTemplate>,
   ) {}
 
-  // Logique : récupérer toutes les propriétés
+  // Logique : récupérer toutes les Properties
   findAll(): Promise<FormTemplate[]> {
     return this.formRepo.find();
   }
@@ -21,7 +21,7 @@ export class FormsService {
     return this.formRepo.findOne({ 
       where: { id }, 
       relations: { 
-        questions: { 
+        Questions: { 
           options: true 
         } 
       } 

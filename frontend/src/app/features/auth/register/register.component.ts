@@ -113,7 +113,7 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  // Validation téléphone
+  // Validation Phone
   onPhoneInput() {
     const digits = this.phoneNumber.replace(/\D/g, '');
     if (this.phoneNumber && digits.length < 6) {
@@ -167,7 +167,7 @@ export class RegisterComponent implements OnInit {
     }
 
     if (this.phoneNumber && this.phoneError) {
-      this.error = 'Numéro de téléphone invalide.';
+      this.error = 'Numéro de Phone invalide.';
       return;
     }
 

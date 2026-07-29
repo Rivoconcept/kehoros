@@ -13,11 +13,13 @@ import { MatButtonModule } from '@angular/material/button';
 
 import { Question } from '../../../../models/question.model';
 
+import { PreviewRendererComponent } from '../../preview-renderer/preview-renderer.component';
+
 
 
 @Component({
 
-  selector: 'app-question-card',
+  selector: 'app-Question-card',
 
   standalone:true,
 
@@ -29,7 +31,9 @@ import { Question } from '../../../../models/question.model';
 
     MatIconModule,
 
-    MatButtonModule
+    MatButtonModule,
+
+    PreviewRendererComponent
 
   ],
 
@@ -44,7 +48,7 @@ export class QuestionCardComponent {
 
 
   @Input()
-  question!: Question;
+  Question!: Question;
 
 
 
@@ -54,7 +58,7 @@ export class QuestionCardComponent {
 
 
   @Output()
-  questionSelected =
+  QuestionSelected =
     new EventEmitter<string>();
 
 
@@ -75,8 +79,8 @@ export class QuestionCardComponent {
 
   select(){
 
-    this.questionSelected.emit(
-      this.question.id
+    this.QuestionSelected.emit(
+      this.Question.id
     );
 
   }
@@ -91,7 +95,7 @@ export class QuestionCardComponent {
 
 
     this.duplicate.emit(
-      this.question.id
+      this.Question.id
     );
 
   }
@@ -107,7 +111,7 @@ export class QuestionCardComponent {
 
 
     this.remove.emit(
-      this.question.id
+      this.Question.id
     );
 
   }

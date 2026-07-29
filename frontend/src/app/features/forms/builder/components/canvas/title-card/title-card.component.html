@@ -1,0 +1,75 @@
+<div 
+    class="title-card"
+    (click)="selectQuestion()"
+>
+
+
+    <div class="card-header">
+
+
+        <h1>
+            {{ Question.title || 'New title' }}
+        </h1>
+
+
+
+        <div class="actions">
+
+
+            <button
+
+                mat-icon-button
+
+                type="button"
+
+                (click)="duplicateQuestion($event)"
+
+            >
+
+                <mat-icon>
+                    content_copy
+                </mat-icon>
+
+            </button>
+
+
+
+
+            <button
+
+                mat-icon-button
+
+                color="warn"
+
+                type="button"
+
+                (click)="deleteQuestion($event)"
+
+            >
+
+                <mat-icon>
+                    delete
+                </mat-icon>
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    @if(Question.description){
+
+        <p>
+            {{ Question.description }}
+        </p>
+
+    }
+
+
+</div>

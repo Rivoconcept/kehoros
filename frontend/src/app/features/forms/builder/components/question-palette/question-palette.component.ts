@@ -5,7 +5,6 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { QuestionType } from '../../../models/question-type.enum';
 
-
 @Component({
   selector: 'app-question-palette',
   standalone: true,
@@ -18,51 +17,41 @@ import { QuestionType } from '../../../models/question-type.enum';
 })
 export class QuestionPaletteComponent {
 
-
   @Output()
   questionAdded = new EventEmitter<QuestionType>();
-
 
   questionTypes = [
 
     {
       type: QuestionType.TEXT,
-      label: 'Texte court',
-      icon: 'short_text'
+      label: 'Question',
+      icon: 'quiz'
     },
 
     {
-      type: QuestionType.TEXTAREA,
-      label: 'Texte long',
-      icon: 'notes'
+      type: QuestionType.SECTION,
+      label: 'Section',
+      icon: 'view_agenda'
     },
 
     {
-      type: QuestionType.RADIO,
-      label: 'Choix unique',
-      icon: 'radio_button_checked'
+      type: QuestionType.TITLE,
+      label: 'Title',
+      icon: 'title'
     },
 
     {
-      type: QuestionType.CHECKBOX,
-      label: 'Choix multiple',
-      icon: 'check_box'
-    },
-
-    {
-      type: QuestionType.SELECT,
-      label: 'Liste déroulante',
-      icon: 'arrow_drop_down_circle'
+      type: QuestionType.PARAGRAPH,
+      label: 'Paragraph',
+      icon: 'article'
     }
 
   ];
-
 
   addQuestion(type: QuestionType): void {
 
     this.questionAdded.emit(type);
 
   }
-
 
 }

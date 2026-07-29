@@ -1,0 +1,107 @@
+<div class="builder-page">
+
+
+    <app-toolbar></app-toolbar>
+
+
+
+    <div class="question-toolbar">
+
+        <app-question-palette
+            (questionAdded)="addQuestion($event)">
+        </app-question-palette>
+
+    </div>
+
+
+
+
+
+    <div class="builder-body">
+
+
+
+        <aside class="preview-panel">
+
+
+            <h3 class="panel-title">
+                Preview
+            </h3>
+
+
+            <app-question-preview>
+            </app-question-preview>
+
+
+        </aside>
+
+
+
+
+
+
+        <section class="center-panel">
+
+
+            <h3 class="panel-title">
+                Formulaire
+            </h3>
+
+
+            <app-canvas>
+            </app-canvas>
+
+
+        </section>
+
+
+
+
+
+
+        <aside class="property-panel">
+
+
+            <h3 class="panel-title">
+                Properties
+            </h3>
+
+
+
+            @if(builder.getSelectedQuestion()) {
+
+
+                <app-property-editor
+
+                    [Question]="builder.getSelectedQuestion()!"
+
+                    (QuestionChange)="builder.updateQuestion($event)"
+
+                >
+                </app-property-editor>
+
+
+            }
+
+            @else {
+
+
+                <div class="empty-property">
+
+                    Select a Question
+
+                </div>
+
+
+            }
+
+
+        </aside>
+
+
+
+    </div>
+
+
+
+</div>

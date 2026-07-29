@@ -10,15 +10,15 @@ Le service couvre :
 - modification de la configuration de base
 - publication
 - archivage
-- duplication avec copie des questions et options
+- duplication avec copie des Questions et options
 - suppression
 
 ## Architecture cible
 
 Le service s’appuie sur :
 - FormTemplate : modèle principal du formulaire
-- FormQuestion : questions associées au template
-- FormOption : options des questions de type choix
+- FormQuestion : Questions associées au template
+- FormOption : options des Questions de type choix
 - FormStatus : état du formulaire (draft, published, archived)
 
 ## Méthodes disponibles
@@ -27,17 +27,17 @@ Le service s’appuie sur :
 Crée un nouveau template en mode brouillon.
 
 Règles métier :
-- le titre est obligatoire
-- le titre doit contenir au moins 3 caractères
+- le Title est obligatoire
+- le Title doit contenir au moins 3 caractères
 - la catégorie est obligatoire
 - la catégorie doit contenir au moins 2 caractères
 - la durée et le score de passage doivent être valides si fournis
 
 ### findAll()
-Retourne tous les templates avec leurs questions et options, triés par date de création décroissante.
+Retourne tous les templates avec leurs Questions et options, triés par date de création décroissante.
 
 ### findOne(id)
-Retourne un template avec ses questions, options et affectations.
+Retourne un template avec ses Questions, options et affectations.
 
 ### update(id, input)
 Met à jour les informations de base du template.
@@ -47,7 +47,7 @@ Passe un template en statut published.
 
 Règles métier :
 - un template archivé ne peut pas être publié
-- le titre et la catégorie doivent être renseignés
+- le Title et la catégorie doivent être renseignés
 
 ### archive(id)
 Passe un template en statut archived.
@@ -57,7 +57,7 @@ Crée une copie complète du template dans un nouveau brouillon.
 
 Cette opération utilise une transaction TypeORM pour garantir :
 - la création du nouveau template
-- la copie de chaque question
+- la copie de chaque Question
 - la copie de chaque option associée
 
 ### remove(id)

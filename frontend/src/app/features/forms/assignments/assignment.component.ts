@@ -21,7 +21,7 @@ Attribution des formulaires
 </h1>
 
 <p>
-Affecter un questionnaire aux collaborateurs
+Affecter un Questionnaire aux collaborateurs
 </p>
 
 </div>

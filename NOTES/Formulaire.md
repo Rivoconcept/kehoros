@@ -4,7 +4,7 @@ Je développerais le moteur progressivement, en plusieurs étapes :
 
 Version 1 (MVP)
     Création de formulaires.
-    Questions texte, nombre, QCM, cases à cocher.
+    Questions texte, Number, QCM, cases à cocher.
     Attribution à un utilisateur.
     Réponse au formulaire.
     Consultation des résultats.
@@ -13,9 +13,9 @@ Version 2
     Duplication de formulaires.
     Brouillons.
     Publication.
-    Barème et notation automatique.
+    Barème et Rating automatique.
 Version 3
-    Logique conditionnelle ("si Oui, afficher la question suivante").
+    Logique conditionnelle ("si Oui, afficher la Question suivante").
     Import/export.
     Pièces jointes.
     Signature électronique.
@@ -40,10 +40,10 @@ Version 4
 BuilderService
 
     ├── créer un template
-    ├── gérer la liste des questions
-    ├── ajouter une question
-    ├── supprimer une question
-    ├── sélectionner une question
-    ├── réordonner les questions
+    ├── gérer la liste des Questions
+    ├── Add une Question
+    ├── Delete une Question
+    ├── sélectionner une Question
+    ├── réordonner les Questions
     ├── préparer la sauvegarde backend
     └── notifier les composants Angular

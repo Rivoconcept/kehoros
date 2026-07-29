@@ -1,63 +1,106 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
-
+import {
+  CdkDrag,
+  CdkDropList,
+  CdkDragDrop
+} from '@angular/cdk/drag-drop';
 
 import { BuilderService } from '../../services/builder.service';
 
+import { QuestionType } from '../../../models/question-type.enum';
 
-import { QuestionCardComponent } from './question-card/question-card.component';
+import { QuestionCardComponent } from '../canvas/question-card/question-card.component';
+import { TitleCardComponent } from '../canvas/title-card/title-card.component';
+import { SectionCardComponent } from '../canvas/section-card/section-card.component';
+import { ParagraphCardComponent } from '../canvas/paragraph-card/paragraph-card.component';
 
 
 
 @Component({
 
-    selector: 'app-canvas',
+  selector:'app-canvas',
 
-    standalone: true,
+  standalone:true,
 
-    imports: [
+  imports:[
 
-        CommonModule,
+    CommonModule,
 
-        DragDropModule,
+    CdkDropList,
 
-        QuestionCardComponent
+    CdkDrag,
 
-    ],
+    QuestionCardComponent,
 
-    templateUrl: './canvas.component.html',
+    TitleCardComponent,
 
-    styleUrl: './canvas.component.scss'
+    SectionCardComponent,
+
+    ParagraphCardComponent
+
+  ],
+
+  templateUrl:'./canvas.component.html',
+
+  styleUrl:'./canvas.component.scss'
 
 })
-
-
 export class CanvasComponent {
 
 
-    constructor(
-
-        public builder: BuilderService
-
-    ){}
+  QuestionType = QuestionType;
 
 
 
-    drop(event: CdkDragDrop<any[]>) {
+  constructor(
+    public builder:BuilderService
+  ){}
 
 
-        this.builder.reorderQuestions(
-
-            event.previousIndex,
-
-            event.currentIndex
-
-        );
 
 
-    }
+
+  drop(event:CdkDragDrop<any>):void {
+
+
+    this.builder.reorderQuestions(
+
+      event.previousIndex,
+
+      event.currentIndex
+
+    );
+
+
+  }
+
+
+
+
+
+
+  duplicateQuestion(id:string):void {
+
+
+    this.builder.duplicateQuestion(id);
+
+
+  }
+
+
+
+
+
+
+  deleteQuestion(id:string):void {
+
+
+    this.builder.removeQuestion(id);
+
+
+  }
 
 
 }

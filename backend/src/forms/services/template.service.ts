@@ -19,7 +19,7 @@ export class TemplateService {
     @InjectRepository(FormTemplate)
     private readonly templateRepo: Repository<FormTemplate>,
     @InjectRepository(FormQuestion)
-    private readonly questionRepo: Repository<FormQuestion>,
+    private readonly QuestionRepo: Repository<FormQuestion>,
     @InjectRepository(FormOption)
     private readonly optionRepo: Repository<FormOption>,
     private readonly dataSource: DataSource,
@@ -48,7 +48,7 @@ export class TemplateService {
     return this.templateRepo.find({
       order: { created_at: 'DESC' },
       relations: {
-        questions: {
+        Questions: {
           options: true,
         },
       },
@@ -59,7 +59,7 @@ export class TemplateService {
     const template = await this.templateRepo.findOne({
       where: { id },
       relations: {
-        questions: {
+        Questions: {
           options: true,
         },
         assignments: true,
@@ -140,7 +140,7 @@ export class TemplateService {
       const source = await manager.findOne(FormTemplate, {
         where: { id },
         relations: {
-          questions: {
+          Questions: {
             options: true,
           },
         },
@@ -153,8 +153,8 @@ export class TemplateService {
       const safeTitle = overrides?.title?.trim() || `${source.title} (copy)`;
       const safeCategory = overrides?.category?.trim() || source.category;
 
-      const { questions, assignments, ...templateData } = source as FormTemplate & {
-        questions?: FormQuestion[];
+      const { Questions, assignments, ...templateData } = source as FormTemplate & {
+        Questions?: FormQuestion[];
         assignments?: unknown[];
       };
 
@@ -169,28 +169,28 @@ export class TemplateService {
 
       const savedTemplate = await manager.save(FormTemplate, duplicatedTemplate);
 
-      for (const question of source.questions ?? []) {
-        const { id: _questionId, template, options, ...questionData } = question as FormQuestion & {
+      for (const Question of source.Questions ?? []) {
+        const { id: _QuestionId, template, options, ...QuestionData } = Question as FormQuestion & {
           template?: FormTemplate;
           options?: FormOption[];
         };
 
         const savedQuestion = await manager.save(FormQuestion, manager.create(FormQuestion, {
-          ...questionData,
+          ...QuestionData,
           template: savedTemplate,
           template_id: savedTemplate.id,
         }));
 
-        if (question.options?.length) {
-          const duplicatedOptions = question.options.map((option) => {
-            const { id: _optionId, question: _optionQuestion, ...optionData } = option as FormOption & {
-              question?: FormQuestion;
+        if (Question.options?.length) {
+          const duplicatedOptions = Question.options.map((option) => {
+            const { id: _optionId, Question: _optionQuestion, ...optionData } = option as FormOption & {
+              Question?: FormQuestion;
             };
 
             return manager.create(FormOption, {
               ...optionData,
-              question: savedQuestion,
-              question_id: savedQuestion.id,
+              Question: savedQuestion,
+              Question_id: savedQuestion.id,
             });
           });
 
@@ -201,7 +201,7 @@ export class TemplateService {
       const duplicated = await manager.findOne(FormTemplate, {
         where: { id: savedTemplate.id },
         relations: {
-          questions: {
+          Questions: {
             options: true,
           },
         },

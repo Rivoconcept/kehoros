@@ -1,0 +1,87 @@
+.text-card {
+
+    position:relative;
+
+    padding:16px;
+
+    margin-bottom:16px;
+
+    background:white;
+
+    border-radius:12px;
+
+    border:1px solid #ddd;
+
+    transition:.25s;
+
+
+
+    &:hover {
+
+        box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+    }
+
+
+
+
+    .card-header {
+
+        display:flex;
+
+        justify-content:flex-end;
+
+        margin-bottom:10px;
+
+    }
+
+
+
+
+    .actions {
+
+        display:flex;
+
+        gap:4px;
+
+
+
+        button {
+
+            width:36px;
+
+            height:36px;
+
+        }
+
+    }
+
+
+
+}
+
+
+
+.text-preview {
+
+    width:100%;
+
+}
+
+
+
+.text-preview input {
+
+    width:100%;
+
+    padding:10px;
+
+    border:1px solid #cccccc;
+
+    border-radius:6px;
+
+    background:#fafafa;
+
+    box-sizing:border-box;
+
+}

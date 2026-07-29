@@ -1,145 +1,132 @@
-<mat-card
-
+<div
     class="question-card"
-
     [class.selected]="selected"
-
     (click)="select()"
-
 >
 
 
-
-<div class="header">
-
-
-    <div class="info">
+    <div class="card-header">
 
 
-        <h3>
-
-            {{ question.title || 'Nouvelle question' }}
-
-        </h3>
+        <div class="info">
 
 
-        <span class="type">
-
-            {{ question.type }}
-
-        </span>
+            <h3>
+                {{ Question.title || 'New Question' }}
+            </h3>
 
 
-    </div>
+            <span class="type">
+
+                {{ Question.type }}
+
+            </span>
+
+
+        </div>
 
 
 
 
-    <div class="actions">
+        <div class="actions">
 
 
-        <button
+            <button
 
-            mat-icon-button
+                mat-icon-button
 
-            type="button"
+                type="button"
 
-            (click)="duplicateQuestion($event)"
+                (click)="duplicateQuestion($event)"
 
-        >
+            >
 
-            <mat-icon>
-                content_copy
-            </mat-icon>
+                <mat-icon>
+                    content_copy
+                </mat-icon>
 
-
-        </button>
-
+            </button>
 
 
 
 
-        <button
+            <button
 
-            mat-icon-button
+                mat-icon-button
 
-            color="warn"
+                color="warn"
 
-            type="button"
+                type="button"
 
-            (click)="deleteQuestion($event)"
+                (click)="deleteQuestion($event)"
 
-        >
+            >
 
-            <mat-icon>
-                delete
-            </mat-icon>
+                <mat-icon>
+                    delete
+                </mat-icon>
+
+            </button>
 
 
-        </button>
-
+        </div>
 
 
     </div>
 
 
 
+
+
+    @if(Question.description){
+
+        <p class="description">
+
+            {{ Question.description }}
+
+        </p>
+
+    }
+
+
+
+
+
+    <app-preview-renderer
+
+        [Question]="Question">
+
+    </app-preview-renderer>
+
+
+
+
+
+    <div class="status">
+
+
+        @if(Question.required){
+
+            <span class="required">
+
+                Required
+
+            </span>
+
+        }
+
+        @else{
+
+            <span>
+
+                Optional
+
+            </span>
+
+        }
+
+
+    </div>
+
+
 </div>
-
-
-
-
-
-<div class="body">
-
-
-@if(question.description){
-
-
-<p>
-
-{{question.description}}
-
-</p>
-
-
-}
-
-
-
-<div class="status">
-
-
-@if(question.required){
-
-
-<span class="required">
-
-Obligatoire
-
-</span>
-
-
-}
-
-@else {
-
-
-<span>
-
-Optionnelle
-
-</span>
-
-
-}
-
-
-</div>
-
-
-</div>
-
-
-
-</mat-card>

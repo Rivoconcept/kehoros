@@ -128,29 +128,29 @@ export class FormsController {
     return this.formsService.findResultsByResponse(responseId);
   }
 
-  @Post('questions')
+  @Post('Questions')
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
   createQuestion(@Body() dto: CreateQuestionInput) {
     return this.formsService.createQuestion(dto);
   }
 
-  @Get('templates/:templateId/questions')
+  @Get('templates/:templateId/Questions')
   findQuestionsByTemplate(@Param('templateId') templateId: string) {
     return this.formsService.findQuestionsByTemplate(templateId);
   }
 
-  @Get('questions/:id')
+  @Get('Questions/:id')
   findQuestionById(@Param('id') id: string) {
     return this.formsService.findQuestionById(id);
   }
 
-  @Patch('questions/:id')
+  @Patch('Questions/:id')
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
   updateQuestion(@Param('id') id: string, @Body() dto: UpdateQuestionInput) {
     return this.formsService.updateQuestion(id, dto);
   }
 
-  @Delete('questions/:id')
+  @Delete('Questions/:id')
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
   removeQuestion(@Param('id') id: string) {
     return this.formsService.removeQuestion(id);

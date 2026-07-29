@@ -1,114 +1,142 @@
-@if(builder.getSelectedQuestion(); as question){
-
 <div class="preview">
+
+
+@if(builder.template; as template){
 
 
     <div class="preview-header">
 
-        <h3>
-            Aperçu
-        </h3>
-
-    </div>
+        <h2>
+            {{template.title}}
+        </h2>
 
 
+        @if(template.description){
 
-    <div class="question-preview">
-
-
-        <h4>
-            {{ question.title }}
-
-            @if(question.required){
-
-                <span class="required">
-                    *
-                </span>
-
-            }
-
-        </h4>
-
-
-
-        @if(question.description){
-
-            <p class="description">
-
-                {{ question.description }}
-
+            <p>
+                {{template.description}}
             </p>
 
         }
 
 
-
-
-        @switch(question.type){
-
-
-            @case(QuestionType.TEXT){
-
-                <mat-form-field appearance="outline">
-
-                    <mat-label>
-                        {{question.title}}
-                    </mat-label>
-
-                    <input
-                        matInput
-                        [placeholder]="question.placeholder || ''"
-                    >
-
-                </mat-form-field>
-
-            }
+    </div>
 
 
 
-            @case(QuestionType.TEXTAREA){
 
 
-                <mat-form-field appearance="outline">
-
-                    <mat-label>
-                        {{question.title}}
-                    </mat-label>
+    <div class="form-preview">
 
 
-                    <textarea
-
-                        matInput
-
-                        rows="4"
-
-                        [placeholder]="question.placeholder || ''">
-
-                    </textarea>
+    @for(Question of template.questions; track Question.id){
 
 
-                </mat-form-field>
 
+        <div class="question-preview">
+
+
+
+            <h4>
+
+                {{Question.title}}
+
+                @if(Question.required){
+
+                    <span class="required">
+                        *
+                    </span>
+
+                }
+
+            </h4>
+
+
+
+
+
+            @if(Question.description){
+
+                <p class="description">
+
+                    {{Question.description}}
+
+                </p>
 
             }
 
 
 
-            @case(QuestionType.RADIO){
 
 
-                <mat-radio-group>
+            @switch(Question.type){
 
 
-                    @for(option of question.options; track option.id){
+
+                @case(QuestionType.TEXT){
+
+                    <mat-form-field appearance="outline">
+
+                        <mat-label>
+                            {{Question.title}}
+                        </mat-label>
+
+
+                        <input
+                            matInput
+                            [placeholder]="Question.placeholder || ''"
+                        >
+
+                    </mat-form-field>
+
+                }
+
+
+
+
+                @case(QuestionType.TEXTAREA){
+
+
+                    <mat-form-field appearance="outline">
+
+
+                        <mat-label>
+                            {{Question.title}}
+                        </mat-label>
+
+
+                        <textarea
+
+                            matInput
+
+                            rows="4"
+
+                            [placeholder]="Question.placeholder || ''">
+
+                        </textarea>
+
+
+                    </mat-form-field>
+
+
+                }
+
+
+
+
+                @case(QuestionType.RADIO){
+
+
+                    <mat-radio-group>
+
+
+                    @for(option of Question.options; track option.id){
 
 
                         <mat-radio-button
                             [value]="option.value">
 
-
                             {{option.label}}
-
 
                         </mat-radio-button>
 
@@ -116,52 +144,50 @@
                     }
 
 
-                </mat-radio-group>
-
-
-            }
-
-
-
-
-            @case(QuestionType.CHECKBOX){
-
-
-                @for(option of question.options; track option.id){
-
-
-                    <mat-checkbox>
-
-
-                        {{option.label}}
-
-
-                    </mat-checkbox>
+                    </mat-radio-group>
 
 
                 }
 
 
-            }
+
+
+                @case(QuestionType.CHECKBOX){
+
+
+                    @for(option of Question.options; track option.id){
+
+
+                        <mat-checkbox>
+
+                            {{option.label}}
+
+                        </mat-checkbox>
+
+
+                    }
+
+
+                }
 
 
 
 
-            @case(QuestionType.SELECT){
+                @case(QuestionType.SELECT){
 
 
-                <mat-form-field appearance="outline">
+                    <mat-form-field appearance="outline">
 
 
-                    <mat-label>
-                        Sélection
-                    </mat-label>
+                        <mat-label>
+                            Sélection
+                        </mat-label>
 
 
-                    <mat-select>
+                        <mat-select>
 
 
-                        @for(option of question.options; track option.id){
+                        @for(option of Question.options; track option.id){
 
 
                             <mat-option
@@ -175,39 +201,141 @@
                         }
 
 
-                    </mat-select>
+                        </mat-select>
 
 
-                </mat-form-field>
+                    </mat-form-field>
+
+
+                }
+
+
+
+
+                @case(QuestionType.NUMBER){
+
+
+                    <mat-form-field appearance="outline">
+
+                        <mat-label>
+                            Number
+                        </mat-label>
+
+
+                        <input
+                            matInput
+                            type="number"
+                        >
+
+                    </mat-form-field>
+
+
+                }
+
+
+
+
+                @case(QuestionType.EMAIL){
+
+
+                    <mat-form-field appearance="outline">
+
+                        <mat-label>
+                            Email
+                        </mat-label>
+
+
+                        <input
+                            matInput
+                            type="email"
+                        >
+
+                    </mat-form-field>
+
+
+                }
+
+
+
+
+                @case(QuestionType.DATE){
+
+
+                    <mat-form-field appearance="outline">
+
+                        <mat-label>
+                            Date
+                        </mat-label>
+
+
+                        <input
+                            matInput
+                            type="date"
+                        >
+
+                    </mat-form-field>
+
+
+                }
+
+
+
+
+                @case(QuestionType.RATING){
+
+                    <div class="rating">
+
+                        ⭐⭐⭐⭐⭐
+
+                    </div>
+
+                }
+
+
+
+
+                @default{
+
+
+                    <div class="placeholder">
+
+                        Preview indisponible
+
+                    </div>
+
+
+                }
 
 
             }
 
 
-        }
+        </div>
+
+
+
+    }
+
 
 
     </div>
 
 
-</div>
-
-
 }
 
-@else {
+@else{
 
 
 <div class="empty">
 
 
     <mat-icon>
-        touch_app
+        description
     </mat-icon>
 
 
     <p>
-        Sélectionnez une question pour voir l'aperçu.
+        Aucun formulaire chargé.
     </p>
 
 
@@ -215,3 +343,6 @@
 
 
 }
+
+
+</div>

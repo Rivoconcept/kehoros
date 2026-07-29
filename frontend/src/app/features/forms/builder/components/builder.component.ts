@@ -4,21 +4,22 @@ import { CommonModule } from '@angular/common';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 
 
-import { BuilderService } from './services/builder.service';
+import { BuilderService } from '../services/builder.service';
 
-import { Template } from '../models/template.model';
-import { QuestionType } from '../models/question-type.enum';
-import { Question } from '../models/question.model';
+import { Template } from '../../models/template.model';
+import { QuestionType } from '../../models/question-type.enum';
+import { Question } from '../../models/question.model';
 
 
-import { ToolbarComponent } from './components/toolbar/toolbar.component';
-import { QuestionPaletteComponent } from './components/question-palette/question-palette.component';
+import { ToolbarComponent } from './toolbar/toolbar.component';
+import { QuestionPaletteComponent } from './question-palette/question-palette.component';
 
-import { CanvasComponent } from './components/canvas/canvas.component';
+import { CanvasComponent } from './canvas/canvas.component';
 
-import { PropertyEditorComponent } from './components/property-panel/property-editor/property-editor.component';
+import { PropertyEditorComponent } from './property-panel/property-editor/property-editor.component';
 
-import { QuestionPreviewComponent } from './components/preview/question-preview.component';
+import { QuestionPreviewComponent } from './preview/question-preview.component';
+import { A11yModule } from "@angular/cdk/a11y";
 
 
 
@@ -27,22 +28,15 @@ import { QuestionPreviewComponent } from './components/preview/question-preview.
     standalone: true,
 
     imports: [
-
-        CommonModule,
-
-        DragDropModule,
-
-        ToolbarComponent,
-
-        QuestionPaletteComponent,
-
-        CanvasComponent,
-
-        PropertyEditorComponent,
-
-        QuestionPreviewComponent
-
-    ],
+    CommonModule,
+    DragDropModule,
+    ToolbarComponent,
+    QuestionPaletteComponent,
+    CanvasComponent,
+    PropertyEditorComponent,
+    QuestionPreviewComponent,
+    A11yModule
+],
 
     templateUrl: './builder.component.html',
     styleUrl: './builder.component.scss'
@@ -79,7 +73,7 @@ export class BuilderComponent implements OnInit {
         if(!this.builder.template){
 
             this.builder.createTemplate(
-                'Nouveau questionnaire'
+                'New Questionnaire'
             );
 
         }

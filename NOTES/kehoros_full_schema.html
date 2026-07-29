@@ -131,13 +131,13 @@ const { svg } = await mermaid.render('erd-svg', `erDiagram
     boolean is_published
     boolean is_exam
     int time_limit_minutes
-    boolean shuffle_questions
+    boolean shuffle_Questions
     boolean show_results
     timestamp starts_at
     timestamp ends_at
     timestamp created_at
   }
-  form_questions {
+  form_Questions {
     uuid id PK
     uuid form_id FK
     string label
@@ -146,9 +146,9 @@ const { svg } = await mermaid.render('erd-svg', `erDiagram
     int order_index
     jsonb settings
   }
-  form_question_options {
+  form_Question_options {
     uuid id PK
-    uuid question_id FK
+    uuid Question_id FK
     string label
     string value
     boolean is_correct
@@ -166,7 +166,7 @@ const { svg } = await mermaid.render('erd-svg', `erDiagram
   form_answers {
     uuid id PK
     uuid session_id FK
-    uuid question_id FK
+    uuid Question_id FK
     string answer_text
     jsonb answer_json
     boolean is_correct
@@ -184,12 +184,12 @@ const { svg } = await mermaid.render('erd-svg', `erDiagram
   users ||--o{ license_assignments : "holds"
   users ||--o{ audit_logs : "triggers"
   users ||--o{ form_templates : "creates"
-  form_templates ||--o{ form_questions : "has"
-  form_questions ||--o{ form_question_options : "has options"
+  form_templates ||--o{ form_Questions : "has"
+  form_Questions ||--o{ form_Question_options : "has options"
   form_templates ||--o{ form_sessions : "instance of"
   users ||--o{ form_sessions : "fills"
   form_sessions ||--o{ form_answers : "contains"
-  form_questions ||--o{ form_answers : "answered by"
+  form_Questions ||--o{ form_answers : "answered by"
 `);
 document.getElementById('erd').innerHTML = svg;
 setTimeout(() => {

@@ -18,7 +18,7 @@ interface TemplateCard {
   description: string;
   category: string;
   published: boolean;
-  questions: number;
+  Questions: number;
   responses: number;
   createdBy: {
     id: string;
@@ -62,7 +62,7 @@ export class TemplateListComponent {
 
         published: true,
 
-        questions: 24,
+        Questions: 24,
 
         responses: 17,
 
@@ -79,7 +79,7 @@ export class TemplateListComponent {
         description: 'Collecte d’informations RH',
         category: 'RH',
         published: false,
-        questions: 15,
+        Questions: 15,
         responses: 0,
         createdBy: {
             id: '2',

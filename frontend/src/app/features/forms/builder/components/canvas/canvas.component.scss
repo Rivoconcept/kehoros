@@ -1,21 +1,32 @@
 .canvas {
-  width: 100%;
-  min-height: 500px;
-  padding: 20px;
+
+    width:100%;
+
+    min-height:500px;
+
+    padding:20px;
+
 }
+
 
 
 .drop-zone {
 
-  min-height: 300px;
 
-  padding: 20px;
+    min-height:300px;
 
-  border: 2px dashed #ccc;
 
-  border-radius: 8px;
+    padding:20px;
 
-  background: #fafafa;
+
+    border:2px dashed #ccc;
+
+
+    border-radius:12px;
+
+
+    background:#fafafa;
+
 
 }
 
@@ -23,22 +34,33 @@
 
 .empty {
 
-  text-align: center;
 
-  color: #777;
+    text-align:center;
 
-  padding: 50px;
 
-  font-style: italic;
+    color:#777;
+
+
+    padding:50px;
+
+
+    font-style:italic;
+
 
 }
 
 
 
-app-question-card {
+app-Question-card,
+app-title-card,
+app-section-card,
+app-paragraph-card {
 
-  display: block;
 
-  margin-bottom: 15px;
+    display:block;
+
+
+    margin-bottom:15px;
+
 
 }

@@ -1,0 +1,94 @@
+.paragraph-card {
+
+    position:relative;
+
+    padding:20px;
+
+    margin-bottom:16px;
+
+    border-radius:12px;
+
+    background:white;
+
+    border-left:5px solid #9c27b0;
+
+    transition:.25s;
+
+    cursor:pointer;
+
+
+
+    &:hover {
+
+        box-shadow:0 4px 14px rgba(0,0,0,.10);
+
+        transform:translateY(-2px);
+
+    }
+
+
+
+
+    .card-header {
+
+        display:flex;
+
+        align-items:center;
+
+        justify-content:space-between;
+
+        gap:12px;
+
+    }
+
+
+
+
+    p {
+
+        flex:1;
+
+        margin:0;
+
+        color:#555;
+
+        font-size:16px;
+
+        line-height:1.6;
+
+    }
+
+
+
+
+    .actions {
+
+        display:flex;
+
+        gap:4px;
+
+        flex-shrink:0;
+
+
+
+        button {
+
+            width:36px;
+
+            height:36px;
+
+            opacity:.75;
+
+
+
+            &:hover {
+
+                opacity:1;
+
+            }
+
+        }
+
+    }
+
+}

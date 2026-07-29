@@ -33,7 +33,7 @@ export interface UpdateQuestionInput {
 }
 
 export interface CreateOptionInput {
-  question_id: string;
+  Question_id: string;
   label: string;
   value: string;
   is_correct?: boolean;
@@ -44,7 +44,7 @@ export interface CreateOptionInput {
 export class QuestionService {
   constructor(
     @InjectRepository(FormQuestion)
-    private readonly questionRepo: Repository<FormQuestion>,
+    private readonly QuestionRepo: Repository<FormQuestion>,
     @InjectRepository(FormOption)
     private readonly optionRepo: Repository<FormOption>,
     @InjectRepository(FormTemplate)
@@ -59,7 +59,7 @@ export class QuestionService {
       throw new NotFoundException(`Template with id ${input.template_id} not found`);
     }
 
-    const question = this.questionRepo.create({
+    const Question = this.QuestionRepo.create({
       template_id: input.template_id,
       title: input.title.trim(),
       description: input.description?.trim() ?? undefined,
@@ -70,11 +70,11 @@ export class QuestionService {
       settings: input.settings ?? {},
     });
 
-    return this.questionRepo.save(question);
+    return this.QuestionRepo.save(Question);
   }
 
   async findByTemplate(templateId: string): Promise<FormQuestion[]> {
-    return this.questionRepo.find({
+    return this.QuestionRepo.find({
       where: { template_id: templateId },
       relations: { options: true },
       order: { position: 'ASC' },
@@ -82,16 +82,16 @@ export class QuestionService {
   }
 
   async findOne(id: string): Promise<FormQuestion> {
-    const question = await this.questionRepo.findOne({
+    const Question = await this.QuestionRepo.findOne({
       where: { id },
       relations: { options: true },
     });
 
-    if (!question) {
+    if (!Question) {
       throw new NotFoundException(`Question with id ${id} not found`);
     }
 
-    return question;
+    return Question;
   }
 
   async updateQuestion(id: string, input: UpdateQuestionInput): Promise<FormQuestion> {
@@ -116,25 +116,25 @@ export class QuestionService {
       ...payload,
     });
 
-    await this.questionRepo.update(id, payload);
+    await this.QuestionRepo.update(id, payload);
 
     return this.findOne(id);
   }
 
   async removeQuestion(id: string): Promise<void> {
-    const question = await this.findOne(id);
-    await this.questionRepo.remove(question);
+    const Question = await this.findOne(id);
+    await this.QuestionRepo.remove(Question);
   }
 
   async createOption(input: CreateOptionInput): Promise<FormOption> {
-    const question = await this.findOne(input.question_id);
+    const Question = await this.findOne(input.Question_id);
 
-    if (!['radio', 'checkbox', 'select'].includes(question.type)) {
-      throw new BadRequestException(`Question type ${question.type} does not support options`);
+    if (!['radio', 'checkbox', 'select'].includes(Question.type)) {
+      throw new BadRequestException(`Question type ${Question.type} does not support options`);
     }
 
     const option = this.optionRepo.create({
-      question_id: input.question_id,
+      Question_id: input.Question_id,
       label: input.label.trim(),
       value: input.value.trim(),
       is_correct: input.is_correct ?? false,
@@ -182,7 +182,7 @@ export class QuestionService {
     }
 
     if (!input.type || !Object.values(QuestionType).includes(input.type)) {
-      throw new BadRequestException('Invalid question type');
+      throw new BadRequestException('Invalid Question type');
     }
 
     if (input.points !== undefined && (input.points < 0 || !Number.isInteger(input.points))) {
@@ -201,7 +201,7 @@ export class QuestionService {
 
     if (hadOptions && !hasOptions) {
       throw new BadRequestException(
-        `Cannot change question type from ${oldType} to ${newType} while options exist`,
+        `Cannot change Question type from ${oldType} to ${newType} while options exist`,
       );
     }
   }

@@ -12,47 +12,113 @@
     >
 
 
-        @if(builder.template?.questions?.length){
+        @if(builder.questions.length){
 
 
-            @for(
-                question of builder.template?.questions;
-                track question.id
-            ){
+
+            @for(question of builder.questions; track question.id){
 
 
-            <app-question-card
 
-                cdkDrag
+                @if(question.type === QuestionType.TITLE){
 
-                [question]="question"
 
-                (questionSelected)="builder.selectQuestion($event)"
+                    <app-title-card
 
-                (duplicate)="builder.duplicateQuestion($event)"
+                        [Question]="question"
 
-                (remove)="builder.removeQuestion($event)"
+                        (click)="builder.selectQuestion(question.id)"
 
-            >
-            </app-question-card>
+                        (duplicate)="duplicateQuestion($event)"
+
+                        (remove)="deleteQuestion($event)"
+
+                    />
+
+                }
+
+
+
+              @else if(question.type === QuestionType.SECTION){
+
+
+                <app-section-card
+
+                    [Question]="question"
+
+                    (selected)="builder.selectQuestion($event)"
+
+                    (duplicate)="duplicateQuestion($event)"
+
+                    (remove)="deleteQuestion($event)"
+
+                >
+                </app-section-card>
+
+
+              }
+
+
+
+                @else if(question.type === QuestionType.PARAGRAPH){
+
+
+                    <app-paragraph-card
+
+                        [Question]="question"
+
+                        (click)="builder.selectQuestion(question.id)"
+
+                        (duplicate)="duplicateQuestion($event)"
+
+                        (remove)="deleteQuestion($event)"
+
+                    />
+
+                }
+
+
+
+                @else {
+
+
+                    <app-Question-card
+
+                        cdkDrag
+
+                        [Question]="question"
+
+                        (QuestionSelected)="builder.selectQuestion($event)"
+
+                        (duplicate)="duplicateQuestion($event)"
+
+                        (remove)="deleteQuestion($event)"
+
+                    />
+
+
+                }
 
 
             }
 
 
+
         }
+
 
         @else {
 
 
             <div class="empty">
 
-                Glissez une question ici
+                Drag a Question here
 
             </div>
 
 
         }
+
 
 
     </div>
