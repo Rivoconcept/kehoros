@@ -18,8 +18,8 @@ import { CanvasComponent } from './canvas/canvas.component';
 
 import { PropertyEditorComponent } from './property-panel/property-editor/property-editor.component';
 
-import { QuestionPreviewComponent } from './preview/question-preview.component';
 import { A11yModule } from "@angular/cdk/a11y";
+import { QuestionPreviewComponent } from './preview/question-preview/question-preview.component';
 
 
 

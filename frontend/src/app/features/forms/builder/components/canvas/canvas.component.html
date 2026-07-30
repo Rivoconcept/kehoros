@@ -15,86 +15,107 @@
         @if(builder.questions.length){
 
 
-
-            @for(question of builder.questions; track question.id){
-
-
-
-                @if(question.type === QuestionType.TITLE){
-
-
-                    <app-title-card
-
-                        [Question]="question"
-
-                        (click)="builder.selectQuestion(question.id)"
-
-                        (duplicate)="duplicateQuestion($event)"
-
-                        (remove)="deleteQuestion($event)"
-
-                    />
-
-                }
+            @for(
+                question of builder.questions;
+                track question.id
+            ){
 
 
 
-              @else if(question.type === QuestionType.SECTION){
-
-
-                <app-section-card
-
-                    [Question]="question"
-
-                    (selected)="builder.selectQuestion($event)"
-
-                    (duplicate)="duplicateQuestion($event)"
-
-                    (remove)="deleteQuestion($event)"
-
-                >
-                </app-section-card>
-
-
-              }
+                @switch(question.type){
 
 
 
-                @else if(question.type === QuestionType.PARAGRAPH){
+                    @case(QuestionType.TITLE){
 
 
-                    <app-paragraph-card
+                        <app-title-card
 
-                        [Question]="question"
+                            cdkDrag
 
-                        (click)="builder.selectQuestion(question.id)"
+                            [Question]="question"
 
-                        (duplicate)="duplicateQuestion($event)"
+                            (click)="builder.selectQuestion(question.id)"
 
-                        (remove)="deleteQuestion($event)"
+                            (duplicate)="duplicateQuestion($event)"
 
-                    />
+                            (remove)="deleteQuestion($event)"
 
-                }
-
-
-
-                @else {
+                        />
 
 
-                    <app-Question-card
+                    }
 
-                        cdkDrag
 
-                        [Question]="question"
 
-                        (QuestionSelected)="builder.selectQuestion($event)"
 
-                        (duplicate)="duplicateQuestion($event)"
 
-                        (remove)="deleteQuestion($event)"
+                    @case(QuestionType.SECTION){
 
-                    />
+
+                        <app-section-card
+
+                            cdkDrag
+
+                            [Question]="question"
+
+                            (selected)="builder.selectQuestion($event)"
+
+                            (duplicate)="duplicateQuestion($event)"
+
+                            (remove)="deleteQuestion($event)"
+
+                        />
+
+                    }
+
+
+
+
+
+                    @case(QuestionType.PARAGRAPH){
+
+
+                        <app-paragraph-card
+
+                            cdkDrag
+
+                            [Question]="question"
+
+                            (click)="builder.selectQuestion(question.id)"
+
+                            (duplicate)="duplicateQuestion($event)"
+
+                            (remove)="deleteQuestion($event)"
+
+                        />
+
+                    }
+
+
+
+
+
+                    @default{
+
+
+                        <app-question-card
+
+                            cdkDrag
+
+                            [Question]="question"
+
+                            (QuestionSelected)="builder.selectQuestion($event)"
+
+                            (duplicate)="duplicateQuestion($event)"
+
+                            (remove)="deleteQuestion($event)"
+
+                        />
+
+
+                    }
+
 
 
                 }
@@ -103,22 +124,23 @@
             }
 
 
-
         }
 
 
-        @else {
+
+        @else{
 
 
             <div class="empty">
 
+
                 Drag a Question here
+
 
             </div>
 
 
         }
-
 
 
     </div>

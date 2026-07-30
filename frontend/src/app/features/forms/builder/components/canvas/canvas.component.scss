@@ -2,65 +2,105 @@
 
     width:100%;
 
+    min-width:0;
+
     min-height:500px;
 
     padding:20px;
 
+    box-sizing:border-box;
+
 }
+
+
 
 
 
 .drop-zone {
 
+    width:100%;
+
+    min-width:0;
 
     min-height:300px;
 
-
     padding:20px;
+
+    box-sizing:border-box;
 
 
     border:2px dashed #ccc;
 
-
     border-radius:12px;
-
 
     background:#fafafa;
 
 
+    overflow:hidden;
+
 }
+
+
 
 
 
 .empty {
 
+    width:100%;
 
     text-align:center;
 
-
     color:#777;
-
 
     padding:50px;
 
-
     font-style:italic;
 
+    box-sizing:border-box;
 
 }
 
 
 
-app-Question-card,
+
+
+app-question-card,
 app-title-card,
 app-section-card,
 app-paragraph-card {
 
-
     display:block;
 
+    width:100%;
+
+    max-width:100%;
+
+    box-sizing:border-box;
 
     margin-bottom:15px;
 
+}
+
+
+
+
+.cdk-drag-preview {
+
+    box-sizing:border-box;
+
+    border-radius:12px;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.15);
+
+}
+
+
+
+
+
+.cdk-drag-placeholder {
+
+    opacity:.3;
 
 }

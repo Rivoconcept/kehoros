@@ -1,0 +1,188 @@
+<div class="preview">
+
+
+@if(builder.template; as template){
+
+
+    <div class="preview-header">
+
+
+        <h2>
+
+            {{template.title}}
+
+        </h2>
+
+
+
+        @if(template.description){
+
+
+            <p>
+
+                {{template.description}}
+
+            </p>
+
+
+        }
+
+
+    </div>
+
+
+
+
+
+    <div class="form-preview">
+
+
+
+        @for(Question of visibleQuestions; track Question.id){
+
+
+
+          <div
+
+              class="question-preview"
+
+              [ngClass]="Question.cssClass"
+
+              [style.width]="Question.width || '100%'"
+
+              [style.box-sizing]="'border-box'"
+
+          >
+
+
+
+
+
+                @if(
+
+                    Question.type !== QuestionType.TITLE &&
+
+                    Question.type !== QuestionType.SECTION &&
+
+                    Question.type !== QuestionType.PARAGRAPH
+
+                ){
+
+
+                    <h4>
+
+
+                        {{Question.title}}
+
+
+
+                        @if(Question.required){
+
+
+                            <span class="required">
+
+                                *
+
+                            </span>
+
+
+                        }
+
+
+                    </h4>
+
+
+                }
+
+
+
+
+
+
+
+                @if(Question.description){
+
+
+                    <p class="description">
+
+
+                        {{Question.description}}
+
+
+                    </p>
+
+
+                }
+
+
+
+
+
+
+            <app-preview-renderer
+
+                [Question]="Question"
+
+                [control]="getControl(Question.id)"
+
+            >
+            </app-preview-renderer>
+
+
+
+
+
+            </div>
+
+
+
+        }
+
+        <button
+
+            mat-raised-button
+
+            color="primary"
+
+            (click)="submit()"
+
+            >
+
+            Submit
+
+        </button>
+
+
+    </div>
+
+
+}
+
+@else{
+
+
+    <div class="empty">
+
+
+        <mat-icon>
+
+            description
+
+        </mat-icon>
+
+
+
+        <p>
+
+            No form loaded.
+
+        </p>
+
+
+    </div>
+
+
+}
+
+
+</div>

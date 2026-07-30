@@ -1,27 +1,63 @@
 <div class="palette">
 
-    <h3>
-        Add
-    </h3>
 
-    <button
-        class="question-type"
-        *ngFor="let item of questionTypes"
-        (click)="addQuestion(item.type)"
-    >
+@for(group of questionGroups; track group.label){
 
-        <mat-icon>
 
-            {{ item.icon }}
+<div class="group">
 
-        </mat-icon>
 
-        <span>
+<div class="group-title">
 
-            {{ item.label }}
+{{group.label}}
 
-        </span>
+</div>
 
-    </button>
+
+
+<div class="items">
+
+
+@for(item of group.items; track item.type){
+
+
+<button
+
+class="question-type"
+
+(click)="addQuestion(item.type)"
+
+>
+
+
+<mat-icon>
+
+{{item.icon}}
+
+</mat-icon>
+
+
+
+<span>
+
+{{item.label}}
+
+</span>
+
+
+</button>
+
+
+}
+
+
+</div>
+
+
+</div>
+
+
+}
+
 
 </div>

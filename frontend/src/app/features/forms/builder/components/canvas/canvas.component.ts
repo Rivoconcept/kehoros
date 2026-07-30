@@ -7,14 +7,17 @@ import {
   CdkDragDrop
 } from '@angular/cdk/drag-drop';
 
+
 import { BuilderService } from '../../services/builder.service';
 
 import { QuestionType } from '../../../models/question-type.enum';
+import { Question } from '../../../models/question.model';
 
-import { QuestionCardComponent } from '../canvas/question-card/question-card.component';
-import { TitleCardComponent } from '../canvas/title-card/title-card.component';
-import { SectionCardComponent } from '../canvas/section-card/section-card.component';
-import { ParagraphCardComponent } from '../canvas/paragraph-card/paragraph-card.component';
+
+import { QuestionCardComponent } from '../cards/question-card/question-card.component';
+import { TitleCardComponent } from '../cards/title-card/title-card.component';
+import { SectionCardComponent } from '../cards/section-card/section-card.component';
+import { ParagraphCardComponent } from '../cards/paragraph-card/paragraph-card.component';
 
 
 
@@ -62,7 +65,9 @@ export class CanvasComponent {
 
 
 
-  drop(event:CdkDragDrop<any>):void {
+  drop(
+    event:CdkDragDrop<Question[]>
+  ):void {
 
 
     this.builder.reorderQuestions(
@@ -101,6 +106,7 @@ export class CanvasComponent {
 
 
   }
+
 
 
 }

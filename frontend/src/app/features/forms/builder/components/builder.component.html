@@ -5,17 +5,6 @@
 
 
 
-    <div class="question-toolbar">
-
-        <app-question-palette
-            (questionAdded)="addQuestion($event)">
-        </app-question-palette>
-
-    </div>
-
-
-
-
 
     <div class="builder-body">
 
@@ -34,6 +23,7 @@
 
 
         </aside>
+
 
 
 
@@ -59,12 +49,16 @@
 
 
 
+
+
         <aside class="property-panel">
 
 
             <h3 class="panel-title">
                 Properties
             </h3>
+
+
 
 
 
@@ -78,6 +72,7 @@
                     (QuestionChange)="builder.updateQuestion($event)"
 
                 >
+
                 </app-property-editor>
 
 
@@ -96,11 +91,15 @@
             }
 
 
+
         </aside>
 
 
 
+
+
     </div>
+
 
 
 

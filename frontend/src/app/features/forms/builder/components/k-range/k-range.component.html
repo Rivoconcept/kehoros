@@ -1,0 +1,64 @@
+<p>k-range works!</p>
+<div class="range-field">
+
+
+    <div class="range-header">
+
+
+        <label>
+
+            {{ Question.title || 'Range' }}
+
+        </label>
+
+
+
+        <span>
+
+            {{ value }}
+
+        </span>
+
+
+    </div>
+
+
+
+    <mat-slider
+
+        [min]="min"
+
+        [max]="max"
+
+        [step]="step"
+
+        [disabled]="Question.readOnly"
+
+    >
+
+
+        <input
+
+            matSliderThumb
+
+            [(ngModel)]="value"
+
+        >
+
+
+    </mat-slider>
+
+
+
+    @if(Question.helpText){
+
+        <small>
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

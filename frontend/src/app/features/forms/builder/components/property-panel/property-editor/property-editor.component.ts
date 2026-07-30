@@ -14,12 +14,17 @@ import { QuestionType } from '../../../../models/question-type.enum';
 
 import { OptionEditorComponent } from '../option-editor/option-editor.component';
 
+import { BuilderService } from '../../../services/builder.service';
+
+
 
 @Component({
-  selector: 'app-property-editor',
-  standalone: true,
 
-  imports: [
+  selector:'app-property-editor',
+
+  standalone:true,
+
+  imports:[
 
     CommonModule,
 
@@ -41,9 +46,9 @@ import { OptionEditorComponent } from '../option-editor/option-editor.component'
 
   ],
 
-  templateUrl: './property-editor.component.html',
+  templateUrl:'./property-editor.component.html',
 
-  styleUrl: './property-editor.component.scss'
+  styleUrl:'./property-editor.component.scss'
 
 })
 export class PropertyEditorComponent {
@@ -61,6 +66,14 @@ export class PropertyEditorComponent {
 
 
   QuestionType = QuestionType;
+
+
+
+  constructor(
+    public builder: BuilderService
+  ) {}
+
+
 
 
 
@@ -110,7 +123,42 @@ export class PropertyEditorComponent {
 
 
 
-  get isQuestion(): boolean {
+  readonly widthOptions = [
+
+    { value:'25%', label:'25%' },
+
+    { value:'33%', label:'33%' },
+
+    { value:'50%', label:'50%' },
+
+    { value:'66%', label:'66%' },
+
+    { value:'75%', label:'75%' },
+
+    { value:'100%', label:'100%' }
+
+  ];
+
+
+
+
+
+  readonly scaleSteps = [
+
+    1,
+    2,
+    5,
+    10,
+    20
+
+  ];
+
+
+
+
+
+
+  get isQuestion():boolean {
 
 
     if(!this.Question){
@@ -130,8 +178,95 @@ export class PropertyEditorComponent {
 
     ].includes(this.Question.type);
 
+  }
+
+
+
+
+
+
+
+  /**
+   * Questions utilisables pour les conditions
+   * Exclut la question actuelle
+   */
+  get availableQuestions(): Question[] {
+
+
+    return this.builder.questions.filter(
+
+      q => q.id !== this.Question.id
+
+    );
+
 
   }
+
+
+
+
+
+  /**
+   * Question sélectionnée comme dépendance
+   */
+  get conditionQuestion(): Question | undefined {
+
+
+    return this.builder.questions.find(
+
+      q => q.id === this.Question.dependsOnQuestionId
+
+    );
+
+
+  }
+
+
+
+
+
+
+
+  /**
+   * Valeurs disponibles pour la condition
+   */
+  get conditionValues(): string[] {
+
+
+    const question = this.conditionQuestion;
+
+
+    if(!question){
+
+      return [];
+
+    }
+
+
+    if(
+
+      question.type === QuestionType.RADIO ||
+
+      question.type === QuestionType.CHECKBOX ||
+
+      question.type === QuestionType.SELECT
+
+    ){
+
+      return question.options.map(
+
+        option => option.value
+
+      );
+
+    }
+
+
+    return [];
+
+  }
+
+
 
 
 
@@ -141,14 +276,16 @@ export class PropertyEditorComponent {
   changeType(type:QuestionType):void {
 
 
-    const updated: Question = {
+    const updated:Question = {
 
       ...this.Question,
 
       type,
 
-      options: [
+      options:[
+
         ...this.Question.options
+
       ]
 
     };
@@ -168,13 +305,17 @@ export class PropertyEditorComponent {
 
 
 
+
     if(
+
       needsOptions &&
+
       updated.options.length === 0
+
     ){
 
-
       updated.options = [
+
 
         {
 
@@ -188,6 +329,7 @@ export class PropertyEditorComponent {
 
         },
 
+
         {
 
           id:crypto.randomUUID(),
@@ -199,6 +341,7 @@ export class PropertyEditorComponent {
           order:1
 
         }
+
 
       ];
 
@@ -218,6 +361,30 @@ export class PropertyEditorComponent {
 
 
 
+  updateCondition():void {
+
+
+    this.QuestionChange.emit({
+
+      ...this.Question,
+
+      conditional:
+
+        this.Question.conditional ?? false
+
+
+    });
+
+
+  }
+
+
+
+
+
+
+
+
   update():void {
 
 
@@ -226,7 +393,9 @@ export class PropertyEditorComponent {
       ...this.Question,
 
       options:[
+
         ...this.Question.options
+
       ]
 
     });

@@ -9,12 +9,13 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn:'root'
 })
 export class BuilderService {
 
 
-  private readonly STORAGE_KEY = 'kehoros-template';
+  private readonly STORAGE_KEY =
+    'kehoros-template';
 
 
 
@@ -22,8 +23,10 @@ export class BuilderService {
     new BehaviorSubject<Template | null>(null);
 
 
+
   template$ =
     this.templateSubject.asObservable();
+
 
 
 
@@ -31,8 +34,10 @@ export class BuilderService {
     new BehaviorSubject<Question | null>(null);
 
 
+
   selectedQuestion$ =
     this.selectedQuestionSubject.asObservable();
+
 
 
 
@@ -48,7 +53,9 @@ export class BuilderService {
 
 
 
-  get template(): Template | null {
+
+
+  get template():Template | null {
 
     return this.templateSubject.value;
 
@@ -58,11 +65,29 @@ export class BuilderService {
 
 
 
-  get questions(): Question[] {
+
+
+  get questions():Question[] {
 
     return this.template?.questions ?? [];
 
   }
+
+
+
+
+
+
+
+  get visibleQuestions():Question[] {
+
+    return this.questions.filter(
+      question => !question.hidden
+    );
+
+  }
+
+
 
 
 
@@ -74,32 +99,47 @@ export class BuilderService {
 
     const template:Template = {
 
-      id: crypto.randomUUID(),
+
+      id:crypto.randomUUID(),
+
 
       title,
 
+
       description:'',
+
 
       category:'',
 
+
       published:false,
+
 
       archived:false,
 
+
       version:1,
+
 
       questions:[],
 
+
       createdAt:new Date(),
 
+
       updatedAt:new Date()
+
 
     };
 
 
+
     this.save(template);
 
+
   }
+
+
 
 
 
@@ -110,7 +150,9 @@ export class BuilderService {
   save(template:Template):void {
 
 
-    template.updatedAt = new Date();
+    template.updatedAt =
+      new Date();
+
 
 
 
@@ -121,6 +163,7 @@ export class BuilderService {
       JSON.stringify(template)
 
     );
+
 
 
 
@@ -136,6 +179,8 @@ export class BuilderService {
 
 
   }
+
+
 
 
 
@@ -161,25 +206,44 @@ export class BuilderService {
 
 
 
-    const template:Template =
-      JSON.parse(data);
+    try {
+
+
+      const template:Template =
+        JSON.parse(data);
 
 
 
-    template.createdAt =
-      new Date(template.createdAt);
+      template.createdAt =
+        new Date(template.createdAt);
 
 
 
-    template.updatedAt =
-      new Date(template.updatedAt);
+      template.updatedAt =
+        new Date(template.updatedAt);
 
 
 
-    this.templateSubject.next(template);
+      this.templateSubject.next(
+        template
+      );
+
+
+    }
+    catch(error){
+
+
+      console.error(
+        'Chargement template impossible',
+        error
+      );
+
+
+    }
 
 
   }
+
 
 
 
@@ -192,7 +256,7 @@ export class BuilderService {
 
 
     const question =
-      this.template?.questions.find(
+      this.questions.find(
         q => q.id === id
       );
 
@@ -212,9 +276,12 @@ export class BuilderService {
 
 
 
+
   getSelectedQuestion():Question | null {
 
+
     return this.selectedQuestionSubject.value;
+
 
   }
 
@@ -224,56 +291,152 @@ export class BuilderService {
 
 
 
-  addQuestion(type:QuestionType):void {
 
 
-    const template=this.template;
+    addQuestion(type:QuestionType):void {
 
 
-    if(!template) return;
-
-
-
-    const question:Question = {
-
-
-      id:crypto.randomUUID(),
-
-
-      templateId:template.id,
-
-
-      title:'New Question',
-
-
-      description:'',
-
-
-      type,
-
-
-      required:false,
-
-
-      placeholder:'',
-
-
-      helpText:'',
-
-
-      order:template.questions.length,
-
-
-      score:1,
-
-
-      options:[]
-
-    };
+          const template =
+            this.template;
 
 
 
-    template.questions.push(question);
+          if(!template)
+            return;
+
+
+
+
+
+          const question:Question = {
+
+
+        id:crypto.randomUUID(),
+
+
+        templateId:template.id,
+
+
+        title:'New Question',
+
+
+        description:'',
+
+
+        type,
+
+
+        required:false,
+
+
+        placeholder:'',
+
+
+        helpText:'',
+
+
+        order:template.questions.length,
+
+
+        score:1,
+
+
+        options:[],
+
+
+
+        // Default values
+
+        defaultValue:null,
+
+
+
+        // Display
+
+        width:'100%',
+
+
+        hidden:false,
+
+
+        readOnly:false,
+
+
+
+        // Phone
+
+        countryCode:'+261',
+
+
+
+        // Range / Scale
+
+        minScale:1,
+
+
+        maxScale:10,
+
+
+        step:1,
+
+
+        rangeMin:0,
+
+
+        rangeMax:100,
+
+
+        rangeStep:1,
+
+
+
+        // Map
+
+        latitude: -18.8792,
+
+
+        longitude:47.5079,
+
+
+        zoom:13,
+
+
+
+        // Address
+
+        addressFields:{
+
+          street:true,
+
+          city:true,
+
+          state:false,
+
+          zip:true,
+
+          country:true
+
+        },
+
+
+
+        // Date
+
+        allowPastDate:true,
+
+
+        allowFutureDate:true
+
+
+
+      };
+
+
+
+
+    template.questions.push(
+      question
+    );
 
 
 
@@ -281,10 +444,13 @@ export class BuilderService {
 
 
 
-    this.selectQuestion(question.id);
+    this.selectQuestion(
+      question.id
+    );
 
 
   }
+
 
 
 
@@ -296,10 +462,15 @@ export class BuilderService {
   updateQuestion(updated:Question):void {
 
 
-    const template=this.template;
+    const template =
+      this.template;
 
 
-    if(!template) return;
+
+    if(!template)
+      return;
+
+
 
 
 
@@ -310,12 +481,23 @@ export class BuilderService {
 
 
 
-    if(index === -1) return;
+    if(index === -1)
+      return;
+
 
 
 
     template.questions[index] =
-      updated;
+      {
+
+        ...updated,
+
+        options:[
+          ...updated.options
+        ]
+
+      };
+
 
 
 
@@ -323,10 +505,13 @@ export class BuilderService {
 
 
 
-    this.selectQuestion(updated.id);
+    this.selectQuestion(
+      updated.id
+    );
 
 
   }
+
 
 
 
@@ -338,10 +523,15 @@ export class BuilderService {
   duplicateQuestion(id:string):void {
 
 
-    const template=this.template;
+    const template =
+      this.template;
 
 
-    if(!template) return;
+
+    if(!template)
+      return;
+
+
 
 
 
@@ -352,37 +542,54 @@ export class BuilderService {
 
 
 
-    if(!original) return;
+    if(!original)
+      return;
+
+
 
 
 
     const copy:Question = {
 
+
       ...original,
+
 
       id:crypto.randomUUID(),
 
+
       title:
-        original.title + ' (copy)',
+        `${original.title} (copy)`,
+
 
 
       order:
         template.questions.length,
 
 
+
       options:
+
         original.options.map(
           option => ({
+
             ...option,
+
             id:crypto.randomUUID()
+
           })
         )
+
 
     };
 
 
 
-    template.questions.push(copy);
+
+
+    template.questions.push(
+      copy
+    );
 
 
 
@@ -390,10 +597,13 @@ export class BuilderService {
 
 
 
-    this.selectQuestion(copy.id);
+    this.selectQuestion(
+      copy.id
+    );
 
 
   }
+
 
 
 
@@ -405,10 +615,15 @@ export class BuilderService {
   removeQuestion(id:string):void {
 
 
-    const template=this.template;
+    const template =
+      this.template;
 
 
-    if(!template) return;
+
+    if(!template)
+      return;
+
+
 
 
 
@@ -419,13 +634,15 @@ export class BuilderService {
 
 
 
-    template.questions.forEach(
-      (q: Question, index: number)=>{
 
-        q.order = index;
+    template.questions.forEach(
+      (question,index)=>{
+
+        question.order=index;
 
       }
     );
+
 
 
 
@@ -433,10 +650,13 @@ export class BuilderService {
 
 
 
-    this.selectedQuestionSubject.next(null);
+    this.selectedQuestionSubject.next(
+      null
+    );
 
 
   }
+
 
 
 
@@ -451,10 +671,23 @@ export class BuilderService {
   ):void {
 
 
-    const template=this.template;
+
+    const template =
+      this.template;
 
 
-    if(!template) return;
+
+    if(!template)
+      return;
+
+
+
+
+
+    const selected =
+      this.selectedQuestionSubject.value;
+
+
 
 
 
@@ -470,20 +703,204 @@ export class BuilderService {
 
 
 
-    template.questions.forEach(
-      (q,index)=>{
 
-        q.order=index;
+
+
+    template.questions.forEach(
+      (question,index)=>{
+
+        question.order=index;
 
       }
     );
 
 
 
+
+
     this.save(template);
 
 
+
+
+
+    if(selected){
+
+      this.selectQuestion(
+        selected.id
+      );
+
+    }
+
+
+
   }
+
+
+
+
+
+
+
+
+
+  exportTemplate():void {
+
+
+    const template =
+      this.template;
+
+
+
+    if(!template)
+      return;
+
+
+
+
+
+    const json =
+      JSON.stringify(
+        template,
+        null,
+        2
+      );
+
+
+
+
+
+    const blob =
+      new Blob(
+
+        [json],
+
+        {
+          type:'application/json'
+        }
+
+      );
+
+
+
+
+
+    const url =
+      URL.createObjectURL(
+        blob
+      );
+
+
+
+
+
+    const link =
+      document.createElement('a');
+
+
+
+    link.href=url;
+
+
+
+    link.download =
+      `${template.title}.json`;
+
+
+
+    link.click();
+
+
+
+    URL.revokeObjectURL(url);
+
+
+  }
+
+
+
+
+
+
+
+
+
+  importTemplate(file:File):void {
+
+
+    const reader =
+      new FileReader();
+
+
+
+
+
+    reader.onload = ()=>{
+
+
+      try{
+
+
+        const template:Template =
+          JSON.parse(
+            reader.result as string
+          );
+
+
+
+
+
+        template.createdAt =
+          new Date(
+            template.createdAt
+          );
+
+
+
+        template.updatedAt =
+          new Date(
+            template.updatedAt
+          );
+
+
+
+
+
+        this.save(template);
+
+
+
+
+        this.selectedQuestionSubject.next(
+          null
+        );
+
+
+
+      }
+      catch(error){
+
+
+        console.error(
+          'Import JSON impossible',
+          error
+        );
+
+
+      }
+
+
+    };
+
+
+
+
+
+    reader.readAsText(file);
+
+
+  }
+
 
 
 

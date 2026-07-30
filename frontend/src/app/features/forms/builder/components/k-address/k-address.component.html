@@ -1,0 +1,154 @@
+<div class="address-field">
+
+
+    <h4>
+
+        {{Question.title || 'Address'}}
+
+    </h4>
+
+
+
+    @if(fields.street){
+
+        <mat-form-field appearance="outline">
+
+            <mat-label>
+                Street
+            </mat-label>
+
+            <input
+
+                matInput
+
+                [(ngModel)]="address.street"
+
+                [readonly]="Question.readOnly"
+
+            >
+
+        </mat-form-field>
+
+    }
+
+
+
+
+
+    @if(fields.city){
+
+        <mat-form-field appearance="outline">
+
+            <mat-label>
+                City
+            </mat-label>
+
+            <input
+
+                matInput
+
+                [(ngModel)]="address.city"
+
+                [readonly]="Question.readOnly"
+
+            >
+
+        </mat-form-field>
+
+    }
+
+
+
+
+
+    @if(fields.state){
+
+        <mat-form-field appearance="outline">
+
+            <mat-label>
+                State
+            </mat-label>
+
+            <input
+
+                matInput
+
+                [(ngModel)]="address.state"
+
+                [readonly]="Question.readOnly"
+
+            >
+
+        </mat-form-field>
+
+    }
+
+
+
+
+
+    <div class="row">
+
+
+        @if(fields.zip){
+
+            <mat-form-field appearance="outline">
+
+
+                <mat-label>
+                    Zip Code
+                </mat-label>
+
+
+                <input
+
+                    matInput
+
+                    [(ngModel)]="address.zip"
+
+                    [readonly]="Question.readOnly"
+
+                >
+
+
+            </mat-form-field>
+
+
+        }
+
+
+
+
+
+        @if(fields.country){
+
+            <mat-form-field appearance="outline">
+
+
+                <mat-label>
+                    Country
+                </mat-label>
+
+
+                <input
+
+                    matInput
+
+                    [(ngModel)]="address.country"
+
+                    [readonly]="Question.readOnly"
+
+                >
+
+
+            </mat-form-field>
+
+
+        }
+
+
+    </div>
+
+
+
+</div>

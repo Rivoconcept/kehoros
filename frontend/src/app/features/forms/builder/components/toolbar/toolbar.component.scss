@@ -1,49 +1,262 @@
-.toolbar{
+.toolbar {
 
-display:flex;
+    position:relative;
 
-justify-content:space-between;
+    display:flex;
 
-align-items:center;
+    justify-content:space-between;
 
-padding:20px;
+    align-items:center;
 
-background:var(--surface);
+    padding:20px;
 
-border-bottom:1px solid var(--border);
+    background:var(--surface);
 
-}
-
-.title h2{
-
-margin:0;
-
-color:var(--text);
+    border-bottom:1px solid var(--border);
 
 }
 
-.actions button{
 
-background:var(--primary);
 
-color:white;
+.title h2 {
 
-border:none;
+    margin:0;
 
-padding:12px 22px;
+    color:var(--text);
 
-border-radius:12px;
-
-cursor:pointer;
-
-font-weight:600;
-
-transition:.25s;
+    font-size:22px;
 
 }
 
-.actions button:hover{
 
-background:var(--primary-hover);
+
+.actions {
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+.actions button,
+.import-button {
+
+    background:var(--primary);
+
+    color:white;
+
+    border:none;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+
+
+.actions button:hover,
+.import-button:hover {
+
+    background:var(--primary-hover);
+
+}
+
+
+
+.import-button {
+
+    display:flex;
+
+    align-items:center;
+
+}
+
+
+
+.danger {
+
+    background:#d32f2f !important;
+
+}
+
+
+
+.add-container {
+
+    position:relative;
+
+}
+
+
+
+
+
+.add-field-btn {
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+
+
+.add-field-btn mat-icon {
+
+    font-size:20px;
+
+    width:20px;
+
+    height:20px;
+
+}
+
+
+
+
+
+
+
+/* Popup Add Field */
+
+.field-popup {
+
+
+    position:absolute;
+
+
+    top:55px;
+
+
+    right:0;
+
+
+    z-index:5000;
+
+
+    width:850px;
+
+
+    max-width:90vw;
+
+
+    max-height:75vh;
+
+
+    overflow:auto;
+
+
+    background:white;
+
+
+    border:1px solid var(--border);
+
+
+    border-radius:16px;
+
+
+    padding:20px;
+
+
+    box-shadow:
+
+        0 15px 40px rgba(0,0,0,.2);
+
+
+}
+
+
+
+
+
+/* On remet la palette en grille */
+
+.field-popup app-question-palette {
+
+
+    display:block;
+
+}
+
+
+
+
+
+@media(max-width:1200px){
+
+
+    .field-popup {
+
+        width:700px;
+
+    }
+
+
+}
+
+
+
+
+
+@media(max-width:900px){
+
+
+    .toolbar {
+
+
+        flex-direction:column;
+
+
+        align-items:flex-start;
+
+
+        gap:15px;
+
+
+    }
+
+
+
+
+    .actions {
+
+
+        width:100%;
+
+
+    }
+
+
+
+
+    .field-popup {
+
+
+        left:0;
+
+
+        right:auto;
+
+
+        width:95vw;
+
+
+    }
+
 
 }

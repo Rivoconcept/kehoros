@@ -1,198 +1,504 @@
 <div class="properties">
 
-  @if (Question) {
-
-    <h2>Properties</h2>
+@if(Question){
 
 
-    <mat-form-field appearance="outline" class="full">
+<h2>Properties</h2>
 
-      <mat-label>Title</mat-label>
 
-      <input
+
+<mat-form-field appearance="outline" class="full">
+
+    <mat-label>Title</mat-label>
+
+    <input
         matInput
         [(ngModel)]="Question.title"
-        (ngModelChange)="update()">
+        (ngModelChange)="update()"
+    >
 
-    </mat-form-field>
+</mat-form-field>
 
 
 
 
-    <mat-form-field appearance="outline" class="full">
+<mat-form-field appearance="outline" class="full">
 
-      <mat-label>Description</mat-label>
+    <mat-label>Description</mat-label>
 
-      <textarea
+    <textarea
         matInput
         rows="3"
         [(ngModel)]="Question.description"
         (ngModelChange)="update()">
-      </textarea>
+    </textarea>
 
-    </mat-form-field>
-
-
+</mat-form-field>
 
 
 
-    <mat-form-field appearance="outline" class="full">
 
-      <mat-label>Placeholder</mat-label>
+<mat-form-field appearance="outline" class="full">
 
-      <input
+    <mat-label>Placeholder</mat-label>
 
+    <input
         matInput
-
         [(ngModel)]="Question.placeholder"
-
         (ngModelChange)="update()"
+    >
 
-      >
-
-    </mat-form-field>
-
+</mat-form-field>
 
 
 
 
+<mat-form-field appearance="outline" class="full">
 
-    <mat-form-field appearance="outline" class="full">
+    <mat-label>Help text</mat-label>
 
-      <mat-label>Texte d'aide</mat-label>
-
-      <textarea
-
+    <textarea
         matInput
-
         rows="2"
-
         [(ngModel)]="Question.helpText"
+        (ngModelChange)="update()">
+    </textarea>
 
-        (ngModelChange)="update()"
+</mat-form-field>
 
-      >
-      </textarea>
 
-    </mat-form-field>
 
 
 
+@if(isQuestion){
 
 
+<mat-form-field appearance="outline" class="full">
 
-    @if(isQuestion){
+    <mat-label>Response type</mat-label>
 
-      <mat-form-field appearance="outline" class="full">
+    <mat-select
 
+        [value]="Question.type"
 
-        <mat-label>Type de réponse</mat-label>
+        (selectionChange)="changeType($event.value)"
 
+    >
 
-        <mat-select
+        @for(type of responseTypes; track type.value){
 
-          [(ngModel)]="Question.type"
+        <mat-option [value]="type.value">
 
-          (selectionChange)="changeType($event.value)"
+            {{type.label}}
 
-        >
+        </mat-option>
 
+        }
 
-          @for(type of responseTypes; track type.value){
+    </mat-select>
 
+</mat-form-field>
 
-            <mat-option [value]="type.value">
 
 
-              {{type.label}}
+<mat-slide-toggle
 
+    [(ngModel)]="Question.required"
 
-            </mat-option>
+    (ngModelChange)="update()"
 
+>
 
-          }
+Required
 
+</mat-slide-toggle>
 
-        </mat-select>
 
+}
 
-      </mat-form-field>
 
 
-    }
 
 
 
+@if(
+Question.type === QuestionType.TEXT ||
+Question.type === QuestionType.TEXTAREA
+){
 
 
+<h3>Text validation</h3>
 
-    @if(isQuestion){
 
+<div class="grid-2">
 
-      <mat-slide-toggle
 
-        [(ngModel)]="Question.required"
+<mat-form-field appearance="outline">
 
-        (ngModelChange)="update()"
+<mat-label>Min length</mat-label>
 
-      >
+<input
+matInput
+type="number"
+[(ngModel)]="Question.minLength"
+(ngModelChange)="update()"
+>
 
+</mat-form-field>
 
-        Required Question
 
 
-      </mat-slide-toggle>
 
+<mat-form-field appearance="outline">
 
-    }
+<mat-label>Max length</mat-label>
 
+<input
+matInput
+type="number"
+[(ngModel)]="Question.maxLength"
+(ngModelChange)="update()"
+>
 
+</mat-form-field>
 
 
+</div>
 
 
-    @if(
 
-      Question.type === QuestionType.RADIO ||
 
-      Question.type === QuestionType.CHECKBOX ||
+<mat-form-field appearance="outline" class="full">
 
-      Question.type === QuestionType.SELECT
+<mat-label>Pattern</mat-label>
 
-    ){
+<input
+matInput
+[(ngModel)]="Question.pattern"
+(ngModelChange)="update()"
+>
 
+</mat-form-field>
 
-      <app-option-editor
 
-        [options]="Question.options"
+}
 
-        (optionsChange)="Question.options = $event; update()"
 
-      >
 
-      </app-option-editor>
 
 
-    }
 
 
+@if(
+Question.type === QuestionType.NUMBER
+){
 
 
-  }
+<h3>Number validation</h3>
 
-  @else {
 
+<div class="grid-2">
 
-    <div class="empty">
 
+<mat-form-field appearance="outline">
 
-      Select an item.
+<mat-label>Minimum</mat-label>
 
+<input
+matInput
+type="number"
+[(ngModel)]="Question.minValue"
+(ngModelChange)="update()"
+>
 
-    </div>
+</mat-form-field>
 
 
-  }
+
+<mat-form-field appearance="outline">
+
+<mat-label>Maximum</mat-label>
+
+<input
+matInput
+type="number"
+[(ngModel)]="Question.maxValue"
+(ngModelChange)="update()"
+>
+
+</mat-form-field>
+
+
+</div>
+
+
+}
+
+
+
+
+
+
+@if(
+Question.type === QuestionType.RADIO ||
+Question.type === QuestionType.CHECKBOX ||
+Question.type === QuestionType.SELECT
+){
+
+
+<app-option-editor
+
+    [options]="Question.options"
+
+    (optionsChange)="Question.options=$event;update()"
+
+>
+
+
+</app-option-editor>
+
+
+}
+
+
+
+
+
+
+
+<!-- LOGIC CONDITIONNELLE -->
+
+<h3>Logic / Conditions</h3>
+
+
+<mat-slide-toggle
+
+[(ngModel)]="Question.conditional"
+
+(ngModelChange)="updateCondition()"
+
+>
+
+Enable conditional display
+
+</mat-slide-toggle>
+
+
+
+
+
+@if(Question.conditional){
+
+
+<mat-form-field appearance="outline" class="full">
+
+
+<mat-label>
+
+Depends on question
+
+</mat-label>
+
+
+
+<mat-select
+
+[(ngModel)]="Question.dependsOnQuestionId"
+
+(selectionChange)="updateCondition()"
+
+>
+
+
+@for(q of availableQuestions; track q.id){
+
+
+<mat-option [value]="q.id">
+
+{{q.title}}
+
+</mat-option>
+
+
+}
+
+
+</mat-select>
+
+
+</mat-form-field>
+
+
+
+
+
+@if(conditionValues.length){
+
+
+<mat-form-field appearance="outline" class="full">
+
+
+<mat-label>
+
+Expected value
+
+</mat-label>
+
+
+
+<mat-select
+
+[(ngModel)]="Question.expectedValue"
+
+(selectionChange)="updateCondition()"
+
+>
+
+
+@for(value of conditionValues; track value){
+
+
+<mat-option [value]="value">
+
+{{value}}
+
+</mat-option>
+
+
+}
+
+
+</mat-select>
+
+
+</mat-form-field>
+
+
+}
+
+@else {
+
+
+<mat-form-field appearance="outline" class="full">
+
+
+<mat-label>
+
+Expected value
+
+</mat-label>
+
+
+<input
+
+matInput
+
+[(ngModel)]="Question.expectedValue"
+
+(ngModelChange)="updateCondition()"
+
+>
+
+
+</mat-form-field>
+
+
+}
+
+
+}
+
+
+
+<!-- DISPLAY -->
+
+
+<h3>Display</h3>
+
+
+<mat-form-field appearance="outline" class="full">
+
+
+<mat-label>Width</mat-label>
+
+
+<mat-select
+
+[(ngModel)]="Question.width"
+
+(selectionChange)="update()"
+
+>
+
+
+@for(width of widthOptions; track width.value){
+
+
+<mat-option [value]="width.value">
+
+{{width.label}}
+
+</mat-option>
+
+
+}
+
+
+</mat-select>
+
+
+</mat-form-field>
+
+
+
+
+
+
+<mat-slide-toggle
+
+[(ngModel)]="Question.readOnly"
+
+(ngModelChange)="update()"
+
+>
+
+Read only
+
+</mat-slide-toggle>
+
+
+
+
+
+<mat-slide-toggle
+
+[(ngModel)]="Question.hidden"
+
+(ngModelChange)="update()"
+
+>
+
+Hidden
+
+</mat-slide-toggle>
+
+
+
+
+
+}
+
+@else{
+
+
+<div class="empty">
+
+Select an item.
+
+</div>
+
+
+}
 
 
 </div>

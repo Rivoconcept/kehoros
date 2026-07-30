@@ -1,19 +1,161 @@
-<div class="toolbar">
+<div 
+class="toolbar"
+(click)="closeFieldMenu()"
+>
+
+
 
     <div class="title">
 
+
         <h2>
-            {{ builder.template?.title }}
+
+            {{ builder.template?.title || 'Untitled Form' }}
+
         </h2>
 
+
     </div>
+
+
+
+
 
     <div class="actions">
 
-        <button (click)="save()">
+
+
+        <div class="add-container">
+
+
+            <button
+
+                class="add-field-btn"
+
+                (click)="toggleFieldMenu(); $event.stopPropagation()"
+
+            >
+
+                <mat-icon>
+                    add
+                </mat-icon>
+
+
+                <span>
+                    Add field
+                </span>
+
+
+            </button>
+
+
+
+
+
+            @if(showFieldMenu){
+
+
+            <div
+
+            class="field-popup"
+
+            (click)="$event.stopPropagation()"
+
+            >
+
+
+                <app-question-palette
+
+                    (questionAdded)="addQuestion($event)"
+
+                >
+
+                </app-question-palette>
+
+
+            </div>
+
+
+            }
+
+
+        </div>
+
+
+
+
+
+
+        <button
+            (click)="save()"
+        >
+
             Save
+
         </button>
 
+
+
+
+
+
+        <button
+            (click)="export()"
+        >
+
+            Export JSON
+
+        </button>
+
+
+
+
+
+
+        <label class="import-button">
+
+
+            Import JSON
+
+
+            <input
+
+                type="file"
+
+                accept=".json"
+
+                hidden
+
+                (change)="import($event)"
+
+            >
+
+
+        </label>
+
+
+
+
+
+
+
+        <button
+
+            class="danger"
+
+            (click)="newTemplate()"
+
+        >
+
+            New
+
+
+        </button>
+
+
+
+
     </div>
+
 
 </div>

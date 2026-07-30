@@ -1,0 +1,62 @@
+<p>k-color works!</p>
+<div class="color-field">
+
+
+    <mat-form-field appearance="outline">
+
+
+        <mat-label>
+
+            {{Question.title || 'Color'}}
+
+        </mat-label>
+
+
+        <input
+
+            matInput
+
+            [value]="colorValue"
+
+            readonly
+
+        >
+
+
+    </mat-form-field>
+
+
+
+    <div class="color-picker">
+
+
+        <input
+
+            type="color"
+
+            [value]="colorValue"
+
+            (input)="updateColor($event)"
+
+            [disabled]="Question.readOnly"
+
+        >
+
+
+
+        <span
+
+            class="preview"
+
+            [style.background]="colorValue"
+
+        >
+
+        </span>
+
+
+    </div>
+
+
+
+</div>

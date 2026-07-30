@@ -1,10 +1,10 @@
-.properties{
+.properties {
 
     display:flex;
 
     flex-direction:column;
 
-    gap:20px;
+    gap:18px;
 
     padding:24px;
 
@@ -14,40 +14,163 @@
 
     border:1px solid var(--border);
 
-    box-shadow:0 8px 20px rgba(0,0,0,.05);
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.05);
+
+    overflow:auto;
 
 }
 
-h2{
 
-    margin:0;
+
+
+
+h2 {
+
+    margin:0 0 5px;
 
     color:var(--text);
 
-    font-size:20px;
+    font-size:22px;
 
-    font-weight:600;
+    font-weight:700;
 
 }
 
-mat-form-field{
+
+
+
+
+h3 {
+
+    margin:18px 0 0;
+
+    color:var(--text);
+
+    font-size:16px;
+
+    font-weight:700;
+
+    padding-bottom:8px;
+
+    border-bottom:
+
+        1px solid var(--border);
+
+}
+
+
+
+
+
+.full {
 
     width:100%;
 
 }
 
-.empty{
+
+
+
+
+mat-form-field {
+
+    width:100%;
+
+}
+
+
+
+
+
+.grid-2 {
+
+    display:grid;
+
+    grid-template-columns:
+
+        repeat(2, minmax(0,1fr));
+
+    gap:14px;
+
+}
+
+
+
+
+
+mat-slide-toggle {
+
+    padding:10px 0;
+
+}
+
+
+
+
+
+.empty {
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-height:200px;
 
     color:var(--text-light);
 
     text-align:center;
 
-    padding:60px 20px;
+    background:rgba(255,255,255,.5);
+
+    border-radius:14px;
+
+    font-style:italic;
 
 }
 
-mat-slide-toggle{
 
-    margin-bottom:10px;
+
+
+
+::ng-deep .mat-mdc-form-field {
+
+    margin-bottom:4px;
+
+}
+
+
+
+
+
+::ng-deep textarea {
+
+    resize:none;
+
+}
+
+
+
+
+
+@media(max-width:900px){
+
+
+    .properties {
+
+        padding:16px;
+
+    }
+
+
+
+    .grid-2 {
+
+        grid-template-columns:1fr;
+
+    }
+
 
 }
