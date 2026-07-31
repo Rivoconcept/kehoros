@@ -1,63 +1,57 @@
-<div class="signature-field">
+<app-field-container
+
+    [Question]="Question"
+
+    [control]="control"
+
+>
 
 
-    <label class="title">
-
-        {{ Question.title || 'Signature' }}
-
-    </label>
+    <div class="signature-field">
 
 
+        <canvas
 
-    <canvas
+            #canvas
 
-        #canvas
+            width="500"
 
-        width="500"
+            height="200"
 
-        height="200"
+            (mousedown)="startDrawing($event)"
 
-        (mousedown)="startDrawing($event)"
+            (mousemove)="draw($event)"
 
-        (mousemove)="draw($event)"
+            (mouseup)="stopDrawing()"
 
-        (mouseup)="stopDrawing()"
+            (mouseleave)="stopDrawing()"
 
-        (mouseleave)="stopDrawing()"
+            [class.disabled]="Question.readOnly"
 
-        [class.disabled]="Question.readOnly"
+        >
 
-    >
-
-    </canvas>
-
-
-
-    <button
-
-        type="button"
-
-        (click)="clear()"
-
-        [disabled]="Question.readOnly"
-
-    >
-
-        Clear
-
-    </button>
+        </canvas>
 
 
 
-    @if(Question.helpText){
-
-        <small class="help">
-
-            {{ Question.helpText }}
-
-        </small>
-
-    }
 
 
-</div>
+        <button
+
+            type="button"
+
+            (click)="clear()"
+
+            [disabled]="Question.readOnly ?? false"
+
+        >
+
+            Clear
+
+        </button>
+
+
+    </div>
+
+
+</app-field-container>

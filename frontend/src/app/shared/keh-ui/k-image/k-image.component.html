@@ -9,6 +9,7 @@
 
 
 
+
     <input
 
         type="file"
@@ -26,13 +27,14 @@
 
 
 
-    @if(images.length){
+
+    @if(previews.length){
 
 
         <div class="preview-grid">
 
 
-            @for(image of images; track image){
+            @for(image of previews; track image){
 
 
                 <img
@@ -54,13 +56,33 @@
 
 
 
+
+    @if(control.invalid && (control.touched || control.dirty)){
+
+
+        <small class="validation-error">
+
+
+            Invalid image.
+
+
+        </small>
+
+
+    }
+
+
+
+
     @if(Question.helpText){
+
 
         <small class="help">
 
             {{ Question.helpText }}
 
         </small>
+
 
     }
 

@@ -32,13 +32,13 @@ export const routes: Routes = [
       import('./features/users/users-list/users-list.component')
         .then(m => m.UsersListComponent),
   },
-  {
-    path: 'forms/templates',
-    canActivate: [roleGuard(['admin', 'manager'])],
-    loadComponent: () =>
-      import('./features/forms/templates/template-list.component')
-        .then(m => m.TemplateListComponent),
-  },
+  // {
+  //   path: 'forms/templates',
+  //   canActivate: [roleGuard(['admin', 'manager'])],
+  //   loadComponent: () =>
+  //     import('./features/forms/templates/template-list.component')
+  //       .then(m => m.TemplateListComponent),
+  // },
 
   {
     path: 'forms/builder',

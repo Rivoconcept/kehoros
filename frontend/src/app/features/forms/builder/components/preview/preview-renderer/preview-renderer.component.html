@@ -1,8 +1,6 @@
 <div class="preview">
 
-
 @switch (Question.type) {
-
 
   @case (QuestionType.TITLE) {
 
@@ -12,8 +10,6 @@
 
   }
 
-
-
   @case (QuestionType.SECTION) {
 
     <app-k-section
@@ -22,8 +18,6 @@
 
   }
 
-
-
   @case (QuestionType.PARAGRAPH) {
 
     <app-k-paragraph
@@ -31,8 +25,6 @@
     </app-k-paragraph>
 
   }
-
-
 
   @case (QuestionType.TEXT) {
 
@@ -43,8 +35,6 @@
 
   }
 
-
-
   @case (QuestionType.TEXTAREA) {
 
     <app-k-textarea
@@ -53,8 +43,6 @@
     </app-k-textarea>
 
   }
-
-
 
   @case (QuestionType.NUMBER) {
 
@@ -65,197 +53,176 @@
 
   }
 
-
-
   @case (QuestionType.EMAIL) {
 
     <app-k-email
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-email>
 
   }
 
-
-
   @case (QuestionType.PHONE) {
 
     <app-k-phone
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-phone>
 
   }
 
-
-
   @case (QuestionType.PASSWORD) {
 
     <app-k-password
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-password>
 
   }
 
-
-
   @case (QuestionType.URL) {
 
     <app-k-url
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-url>
 
   }
 
-
-
   @case (QuestionType.DATE) {
 
     <app-k-date
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-date>
 
   }
 
-
-
   @case (QuestionType.TIME) {
 
     <app-k-time
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-time>
 
   }
 
-
-
   @case (QuestionType.DATETIME) {
 
     <app-k-datetime
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-datetime>
 
   }
 
-
-
   @case (QuestionType.SELECT) {
 
     <app-k-select
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-select>
 
   }
 
-
-
   @case (QuestionType.RADIO) {
 
     <app-k-radio
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-radio>
 
   }
 
-
-
   @case (QuestionType.CHECKBOX) {
 
     <app-k-checkbox
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-checkbox>
 
   }
 
-
-
   @case (QuestionType.SWITCH) {
 
     <app-k-switch
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-switch>
 
   }
 
-
-
   @case (QuestionType.FILE) {
 
     <app-k-file
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-file>
 
   }
 
-
-
   @case (QuestionType.IMAGE) {
 
     <app-k-image
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-image>
 
   }
 
-
-
   @case (QuestionType.SIGNATURE) {
 
     <app-k-signature
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-signature>
 
   }
 
-
-
   @case (QuestionType.RATING) {
 
     <app-k-rating
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-rating>
 
   }
 
-
-
   @case (QuestionType.SCALE) {
 
     <app-k-scale
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-scale>
 
   }
 
-
-
   @case (QuestionType.RANGE) {
 
     <app-k-range
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-range>
 
   }
 
-
-
   @case (QuestionType.ADDRESS) {
 
     <app-k-address
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-address>
 
   }
 
-
-
   @case (QuestionType.LOCATION) {
 
     <app-k-location
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-location>
 
   }
-
-
 
   @case (QuestionType.MAP) {
 
@@ -265,27 +232,23 @@
 
   }
 
-
-
   @case (QuestionType.COLOR) {
 
     <app-k-color
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-color>
 
   }
 
-
-
   @case (QuestionType.HIDDEN) {
 
     <app-k-hidden
-      [Question]="Question">
+      [Question]="Question"
+      [control]="control">
     </app-k-hidden>
 
   }
-
-
 
   @case (QuestionType.DIVIDER) {
 
@@ -295,8 +258,6 @@
 
   }
 
-
-
   @case (QuestionType.HTML) {
 
     <app-k-html
@@ -304,8 +265,6 @@
     </app-k-html>
 
   }
-
-
 
   @case (QuestionType.LABEL) {
 
@@ -315,8 +274,6 @@
 
   }
 
-
-
   @case (QuestionType.QR) {
 
     <app-k-qr
@@ -324,8 +281,6 @@
     </app-k-qr>
 
   }
-
-
 
   @case (QuestionType.BARCODE) {
 
@@ -335,8 +290,6 @@
 
   }
 
-
-
   @default {
 
     <div class="placeholder">
@@ -345,8 +298,6 @@
 
   }
 
-
 }
-
 
 </div>

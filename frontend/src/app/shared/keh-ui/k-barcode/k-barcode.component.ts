@@ -1,7 +1,18 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Input,
+  OnInit
+} from '@angular/core';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  CommonModule
+} from '@angular/common';
+
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
+
 
 
 @Component({
@@ -21,20 +32,99 @@ import { Question } from '../../../features/forms/models/question.model';
   styleUrl:'./k-barcode.component.scss'
 
 })
-export class KBarcodeComponent {
-
-    
-    @Input()
-    Question!: Question;
-    
-    bars:number[] = [];
+export class KBarcodeComponent implements OnInit {
 
 
-    get value(){
+  @Input()
+  Question!: Question;
 
-    return this.Question.defaultValue ?? '123456789';
+
+
+  bars:boolean[] = [];
+
+
+
+
+
+
+  ngOnInit():void {
+
+
+    this.generateBarcode();
+
+
+  }
+
+
+
+
+
+
+  get value():string {
+
+
+    return this.Question.defaultValue ??
+
+      '123456789';
+
+
+
+  }
+
+
+
+
+
+
+
+
+  generateBarcode():void {
+
+
+    const text = this.value.toString();
+
+
+
+    this.bars = [];
+
+
+
+
+    for(const char of text){
+
+
+      const code =
+
+        char.charCodeAt(0)
+
+          .toString(2)
+
+          .padStart(8,'0');
+
+
+
+
+
+      for(const bit of code){
+
+
+        this.bars.push(
+
+          bit === '1'
+
+        );
+
+
+      }
+
 
     }
+
+
+  }
+
+
+
 
 
 }

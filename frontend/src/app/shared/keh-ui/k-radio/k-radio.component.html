@@ -1,19 +1,17 @@
-<div class="radio-field">
+<app-field-container
 
+    [Question]="Question"
 
-    <label class="title">
+    [control]="control"
 
-        {{ Question.title || 'Choose an option' }}
-
-    </label>
-
+>
 
 
     <mat-radio-group
 
-        [(ngModel)]="value"
+        [formControl]="control"
 
-        [disabled]="Question.readOnly === true"
+        class="radio-group"
 
     >
 
@@ -25,10 +23,11 @@
 
                 [value]="option.value"
 
+                [disabled]="Question.readOnly"
+
             >
 
                 {{ option.label }}
-
 
             </mat-radio-button>
 
@@ -39,16 +38,4 @@
     </mat-radio-group>
 
 
-
-    @if(Question.helpText){
-
-        <small class="help">
-
-            {{ Question.helpText }}
-
-        </small>
-
-    }
-
-
-</div>
+</app-field-container>

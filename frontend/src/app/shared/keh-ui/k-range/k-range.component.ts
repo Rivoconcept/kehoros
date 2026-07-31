@@ -1,9 +1,29 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { MatSliderModule } from '@angular/material/slider';
-import { Question } from 'src/app/features/forms/models/question.model';
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  MatSliderModule
+} from '@angular/material/slider';
+
+import {
+  FieldContainerComponent
+} from '../core/field-container/field-container.component';
+
+import {
+  Question
+} from 'src/app/features/forms/models/question.model';
+
 
 
 @Component({
@@ -16,9 +36,11 @@ import { Question } from 'src/app/features/forms/models/question.model';
 
     CommonModule,
 
-    FormsModule,
+    ReactiveFormsModule,
 
-    MatSliderModule
+    MatSliderModule,
+
+    FieldContainerComponent
 
   ],
 
@@ -30,37 +52,13 @@ import { Question } from 'src/app/features/forms/models/question.model';
 export class KRangeComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
 
-  value:number = 0;
-
-
-
-  errorMessage:string | null = null;
-
-
-
-
-
-  ngOnInit():void {
-
-
-    this.value =
-
-      this.Question.defaultValue ??
-
-      this.min;
-
-
-    this.updateValue();
-
-
-  }
-
-
+  @Input({required:true})
+  control!: FormControl;
 
 
 
@@ -68,13 +66,9 @@ export class KRangeComponent {
 
   get min():number {
 
-
     return this.Question.rangeMin ?? 0;
 
-
   }
-
-
 
 
 
@@ -82,13 +76,9 @@ export class KRangeComponent {
 
   get max():number {
 
-
     return this.Question.rangeMax ?? 100;
 
-
   }
-
-
 
 
 
@@ -96,92 +86,7 @@ export class KRangeComponent {
 
   get step():number {
 
-
     return this.Question.rangeStep ?? 1;
-
-
-  }
-
-
-
-
-
-
-
-  updateValue():void {
-
-
-    this.Question.defaultValue =
-      this.value;
-
-
-    this.validate();
-
-
-  }
-
-
-
-
-
-
-
-  validate():void {
-
-
-    this.errorMessage = null;
-
-
-
-
-    if(
-
-      this.Question.required &&
-
-      (
-        this.value === null ||
-
-        this.value === undefined
-
-      )
-
-    ){
-
-      this.errorMessage =
-        'Value is required';
-
-      return;
-
-    }
-
-
-
-
-
-    if(this.value < this.min){
-
-
-      this.errorMessage =
-        `Minimum value is ${this.min}`;
-
-      return;
-
-    }
-
-
-
-
-
-    if(this.value > this.max){
-
-
-      this.errorMessage =
-        `Maximum value is ${this.max}`;
-
-      return;
-
-    }
-
 
   }
 

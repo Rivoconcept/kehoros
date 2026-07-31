@@ -22,13 +22,13 @@ Street
 
 matInput
 
-[(ngModel)]="address.street"
+[value]="address.street"
 
-(input)="update()"
+(input)="onChange('street',$event)"
 
 (blur)="onBlur()"
 
-[readonly]="Question.readOnly"
+[readonly]="readonly"
 
 >
 
@@ -36,7 +36,6 @@ matInput
 </mat-form-field>
 
 }
-
 
 
 
@@ -54,13 +53,13 @@ City
 
 matInput
 
-[(ngModel)]="address.city"
+[value]="address.city"
 
-(input)="update()"
+(input)="onChange('city',$event)"
 
 (blur)="onBlur()"
 
-[readonly]="Question.readOnly"
+[readonly]="readonly"
 
 >
 
@@ -86,13 +85,13 @@ State
 
 matInput
 
-[(ngModel)]="address.state"
+[value]="address.state"
 
-(input)="update()"
+(input)="onChange('state',$event)"
 
 (blur)="onBlur()"
 
-[readonly]="Question.readOnly"
+[readonly]="readonly"
 
 >
 
@@ -105,9 +104,7 @@ matInput
 
 
 
-
 <div class="row">
-
 
 
 @if(fields.zip){
@@ -123,13 +120,13 @@ Zip Code
 
 matInput
 
-[(ngModel)]="address.zip"
+[value]="address.zip"
 
-(input)="update()"
+(input)="onChange('zip',$event)"
 
 (blur)="onBlur()"
 
-[readonly]="Question.readOnly"
+[readonly]="readonly"
 
 >
 
@@ -137,7 +134,6 @@ matInput
 </mat-form-field>
 
 }
-
 
 
 
@@ -156,13 +152,13 @@ Country
 
 matInput
 
-[(ngModel)]="address.country"
+[value]="address.country"
 
-(input)="update()"
+(input)="onChange('country',$event)"
 
 (blur)="onBlur()"
 
-[readonly]="Question.readOnly"
+[readonly]="readonly"
 
 >
 
@@ -172,37 +168,31 @@ matInput
 }
 
 
-
 </div>
 
 
 
 
+<app-field-errors
 
-@if(errorMessage){
+[control]="control"
 
-<div class="validation-error">
+[Question]="Question">
 
-{{errorMessage}}
-
-</div>
-
-}
+</app-field-errors>
 
 
 
 
-
-@if(Question.helpText){
+@if(helpText){
 
 <div class="help">
 
-{{Question.helpText}}
+{{helpText}}
 
 </div>
 
 }
-
 
 
 </div>

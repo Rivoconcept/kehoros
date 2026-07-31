@@ -1,11 +1,20 @@
+@if(Question){
+
 <h1
 
     class="title"
 
-    [class]="Question.cssClass || ''"
+    [class]="cssClass"
+
+    [style.color]="color"
+
+    [style]="style"
 
 >
 
-    {{ Question.title }}
+    {{ title }}
 
 </h1>
+
+
+}

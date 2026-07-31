@@ -1,10 +1,29 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { MatSliderModule } from '@angular/material/slider';
+import {
+  CommonModule
+} from '@angular/common';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  MatSliderModule
+} from '@angular/material/slider';
+
+import {
+  FieldContainerComponent
+} from '../core/field-container/field-container.component';
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
+
 
 
 @Component({
@@ -17,9 +36,11 @@ import { Question } from '../../../features/forms/models/question.model';
 
     CommonModule,
 
-    FormsModule,
+    ReactiveFormsModule,
 
-    MatSliderModule
+    MatSliderModule,
+
+    FieldContainerComponent
 
   ],
 
@@ -31,16 +52,19 @@ import { Question } from '../../../features/forms/models/question.model';
 export class KScaleComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
 
-  value = 1;
+  @Input({required:true})
+  control!: FormControl;
 
 
 
-  get min(){
+
+
+  get min():number {
 
     return this.Question.minScale ?? 1;
 
@@ -48,7 +72,9 @@ export class KScaleComponent {
 
 
 
-  get max(){
+
+
+  get max():number {
 
     return this.Question.maxScale ?? 10;
 
@@ -56,7 +82,9 @@ export class KScaleComponent {
 
 
 
-  get step(){
+
+
+  get step():number {
 
     return this.Question.step ?? 1;
 

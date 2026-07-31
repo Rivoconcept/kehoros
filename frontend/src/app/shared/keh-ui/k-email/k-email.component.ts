@@ -1,10 +1,28 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { Question } from 'src/app/features/forms/models/question.model';
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  MatFormFieldModule
+} from '@angular/material/form-field';
+
+import {
+  MatInputModule
+} from '@angular/material/input';
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
 
 
 
@@ -18,7 +36,7 @@ import { Question } from 'src/app/features/forms/models/question.model';
 
     CommonModule,
 
-    FormsModule,
+    ReactiveFormsModule,
 
     MatFormFieldModule,
 
@@ -34,132 +52,59 @@ import { Question } from 'src/app/features/forms/models/question.model';
 export class KEmailComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
 
-  emailValue = '';
+  @Input({required:true})
+  control!: FormControl;
 
 
 
-  errorMessage:string | null = null;
-
-
-
-
-
-
-
-  ngOnInit():void {
-
-
-    this.emailValue =
-
-      this.Question.defaultValue ??
-
-      '';
-
-  }
-
-
-
-
-
-
-
-  updateEmail(value:string):void {
-
-
-    this.emailValue = value;
-
-
-
-    this.Question.defaultValue =
-
-      this.emailValue;
-
-
-
-    this.validate();
-
-
-  }
-
-
-
-
-
-
-
-  validate():void {
-
-
-    this.errorMessage = null;
-
-
-
+  get errorMessage(): string | null {
 
 
     if(
 
-      this.Question.required &&
+      !this.control ||
 
-      !this.emailValue
+      this.control.valid ||
+
+      !(
+        this.control.touched ||
+        this.control.dirty
+      )
 
     ){
 
-      this.errorMessage =
-        'Email is required';
-
-
-      return;
+      return null;
 
     }
 
 
 
+    if(this.control.hasError('required')){
 
-
-
-
-    if(!this.emailValue){
-
-      return;
+      return 'Email is required.';
 
     }
 
 
 
+    if(this.control.hasError('email')){
 
-
-
-
-    const emailRegex =
-
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
-
-
-
-
-
-    if(!emailRegex.test(this.emailValue)){
-
-
-      this.errorMessage =
-
-        this.Question.errorMessage ??
-
-        'Invalid email address';
-
+      return this.Question.errorMessage 
+        ?? 'Invalid email address.';
 
     }
+
+
+
+    return 'Invalid email.';
 
 
   }
-
 
 
 }

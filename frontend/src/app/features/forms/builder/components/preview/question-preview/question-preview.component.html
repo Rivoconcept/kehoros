@@ -118,15 +118,18 @@
 
 
 
+        @if(form){
 
-            <app-preview-renderer
+        <app-preview-renderer
 
-                [Question]="Question"
+            [Question]="Question"
 
-                [control]="getControl(Question.id)"
+            [control]="getControl(Question.id)"
 
-            >
-            </app-preview-renderer>
+        >
+        </app-preview-renderer>
+
+        }
 
 
 

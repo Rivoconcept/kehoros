@@ -1,37 +1,57 @@
-<div class="rating-field">
+<app-field-container
+
+    [Question]="Question"
+
+    [control]="control"
+
+>
 
 
-    <label class="title">
-
-        {{ Question.title || 'Rating' }}
-
-    </label>
+    <div class="rating-field">
 
 
-
-    <div class="stars">
-
-
-        @for(star of stars(); track $index){
+        <div class="stars">
 
 
-            <button
+            @for(star of stars(); track $index){
 
-                type="button"
 
-                class="star"
+                <button
 
-                [class.active]="$index < value"
+                    type="button"
 
-                [disabled]="Question.readOnly"
+                    class="star"
 
-                (click)="setRating($index)"
+                    [class.active]="$index < control.value"
 
-            >
+                    [disabled]="Question.readOnly"
 
-                ★
+                    (click)="setRating($index)"
 
-            </button>
+                >
+
+                    ★
+
+                </button>
+
+
+            }
+
+
+        </div>
+
+
+
+
+
+        @if(control.value){
+
+
+            <span class="value">
+
+                {{ control.value }} / {{ maxRating }}
+
+            </span>
 
 
         }
@@ -40,28 +60,4 @@
     </div>
 
 
-
-    @if(value){
-
-        <span class="value">
-
-            {{ value }} / {{ maxRating }}
-
-        </span>
-
-    }
-
-
-
-    @if(Question.helpText){
-
-        <small class="help">
-
-            {{ Question.helpText }}
-
-        </small>
-
-    }
-
-
-</div>
+</app-field-container>

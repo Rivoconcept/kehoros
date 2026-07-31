@@ -1,7 +1,27 @@
-import { Component, Input, ElementRef, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Input,
+  ElementRef,
+  ViewChild
+} from '@angular/core';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  FieldContainerComponent
+} from '../core/field-container/field-container.component';
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
+
 
 
 @Component({
@@ -12,7 +32,11 @@ import { Question } from '../../../features/forms/models/question.model';
 
   imports:[
 
-    CommonModule
+    CommonModule,
+
+    ReactiveFormsModule,
+
+    FieldContainerComponent
 
   ],
 
@@ -24,8 +48,13 @@ import { Question } from '../../../features/forms/models/question.model';
 export class KSignatureComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
+
+
+
+  @Input({required:true})
+  control!: FormControl;
 
 
 
@@ -36,11 +65,14 @@ export class KSignatureComponent {
 
   drawing = false;
 
+
   context!: CanvasRenderingContext2D;
 
 
 
-  ngAfterViewInit(){
+
+
+  ngAfterViewInit():void {
 
 
     const canvas =
@@ -60,7 +92,9 @@ export class KSignatureComponent {
 
 
 
-  startDrawing(event:MouseEvent){
+
+
+  startDrawing(event:MouseEvent):void {
 
 
     if(this.Question.readOnly){
@@ -89,7 +123,9 @@ export class KSignatureComponent {
 
 
 
-  draw(event:MouseEvent){
+
+
+  draw(event:MouseEvent):void {
 
 
     if(!this.drawing){
@@ -112,11 +148,16 @@ export class KSignatureComponent {
     this.context.stroke();
 
 
+    this.save();
+
+
   }
 
 
 
-  stopDrawing(){
+
+
+  stopDrawing():void {
 
 
     this.drawing = false;
@@ -126,7 +167,9 @@ export class KSignatureComponent {
 
 
 
-  clear(){
+
+
+  clear():void {
 
 
     if(this.Question.readOnly){
@@ -134,6 +177,7 @@ export class KSignatureComponent {
       return;
 
     }
+
 
 
     const canvas =
@@ -151,6 +195,33 @@ export class KSignatureComponent {
       canvas.height
 
     );
+
+
+    this.control.setValue(null);
+
+    this.control.markAsDirty();
+
+
+  }
+
+
+
+
+
+  save():void {
+
+
+    const image =
+
+      this.canvas.nativeElement.toDataURL(
+        'image/png'
+      );
+
+
+    this.control.setValue(image);
+
+
+    this.control.markAsDirty();
 
 
   }

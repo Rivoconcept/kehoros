@@ -1,10 +1,29 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import {
+  CommonModule
+} from '@angular/common';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  MatSlideToggleModule
+} from '@angular/material/slide-toggle';
+
+import {
+  FieldContainerComponent
+} from '../core/field-container/field-container.component';
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
+
 
 
 @Component({
@@ -17,9 +36,11 @@ import { Question } from '../../../features/forms/models/question.model';
 
     CommonModule,
 
-    FormsModule,
+    ReactiveFormsModule,
 
-    MatSlideToggleModule
+    MatSlideToggleModule,
+
+    FieldContainerComponent
 
   ],
 
@@ -31,12 +52,13 @@ import { Question } from '../../../features/forms/models/question.model';
 export class KSwitchComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
 
-  value = false;
+  @Input({required:true})
+  control!: FormControl;
 
 
 

@@ -1,7 +1,25 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  FieldContainerComponent
+} from '../core/field-container/field-container.component';
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
+
 
 
 @Component({
@@ -12,7 +30,11 @@ import { Question } from '../../../features/forms/models/question.model';
 
   imports:[
 
-    CommonModule
+    CommonModule,
+
+    ReactiveFormsModule,
+
+    FieldContainerComponent
 
   ],
 
@@ -24,20 +46,25 @@ import { Question } from '../../../features/forms/models/question.model';
 export class KRatingComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
 
-  value = 0;
+  @Input({required:true})
+  control!: FormControl;
 
 
 
-  get maxRating(){
+
+
+  get maxRating():number {
 
     return this.Question.maxScale ?? 5;
 
   }
+
+
 
 
 
@@ -49,13 +76,21 @@ export class KRatingComponent {
 
 
 
-  setRating(index:number){
+
+
+  setRating(index:number):void {
+
 
     if(!this.Question.readOnly){
 
-      this.value = index + 1;
+      this.control.setValue(index + 1);
+
+      this.control.markAsDirty();
+
+      this.control.markAsTouched();
 
     }
+
 
   }
 

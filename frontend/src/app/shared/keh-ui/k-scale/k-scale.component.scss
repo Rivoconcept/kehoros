@@ -16,17 +16,9 @@
 
     display:flex;
 
-    justify-content:space-between;
+    justify-content:flex-end;
 
     align-items:center;
-
-}
-
-
-
-.title {
-
-    font-weight:600;
 
 }
 
@@ -57,15 +49,5 @@ mat-slider {
     color:#777;
 
     font-size:12px;
-
-}
-
-
-
-.help {
-
-    color:#777;
-
-    font-size:13px;
 
 }

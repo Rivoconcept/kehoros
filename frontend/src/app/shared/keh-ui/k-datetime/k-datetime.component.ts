@@ -1,11 +1,29 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import {
+  CommonModule
+} from '@angular/common';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  MatFormFieldModule
+} from '@angular/material/form-field';
+
+import {
+  MatInputModule
+} from '@angular/material/input';
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
+
 
 
 @Component({
@@ -18,7 +36,7 @@ import { Question } from '../../../features/forms/models/question.model';
 
     CommonModule,
 
-    FormsModule,
+    ReactiveFormsModule,
 
     MatFormFieldModule,
 
@@ -34,13 +52,62 @@ import { Question } from '../../../features/forms/models/question.model';
 export class KDatetimeComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
+  @Input({required:true})
+  control!: FormControl;
 
-  value = '';
 
+
+  get errorMessage():string | null {
+
+
+    if(
+
+      !this.control ||
+
+      this.control.valid ||
+
+      !this.control.touched
+
+    ){
+
+      return null;
+
+    }
+
+
+
+    if(this.control.hasError('required')){
+
+      return 'Date and time is required';
+
+    }
+
+
+
+    if(this.control.hasError('min')){
+
+      return 'Date and time is too old';
+
+    }
+
+
+
+    if(this.control.hasError('max')){
+
+      return 'Date and time is too recent';
+
+    }
+
+
+
+    return 'Invalid date and time';
+
+
+  }
 
 
 }

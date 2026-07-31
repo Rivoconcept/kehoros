@@ -1,51 +1,29 @@
-<div class="text-field">
+<app-field-container
+
+    [Question]="Question"
+
+    [control]="control"
+
+>
 
 
-    <mat-form-field appearance="outline">
+    <input
+
+        matInput
+
+        [formControl]="control"
+
+        [placeholder]="Question.placeholder || ''"
+
+        [readonly]="Question.readOnly ?? false"
+
+        [attr.minlength]="Question.minLength ?? null"
+
+        [attr.maxlength]="Question.maxLength ?? null"
+
+        [pattern]="Question.pattern ?? ''"
+
+    >
 
 
-        <mat-label>
-
-            {{ Question.title || 'Text' }}
-
-        </mat-label>
-
-
-
-        <input
-
-            matInput
-
-            [(ngModel)]="value"
-
-            [placeholder]="Question.placeholder || ''"
-
-            [readonly]="Question.readOnly"
-
-            [required]="Question.required"
-
-            [attr.minlength]="Question.minLength || null"
-
-            [attr.maxlength]="Question.maxLength || null"
-
-            [pattern]="Question.pattern ?? ''"
-
-        >
-
-
-    </mat-form-field>
-
-
-
-    @if(Question.helpText){
-
-        <small class="help">
-
-            {{ Question.helpText }}
-
-        </small>
-
-    }
-
-
-</div>
+</app-field-container>

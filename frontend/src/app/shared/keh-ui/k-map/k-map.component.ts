@@ -1,6 +1,15 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Question } from 'src/app/features/forms/models/question.model';
+import {
+  Component,
+  Input
+} from '@angular/core';
+
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  Question
+} from 'src/app/features/forms/models/question.model';
 
 
 
@@ -24,7 +33,7 @@ import { Question } from 'src/app/features/forms/models/question.model';
 export class KMapComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
@@ -36,9 +45,9 @@ export class KMapComponent {
 
     return (
 
-      this.Question.defaultValue?.latitude ??
+      this.Question?.defaultValue?.latitude ??
 
-      this.Question.latitude ??
+      this.Question?.latitude ??
 
       -18.8792
 
@@ -58,9 +67,9 @@ export class KMapComponent {
 
     return (
 
-      this.Question.defaultValue?.longitude ??
+      this.Question?.defaultValue?.longitude ??
 
-      this.Question.longitude ??
+      this.Question?.longitude ??
 
       47.5079
 
@@ -80,7 +89,7 @@ export class KMapComponent {
 
     return (
 
-      this.Question.zoom ??
+      this.Question?.zoom ??
 
       13
 
@@ -100,7 +109,7 @@ export class KMapComponent {
 
     return (
 
-      this.Question.mapProvider ??
+      this.Question?.mapProvider ??
 
       'openstreetmap'
 
@@ -119,6 +128,7 @@ export class KMapComponent {
 
 
     const url =
+
 
       `https://www.openstreetmap.org/?mlat=${this.latitude}` +
 
@@ -142,7 +152,6 @@ export class KMapComponent {
 
 
   }
-
 
 
 }

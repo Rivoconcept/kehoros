@@ -1,7 +1,21 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
+
 
 
 @Component({
@@ -12,7 +26,9 @@ import { Question } from '../../../features/forms/models/question.model';
 
   imports:[
 
-    CommonModule
+    CommonModule,
+
+    ReactiveFormsModule
 
   ],
 
@@ -24,22 +40,38 @@ import { Question } from '../../../features/forms/models/question.model';
 export class KFileComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
 
-  files: File[] = [];
+  @Input({required:true})
+  control!: FormControl;
 
 
 
-  onFileChange(event:Event){
+  get files(): File[] {
+
+
+    return this.control?.value ?? [];
+
+
+  }
+
+
+
+
+
+  onFileChange(event:Event):void {
 
 
     const input = event.target as HTMLInputElement;
 
 
+
     if(!input.files){
+
+      this.control.setValue([]);
 
       return;
 
@@ -47,7 +79,47 @@ export class KFileComponent {
 
 
 
-    this.files = Array.from(input.files);
+
+
+    const selectedFiles = Array.from(
+      input.files
+    );
+
+
+
+
+
+    this.control.setValue(
+      selectedFiles
+    );
+
+
+
+    this.control.markAsDirty();
+
+    this.control.markAsTouched();
+
+
+  }
+
+
+
+
+
+  removeFile(file:File):void {
+
+
+    const updatedFiles = this.files.filter(
+
+      f => f !== file
+
+    );
+
+
+
+    this.control.setValue(
+      updatedFiles
+    );
 
 
   }

@@ -1,7 +1,21 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
+
 
 
 @Component({
@@ -12,7 +26,9 @@ import { Question } from '../../../features/forms/models/question.model';
 
   imports:[
 
-    CommonModule
+    CommonModule,
+
+    ReactiveFormsModule
 
   ],
 
@@ -24,20 +40,26 @@ import { Question } from '../../../features/forms/models/question.model';
 export class KImageComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
 
-  images: string[] = [];
+  @Input({required:true})
+  control!: FormControl;
 
 
 
-  onImageChange(event:Event){
+  previews:string[] = [];
 
 
-    const input =
-      event.target as HTMLInputElement;
+
+
+
+  onImageChange(event:Event):void {
+
+
+    const input = event.target as HTMLInputElement;
 
 
 
@@ -49,20 +71,26 @@ export class KImageComponent {
 
 
 
-    this.images = [];
+
+    this.previews = [];
 
 
 
-    Array.from(input.files).forEach(file => {
+    const files = Array.from(input.files);
+
+
+
+    files.forEach(file => {
 
 
       const reader = new FileReader();
 
 
+
       reader.onload = () => {
 
 
-        this.images.push(
+        this.previews.push(
           reader.result as string
         );
 
@@ -70,10 +98,22 @@ export class KImageComponent {
       };
 
 
+
       reader.readAsDataURL(file);
 
 
     });
+
+
+
+
+    this.control.setValue(files);
+
+
+    this.control.markAsDirty();
+
+
+    this.control.markAsTouched();
 
 
   }

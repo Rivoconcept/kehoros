@@ -1,10 +1,34 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  OnInit
+} from '@angular/core';
 
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { Question } from 'src/app/features/forms/models/question.model';
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  MatInputModule
+} from '@angular/material/input';
+
+import {
+  MatFormFieldModule
+} from '@angular/material/form-field';
+
+
+import {
+  BaseFieldComponent
+} from '../core/base-field/base-field.component';
+
+
+import {
+  FieldErrorsComponent
+} from '../core/field-errors/field-errors.component';
+
 
 
 @Component({
@@ -17,11 +41,13 @@ import { Question } from 'src/app/features/forms/models/question.model';
 
     CommonModule,
 
-    FormsModule,
+    ReactiveFormsModule,
 
     MatInputModule,
 
-    MatFormFieldModule
+    MatFormFieldModule,
+
+    FieldErrorsComponent
 
   ],
 
@@ -30,44 +56,35 @@ import { Question } from 'src/app/features/forms/models/question.model';
   styleUrl:'./k-address.component.scss'
 
 })
-export class KAddressComponent {
-
-
-  @Input()
-  Question!: Question;
+export class KAddressComponent 
+extends BaseFieldComponent
+implements OnInit {
 
 
 
   address = {
 
     street:'',
-
     city:'',
-
     state:'',
-
     zip:'',
-
     country:''
 
   };
 
 
 
-  errorMessage:string | null = null;
-
-
 
   ngOnInit():void {
 
 
-    if(this.Question.defaultValue){
+    if(this.control.value){
 
       this.address = {
 
         ...this.address,
 
-        ...this.Question.defaultValue
+        ...this.control.value
 
       };
 
@@ -75,6 +92,8 @@ export class KAddressComponent {
 
 
   }
+
+
 
 
 
@@ -105,23 +124,32 @@ export class KAddressComponent {
 
 
 
-  update():void {
+
+  update(){
+
+
+    let value = {
+
+      ...this.address
+
+    };
+
 
 
     if(this.Question.trimValue){
 
 
-      this.address = {
+      value = {
 
-        street:this.address.street.trim(),
+        street:value.street.trim(),
 
-        city:this.address.city.trim(),
+        city:value.city.trim(),
 
-        state:this.address.state.trim(),
+        state:value.state.trim(),
 
-        zip:this.address.zip.trim(),
+        zip:value.zip.trim(),
 
-        country:this.address.country.trim()
+        country:value.country.trim()
 
       };
 
@@ -130,72 +158,14 @@ export class KAddressComponent {
 
 
 
-    this.Question.defaultValue = {
-
-      ...this.address
-
-    };
+    this.address = value;
 
 
 
-    this.validate();
+    this.control.setValue(value);
 
 
-  }
-
-
-
-
-
-
-  validate():void {
-
-
-    this.errorMessage = null;
-
-
-
-    if(
-
-      this.Question.required &&
-
-      !this.address.street &&
-
-      !this.address.city &&
-
-      !this.address.country
-
-    ){
-
-      this.errorMessage =
-        'Address is required';
-
-      return;
-
-    }
-
-
-
-
-
-    if(
-
-      this.address.zip &&
-
-      !/^[0-9A-Za-z -]{3,10}$/.test(
-
-        this.address.zip
-
-      )
-
-    ){
-
-      this.errorMessage =
-        'Invalid zip code';
-
-      return;
-
-    }
+    this.control.markAsDirty();
 
 
   }
@@ -205,13 +175,43 @@ export class KAddressComponent {
 
 
 
-  onBlur():void {
+  onChange(
+    field:keyof typeof this.address,
+    event:Event
+  ){
+
+
+    const input =
+      event.target as HTMLInputElement;
+
+
+
+    this.address[field] =
+      input.value;
+
 
 
     this.update();
 
 
   }
+
+
+
+
+
+
+  onBlur(){
+
+
+    this.update();
+
+
+    this.control.markAsTouched();
+
+
+  }
+
 
 
 }

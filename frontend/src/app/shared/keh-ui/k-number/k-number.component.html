@@ -12,23 +12,22 @@
 
 
 
+
         <input
 
             matInput
 
             type="number"
 
-            [(ngModel)]="value"
+            [formControl]="control"
 
             [placeholder]="Question.placeholder || ''"
 
             [readonly]="Question.readOnly"
 
-            [required]="Question.required"
+            [attr.min]="Question.minValue ?? null"
 
-            [min]="Question.minValue ?? null"
-
-            [max]="Question.maxValue ?? null"
+            [attr.max]="Question.maxValue ?? null"
 
         >
 
@@ -37,13 +36,35 @@
 
 
 
+
+
+
+    @if(errorMessage){
+
+
+        <small class="validation-error">
+
+            {{ errorMessage }}
+
+        </small>
+
+
+    }
+
+
+
+
+
+
     @if(Question.helpText){
+
 
         <small class="help">
 
             {{ Question.helpText }}
 
         </small>
+
 
     }
 

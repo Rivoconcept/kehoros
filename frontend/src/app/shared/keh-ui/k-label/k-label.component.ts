@@ -1,6 +1,15 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Question } from 'src/app/features/forms/models/question.model';
+import {
+  Component,
+  Input
+} from '@angular/core';
+
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  Question
+} from 'src/app/features/forms/models/question.model';
 
 
 
@@ -24,14 +33,14 @@ import { Question } from 'src/app/features/forms/models/question.model';
 export class KLabelComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
 
 
 
-  get labelText():string {
+  get labelText(): string {
 
 
     return (
@@ -51,7 +60,7 @@ export class KLabelComponent {
 
 
 
-  get labelColor():string | null {
+  get labelColor(): string | null {
 
 
     return this.Question?.color ?? null;
@@ -63,7 +72,7 @@ export class KLabelComponent {
 
 
 
-  get labelStyle():string {
+  get labelStyle(): string {
 
 
     return this.Question?.labelStyle ?? '';
@@ -75,14 +84,13 @@ export class KLabelComponent {
 
 
 
-  get cssClass():string {
+  get cssClass(): string {
 
 
     return this.Question?.cssClass ?? '';
 
 
   }
-
 
 
 }

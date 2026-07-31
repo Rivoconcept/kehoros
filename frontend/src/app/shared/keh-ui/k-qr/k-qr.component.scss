@@ -4,19 +4,11 @@
 
     display:flex;
 
-    flex-direction:column;
-
-    gap:10px;
+    justify-content:center;
 
 }
 
 
-
-.title {
-
-    font-weight:600;
-
-}
 
 
 
@@ -27,6 +19,8 @@
     justify-content:center;
 
 }
+
+
 
 
 
@@ -56,11 +50,15 @@
 
 
 
+
+
 .icon {
 
     font-size:60px;
 
 }
+
+
 
 
 
@@ -71,15 +69,5 @@
     color:#666;
 
     text-align:center;
-
-}
-
-
-
-.help {
-
-    color:#777;
-
-    font-size:13px;
 
 }

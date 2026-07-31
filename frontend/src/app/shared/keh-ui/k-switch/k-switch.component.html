@@ -1,11 +1,17 @@
-<div class="switch-field">
+<app-field-container
+
+    [Question]="Question"
+
+    [control]="control"
+
+>
 
 
     <mat-slide-toggle
 
-        [(ngModel)]="value"
+        [formControl]="control"
 
-        [disabled]="Question.readOnly === true"
+        [disabled]="Question.readOnly ?? false"
 
     >
 
@@ -14,16 +20,4 @@
     </mat-slide-toggle>
 
 
-
-    @if(Question.helpText){
-
-        <small class="help">
-
-            {{ Question.helpText }}
-
-        </small>
-
-    }
-
-
-</div>
+</app-field-container>

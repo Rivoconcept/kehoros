@@ -1,119 +1,91 @@
-<div class="range-field">
+<app-field-container
+
+    [Question]="Question"
+
+    [control]="control"
+
+>
 
 
-    <div class="range-header">
+    <div class="range-field">
 
 
-        <label>
-
-            {{ Question.title || 'Range' }}
-
-        </label>
+        <div class="range-header">
 
 
+            <span>
 
-        <span>
+                {{ control.value }}
 
-            {{ value }}
-
-        </span>
+            </span>
 
 
-    </div>
+        </div>
 
 
 
 
 
+        <mat-slider
 
-    <mat-slider
+            [min]="min"
 
-        [min]="min"
+            [max]="max"
 
-        [max]="max"
+            [step]="step"
 
-        [step]="step"
-
-        [disabled]="Question.readOnly"
-
-    >
-
-
-        <input
-
-            matSliderThumb
-
-            [(ngModel)]="value"
-
-            (ngModelChange)="updateValue()"
+            [disabled]="Question.readOnly"
 
         >
 
 
-    </mat-slider>
+            <input
+
+                matSliderThumb
+
+                [formControl]="control"
+
+            >
+
+
+        </mat-slider>
 
 
 
 
 
 
-    <div class="range-info">
+
+        <div class="range-info">
 
 
-        <span>
+            <span>
 
-            Min: {{min}}
+                Min: {{min}}
 
-        </span>
-
-
-
-        <span>
-
-            Max: {{max}}
-
-        </span>
+            </span>
 
 
 
-        <span>
+            <span>
 
-            Step: {{step}}
+                Max: {{max}}
 
-        </span>
+            </span>
+
+
+
+            <span>
+
+                Step: {{step}}
+
+            </span>
+
+
+        </div>
 
 
     </div>
 
 
-
-
-
-
-    @if(errorMessage){
-
-        <div class="validation-error">
-
-            {{errorMessage}}
-
-        </div>
-
-    }
-
-
-
-
-
-    @if(Question.helpText){
-
-        <small>
-
-            {{Question.helpText}}
-
-        </small>
-
-    }
-
-
-
-</div>
+</app-field-container>

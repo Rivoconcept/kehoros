@@ -1,11 +1,33 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import {
+  CommonModule
+} from '@angular/common';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  MatFormFieldModule
+} from '@angular/material/form-field';
+
+import {
+  MatInputModule
+} from '@angular/material/input';
+
+import {
+  FieldErrorsComponent
+} from '../../keh-ui/core/field-errors/field-errors.component';
+
+import {
+  Question
+} from 'src/app/features/forms/models/question.model';
+
 
 
 @Component({
@@ -18,11 +40,13 @@ import { Question } from '../../../features/forms/models/question.model';
 
     CommonModule,
 
-    FormsModule,
+    ReactiveFormsModule,
 
     MatFormFieldModule,
 
-    MatInputModule
+    MatInputModule,
+
+    FieldErrorsComponent
 
   ],
 
@@ -34,13 +58,12 @@ import { Question } from '../../../features/forms/models/question.model';
 export class KDateComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
-
-  value = '';
-
+  @Input({required:true})
+  control!: FormControl;
 
 
 }

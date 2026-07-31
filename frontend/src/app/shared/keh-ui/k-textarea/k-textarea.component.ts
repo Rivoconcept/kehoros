@@ -1,13 +1,34 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import {
+  CommonModule
+} from '@angular/common';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
 
-import { FormControl } from "@angular/forms";
+import {
+  MatFormFieldModule
+} from '@angular/material/form-field';
+
+import {
+  MatInputModule
+} from '@angular/material/input';
+
+import {
+  FieldContainerComponent
+} from '../core/field-container/field-container.component';
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
+
+
 
 @Component({
 
@@ -19,11 +40,13 @@ import { FormControl } from "@angular/forms";
 
     CommonModule,
 
-    FormsModule,
+    ReactiveFormsModule,
 
     MatFormFieldModule,
 
-    MatInputModule
+    MatInputModule,
+
+    FieldContainerComponent
 
   ],
 
@@ -35,13 +58,13 @@ import { FormControl } from "@angular/forms";
 export class KTextareaComponent {
 
 
-    @Input()
-    Question!: Question;
+  @Input({required:true})
+  Question!: Question;
 
 
-    @Input()
-    control!: FormControl;
-    value = '';
+
+  @Input({required:true})
+  control!: FormControl;
 
 
 

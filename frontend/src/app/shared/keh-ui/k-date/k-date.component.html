@@ -18,7 +18,7 @@
 
             type="date"
 
-            [(ngModel)]="value"
+            [formControl]="control"
 
             [readonly]="Question.readOnly"
 
@@ -32,6 +32,17 @@
 
 
     </mat-form-field>
+
+
+
+    <app-field-errors
+
+        [control]="control"
+
+        [Question]="Question">
+
+    </app-field-errors>
+
 
 
 

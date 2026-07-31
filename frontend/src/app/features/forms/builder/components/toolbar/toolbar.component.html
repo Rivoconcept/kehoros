@@ -1,161 +1,76 @@
-<div 
-class="toolbar"
-(click)="closeFieldMenu()"
->
-
-
+<div class="toolbar">
 
     <div class="title">
-
-
         <h2>
-
             {{ builder.template?.title || 'Untitled Form' }}
-
         </h2>
-
-
     </div>
-
-
-
-
 
     <div class="actions">
 
-
-
         <div class="add-container">
 
-
             <button
-
                 class="add-field-btn"
+                (click)="toggleFieldMenu(); $event.stopPropagation()">
 
-                (click)="toggleFieldMenu(); $event.stopPropagation()"
+                <mat-icon>add</mat-icon>
 
-            >
-
-                <mat-icon>
-                    add
-                </mat-icon>
-
-
-                <span>
-                    Add field
-                </span>
-
+                <span>Add field</span>
 
             </button>
 
-
-
-
-
             @if(showFieldMenu){
 
+                <!-- Fond sombre qui ferme automatiquement le menu -->
+                <div
+                    class="popup-overlay"
+                    (click)="closeFieldMenu()">
+                </div>
 
-            <div
+                <!-- Fenêtre de la palette -->
+                <div
+                    class="field-popup"
+                    (click)="$event.stopPropagation()">
 
-            class="field-popup"
+                    <app-question-palette
+                        (questionAdded)="addQuestion($event)">
+                    </app-question-palette>
 
-            (click)="$event.stopPropagation()"
-
-            >
-
-
-                <app-question-palette
-
-                    (questionAdded)="addQuestion($event)"
-
-                >
-
-                </app-question-palette>
-
-
-            </div>
-
+                </div>
 
             }
 
-
         </div>
 
-
-
-
-
-
-        <button
-            (click)="save()"
-        >
-
+        <button (click)="save()">
             Save
-
         </button>
 
-
-
-
-
-
-        <button
-            (click)="export()"
-        >
-
+        <button (click)="export()">
             Export JSON
-
         </button>
-
-
-
-
-
 
         <label class="import-button">
 
-
             Import JSON
 
-
             <input
-
                 type="file"
-
                 accept=".json"
-
                 hidden
-
-                (change)="import($event)"
-
-            >
-
+                (change)="import($event)">
 
         </label>
 
-
-
-
-
-
-
         <button
-
             class="danger"
-
-            (click)="newTemplate()"
-
-        >
+            (click)="newTemplate()">
 
             New
 
-
         </button>
 
-
-
-
     </div>
-
 
 </div>

@@ -2,90 +2,12 @@
 
     width:100%;
 
-    display:flex;
-
-    flex-direction:column;
-
-    gap:10px;
-
 }
 
-.full-width{
+
+
+mat-form-field {
 
     width:100%;
-
-}
-
-mat-form-field{
-
-    width:100%;
-
-}
-
-.help{
-
-    color:#757575;
-
-    font-size:13px;
-
-    margin-left:4px;
-
-}
-
-.validation-error{
-
-    color:#d32f2f;
-
-    font-size:13px;
-
-    font-weight:500;
-
-    margin-left:4px;
-
-}
-
-.open-link{
-
-    align-self:flex-start;
-
-    padding:8px 16px;
-
-    border:none;
-
-    border-radius:8px;
-
-    cursor:pointer;
-
-    background:#1976d2;
-
-    color:white;
-
-    font-weight:600;
-
-    transition:.2s;
-
-}
-
-.open-link:hover{
-
-    background:#1565c0;
-
-}
-
-.open-link:disabled{
-
-    opacity:.5;
-
-    cursor:not-allowed;
-
-}
-
-@media(max-width:768px){
-
-    .open-link{
-
-        width:100%;
-
-    }
 
 }

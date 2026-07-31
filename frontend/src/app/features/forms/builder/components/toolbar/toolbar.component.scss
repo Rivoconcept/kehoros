@@ -133,53 +133,38 @@
 
 
 /* Popup Add Field */
-
 .field-popup {
 
-
-    position:absolute;
-
-
-    top:55px;
-
-
-    right:0;
-
+    position: fixed;
 
     z-index:5000;
 
 
-    width:850px;
+    top: 90px;
 
+    left: 50%;
 
-    max-width:90vw;
+    transform: translateX(-50%);
 
+    z-index: 5000;
 
-    max-height:75vh;
+    width: min(1100px, 95vw);
 
+    max-height: calc(100vh - 120px);
 
-    overflow:auto;
+    overflow: auto;
 
+    background: white;
 
-    background:white;
+    border: 1px solid var(--border);
 
+    border-radius: 16px;
 
-    border:1px solid var(--border);
+    padding: 20px;
 
-
-    border-radius:16px;
-
-
-    padding:20px;
-
-
-    box-shadow:
-
-        0 15px 40px rgba(0,0,0,.2);
-
+    box-shadow: 0 15px 40px rgba(0,0,0,.2);
 
 }
-
 
 
 
@@ -195,68 +180,15 @@
 
 
 
+.popup-overlay{
 
+    position:fixed;
 
-@media(max-width:1200px){
+    inset:0;
 
+    z-index:4999;
 
-    .field-popup {
-
-        width:700px;
-
-    }
-
+    background:transparent;
 
 }
 
-
-
-
-
-@media(max-width:900px){
-
-
-    .toolbar {
-
-
-        flex-direction:column;
-
-
-        align-items:flex-start;
-
-
-        gap:15px;
-
-
-    }
-
-
-
-
-    .actions {
-
-
-        width:100%;
-
-
-    }
-
-
-
-
-    .field-popup {
-
-
-        left:0;
-
-
-        right:auto;
-
-
-        width:95vw;
-
-
-    }
-
-
-}

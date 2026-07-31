@@ -1,7 +1,16 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
+
 
 
 @Component({
@@ -24,8 +33,9 @@ import { Question } from '../../../features/forms/models/question.model';
 export class KParagraphComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
+
 
 
 }

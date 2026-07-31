@@ -18,7 +18,7 @@
 
             type="datetime-local"
 
-            [(ngModel)]="value"
+            [formControl]="control"
 
             [readonly]="Question.readOnly"
 
@@ -28,6 +28,20 @@
 
 
     </mat-form-field>
+
+
+
+
+    @if(errorMessage){
+
+        <small class="validation-error">
+
+            {{ errorMessage }}
+
+        </small>
+
+    }
+
 
 
 

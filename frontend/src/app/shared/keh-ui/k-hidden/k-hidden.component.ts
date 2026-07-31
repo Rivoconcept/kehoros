@@ -1,6 +1,20 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Question } from 'src/app/features/forms/models/question.model';
+import {
+  Component,
+  Input
+} from '@angular/core';
+
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  Question
+} from 'src/app/features/forms/models/question.model';
 
 
 
@@ -12,7 +26,9 @@ import { Question } from 'src/app/features/forms/models/question.model';
 
   imports:[
 
-    CommonModule
+    CommonModule,
+
+    ReactiveFormsModule
 
   ],
 
@@ -24,22 +40,13 @@ import { Question } from 'src/app/features/forms/models/question.model';
 export class KHiddenComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
 
-
-
-  get value(): any {
-
-
-    return this.Question?.defaultValue ?? '';
-
-
-  }
-
-
+  @Input({required:true})
+  control!: FormControl;
 
 
 

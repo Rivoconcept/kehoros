@@ -1,84 +1,81 @@
-<div class="scale-field">
+<app-field-container
+
+    [Question]="Question"
+
+    [control]="control"
+
+>
 
 
-    <div class="header">
+    <div class="scale-field">
 
 
-        <span class="title">
-
-            {{ Question.title || 'Scale' }}
-
-        </span>
+        <div class="header">
 
 
+            <span class="value">
 
-        <span class="value">
+                {{ control.value }}
 
-            {{ value }}
-
-        </span>
+            </span>
 
 
-    </div>
+        </div>
 
 
 
-    <mat-slider
-
-        [min]="min"
-
-        [max]="max"
-
-        [step]="step"
-
-        [disabled]="Question.readOnly"
-
-    >
 
 
-        <input
+        <mat-slider
 
-            matSliderThumb
+            [min]="min"
 
-            [(ngModel)]="value"
+            [max]="max"
+
+            [step]="step"
+
+            [disabled]="Question.readOnly"
 
         >
 
 
-    </mat-slider>
+            <input
+
+                matSliderThumb
+
+                [formControl]="control"
+
+            >
+
+
+        </mat-slider>
 
 
 
-    <div class="labels">
 
 
-        <span>
-
-            {{min}}
-
-        </span>
+        <div class="labels">
 
 
-        <span>
+            <span>
 
-            {{max}}
+                {{min}}
 
-        </span>
+            </span>
+
+
+
+            <span>
+
+                {{max}}
+
+            </span>
+
+
+        </div>
 
 
     </div>
 
 
-
-    @if(Question.helpText){
-
-        <small class="help">
-
-            {{ Question.helpText }}
-
-        </small>
-
-    }
-
-
-</div>
+</app-field-container>

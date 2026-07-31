@@ -1,72 +1,62 @@
-<mat-form-field
-
-    appearance="outline"
-
-    class="full"
-
->
+<div class="email-field">
 
 
-    <mat-label>
+    <mat-form-field appearance="outline">
 
-        {{Question.title || 'Email'}}
 
-    </mat-label>
+        <mat-label>
+
+            {{ Question.title || 'Email' }}
+
+        </mat-label>
 
 
 
 
+        <input
 
-    <input
+            matInput
 
-        matInput
+            type="email"
 
-        type="email"
+            [formControl]="control"
 
-        [value]="emailValue"
+            [placeholder]="Question.placeholder || 'example@email.com'"
 
-        (input)="updateEmail($any($event.target).value)"
+            [readonly]="Question.readOnly"
 
-        [placeholder]="Question.placeholder || 'example@email.com'"
-
-        [readonly]="Question.readOnly"
-
-        [required]="Question.required"
-
-    >
+        >
 
 
-
-</mat-form-field>
+    </mat-form-field>
 
 
 
 
 
+    @if(errorMessage){
+
+        <small class="validation-error">
+
+            {{errorMessage}}
+
+        </small>
+
+    }
 
 
-@if(errorMessage){
 
-<div class="validation-error">
 
-    {{errorMessage}}
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{Question.helpText}}
+
+        </small>
+
+    }
+
 
 </div>
-
-}
-
-
-
-
-
-
-
-@if(Question.helpText){
-
-<div class="help">
-
-    {{Question.helpText}}
-
-</div>
-
-}

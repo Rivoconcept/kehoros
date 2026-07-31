@@ -6,7 +6,7 @@
 
         <mat-label>
 
-            {{Question.title || 'Color'}}
+            {{ Question.title || 'Color' }}
 
         </mat-label>
 
@@ -27,6 +27,7 @@
 
 
     </mat-form-field>
+
 
 
 
@@ -73,15 +74,15 @@
 
 
 
-    @if(errorMessage){
+    <app-field-errors
 
-        <div class="validation-error">
+        [control]="control"
 
-            {{errorMessage}}
+        [Question]="Question">
 
-        </div>
+    </app-field-errors>
 
-    }
+
 
 
 
@@ -91,7 +92,7 @@
 
         <small class="help">
 
-            {{Question.helpText}}
+            {{ Question.helpText }}
 
         </small>
 

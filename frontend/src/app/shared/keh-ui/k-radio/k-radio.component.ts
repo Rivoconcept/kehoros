@@ -1,10 +1,29 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { MatRadioModule } from '@angular/material/radio';
+import {
+  CommonModule
+} from '@angular/common';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  MatRadioModule
+} from '@angular/material/radio';
+
+import {
+  FieldContainerComponent
+} from '../core/field-container/field-container.component';
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
+
 
 
 @Component({
@@ -17,9 +36,11 @@ import { Question } from '../../../features/forms/models/question.model';
 
     CommonModule,
 
-    FormsModule,
+    ReactiveFormsModule,
 
-    MatRadioModule
+    MatRadioModule,
+
+    FieldContainerComponent
 
   ],
 
@@ -31,13 +52,13 @@ import { Question } from '../../../features/forms/models/question.model';
 export class KRadioComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
 
-  value:any = '';
-
+  @Input({required:true})
+  control!: FormControl;
 
 
 }

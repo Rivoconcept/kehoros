@@ -1,12 +1,31 @@
-import { Component, Input } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 
-import { FormsModule } from '@angular/forms';
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
 
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { Question } from 'src/app/features/forms/models/question.model';
+import {
+  MatFormFieldModule
+} from '@angular/material/form-field';
+
+import {
+  MatInputModule
+} from '@angular/material/input';
+
+import {
+  MatSelectModule
+} from '@angular/material/select';
+
+import {
+  Question
+} from 'src/app/features/forms/models/question.model';
 
 
 
@@ -20,7 +39,7 @@ import { Question } from 'src/app/features/forms/models/question.model';
 
     CommonModule,
 
-    FormsModule,
+    ReactiveFormsModule,
 
     MatFormFieldModule,
 
@@ -35,11 +54,17 @@ import { Question } from 'src/app/features/forms/models/question.model';
   styleUrl:'./k-phone.component.scss'
 
 })
-export class KPhoneComponent {
+export class KPhoneComponent implements OnInit {
+
 
 
   @Input()
   Question!: Question;
+
+
+
+  @Input()
+  control!: FormControl;
 
 
 
@@ -59,42 +84,35 @@ export class KPhoneComponent {
 
   countries = [
 
-
     {
       code:'+261',
       name:'Madagascar'
     },
-
 
     {
       code:'+33',
       name:'France'
     },
 
-
     {
       code:'+1',
       name:'USA'
     },
-
 
     {
       code:'+44',
       name:'UK'
     },
 
-
     {
       code:'+49',
       name:'Germany'
     },
 
-
     {
       code:'+81',
       name:'Japan'
     }
-
 
   ];
 
@@ -108,20 +126,31 @@ export class KPhoneComponent {
 
 
     this.selectedCountry =
-
-      this.Question.countryCode ??
-
-      '+261';
+      this.Question.countryCode ?? '+261';
 
 
 
-
-    this.phoneValue =
-
+    const defaultValue =
+      this.control?.value ??
       this.Question.defaultValue ??
-
       '';
 
+
+
+    if(defaultValue.startsWith('+')){
+
+      this.phoneValue =
+        defaultValue.replace(
+          this.selectedCountry,
+          ''
+        );
+
+    }
+    else{
+
+      this.phoneValue = defaultValue;
+
+    }
 
 
   }
@@ -172,11 +201,21 @@ export class KPhoneComponent {
   updateValue():void {
 
 
-    this.Question.defaultValue =
+    const value =
 
       this.selectedCountry +
 
       this.phoneValue;
+
+
+
+    if(this.control){
+
+      this.control.setValue(value);
+
+      this.control.markAsDirty();
+
+    }
 
 
 
@@ -280,13 +319,10 @@ export class KPhoneComponent {
 
         'Invalid phone number';
 
-
     }
 
 
   }
-
-
 
 
 

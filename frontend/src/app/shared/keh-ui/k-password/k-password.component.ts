@@ -8,30 +8,30 @@ import {
 } from '@angular/common';
 
 import {
-  FormsModule
+  ReactiveFormsModule,
+  FormControl
 } from '@angular/forms';
 
 import {
   MatFormFieldModule
-}
-from '@angular/material/form-field';
+} from '@angular/material/form-field';
 
 import {
   MatInputModule
-}
-from '@angular/material/input';
+} from '@angular/material/input';
 
 import {
   MatIconModule
-}
-from '@angular/material/icon';
+} from '@angular/material/icon';
 
 import {
   MatButtonModule
-}
-from '@angular/material/button';
-import { Question } from 'src/app/features/forms/models/question.model';
+} from '@angular/material/button';
 
+
+import {
+  Question
+} from 'src/app/features/forms/models/question.model';
 
 
 
@@ -45,7 +45,7 @@ import { Question } from 'src/app/features/forms/models/question.model';
 
     CommonModule,
 
-    FormsModule,
+    ReactiveFormsModule,
 
     MatFormFieldModule,
 
@@ -65,38 +65,18 @@ import { Question } from 'src/app/features/forms/models/question.model';
 export class KPasswordComponent {
 
 
-  @Input()
-  Question!:Question;
+
+  @Input({required:true})
+  Question!: Question;
 
 
 
-  passwordValue = '';
+  @Input({required:true})
+  control!: FormControl;
 
 
 
   hidePassword = true;
-
-
-
-  errorMessage:string | null = null;
-
-
-
-
-
-  ngOnInit():void {
-
-
-    this.passwordValue =
-
-      this.Question.defaultValue ??
-
-      '';
-
-
-
-  }
-
 
 
 
@@ -119,66 +99,20 @@ export class KPasswordComponent {
 
 
 
-  updatePassword():void {
-
-
-    this.Question.defaultValue =
-
-      this.passwordValue;
-
-
-    this.validate();
-
-
-  }
-
-
-
-
-
-
-
-  validate():void {
-
-
-    this.errorMessage = null;
-
-
+  get errorMessage():string | null {
 
 
     if(
 
-      this.Question.required &&
+      !this.control ||
 
-      !this.passwordValue
+      !this.control.touched ||
 
-    ){
-
-      this.errorMessage =
-        'Password is required';
-
-      return;
-
-    }
-
-
-
-
-
-    if(
-
-      this.Question.minLength &&
-
-      this.passwordValue.length < this.Question.minLength
+      this.control.valid
 
     ){
 
-      this.errorMessage =
-
-        `Minimum ${this.Question.minLength} characters`;
-
-
-      return;
+      return null;
 
     }
 
@@ -187,22 +121,65 @@ export class KPasswordComponent {
 
 
 
-    if(
+    if(this.control.hasError('required')){
 
-      this.Question.maxLength &&
-
-      this.passwordValue.length > this.Question.maxLength
-
-    ){
-
-      this.errorMessage =
-
-        `Maximum ${this.Question.maxLength} characters`;
-
-
-      return;
+      return 'Password is required';
 
     }
+
+
+
+
+
+
+    if(this.control.hasError('minlength')){
+
+      return (
+
+        `Minimum ${this.Question.minLength} characters`
+
+      );
+
+    }
+
+
+
+
+
+
+    if(this.control.hasError('maxlength')){
+
+      return (
+
+        `Maximum ${this.Question.maxLength} characters`
+
+      );
+
+    }
+
+
+
+
+
+
+    if(this.control.hasError('pattern')){
+
+      return (
+
+        this.Question.errorMessage ??
+
+        'Invalid password format'
+
+      );
+
+    }
+
+
+
+
+
+
+    return 'Invalid password';
 
 
   }

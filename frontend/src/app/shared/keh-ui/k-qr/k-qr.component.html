@@ -1,12 +1,7 @@
+@if(Question){
+
+
 <div class="qr-field">
-
-
-    <label class="title">
-
-        {{ Question.title || 'QR Code' }}
-
-    </label>
-
 
 
     <div class="qr-container">
@@ -30,22 +25,14 @@
             </span>
 
 
+
         </div>
 
 
     </div>
 
 
-
-    @if(Question.helpText){
-
-        <small class="help">
-
-            {{ Question.helpText }}
-
-        </small>
-
-    }
-
-
 </div>
+
+
+}

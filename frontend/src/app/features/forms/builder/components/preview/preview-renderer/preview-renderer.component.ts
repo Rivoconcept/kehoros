@@ -1,7 +1,9 @@
 import {
   Component,
   Input,
-  OnInit
+  OnInit,
+  OnChanges,
+  SimpleChanges
 } from "@angular/core";
 
 import { CommonModule } from "@angular/common";
@@ -23,8 +25,8 @@ import { MatSliderModule } from "@angular/material/slider";
 import { Question } from "../../../../models/question.model";
 import { QuestionType } from "../../../../models/question-type.enum";
 
-
 import { QuestionValidatorService } from "../../../services/question-validator.service";
+
 import { KPhoneComponent } from "src/app/shared/keh-ui/k-phone/k-phone.component";
 import { KAddressComponent } from "src/app/shared/keh-ui/k-address/k-address.component";
 import { KLocationComponent } from "src/app/shared/keh-ui/k-location/k-location.component";
@@ -60,58 +62,34 @@ import { KQrComponent } from "src/app/shared/keh-ui/k-qr/k-qr.component";
 import { KBarcodeComponent } from "src/app/shared/keh-ui/k-barcode/k-barcode.component";
 
 @Component({
-
   selector: "app-preview-renderer",
-
   standalone: true,
-
   imports: [
-
     CommonModule,
-
     FormsModule,
-
     ReactiveFormsModule,
 
     MatInputModule,
-
     MatFormFieldModule,
-
     MatSelectModule,
-
     MatRadioModule,
-
     MatCheckboxModule,
-
     MatSlideToggleModule,
-
     MatSliderModule,
-    MatInputModule,
 
     KPhoneComponent,
-
     KAddressComponent,
-
     KLocationComponent,
-
     KMapComponent,
-
     KPasswordComponent,
-
     KUrlComponent,
-
     KColorComponent,
-
     KRangeComponent,
-
     KHiddenComponent,
-
     KDividerComponent,
-
     KHtmlComponent,
+    KLabelComponent,
 
-    KLabelComponent, 
-    
     KEmailComponent,
 
     KTitleComponent,
@@ -139,179 +117,97 @@ import { KBarcodeComponent } from "src/app/shared/keh-ui/k-barcode/k-barcode.com
     KScaleComponent,
 
     KQrComponent,
-    KBarcodeComponent,
-
+    KBarcodeComponent
   ],
-
   templateUrl: "./preview-renderer.component.html",
-
   styleUrl: "./preview-renderer.component.scss"
-
 })
+export class PreviewRendererComponent implements OnInit, OnChanges {
 
-export class PreviewRendererComponent implements OnInit {
-
-  @Input()
+  @Input({ required: true })
   Question!: Question;
 
   @Input()
-  control!: FormControl;
+  control: FormControl = new FormControl();
 
   QuestionType = QuestionType;
 
-  value:any = '';
-
-  errorMessage:string | null = null;
-
-
+  value: any = "";
+  errorMessage: string | null = null;
 
   constructor(
-
     private validator: QuestionValidatorService
+  ) {}
 
-  ){}
-
-
-
-
-
-  ngOnInit():void{
-
-    this.value =
-      this.Question?.defaultValue ?? '';
-
+  ngOnInit(): void {
+    this.ensureControl();
+    this.value = this.Question?.defaultValue ?? "";
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.ensureControl();
+  }
 
+  private ensureControl(): void {
+    if (!this.control) {
+      this.control = new FormControl();
+    }
+  }
 
-
-
-
-  onValueChange(value:any):void{
-
+  onValueChange(value: any): void {
     this.value = value;
-
     this.validate(value);
-
   }
 
-
-
-
-
-
-  onBlur():void{
-
+  onBlur(): void {
     this.validate(this.value);
-
   }
 
-
-
-
-
-
-  validate(value:any):void{
-
-    if(!this.Question){
-
+  validate(value: any): void {
+    if (!this.Question) {
       return;
-
     }
 
-    const result =
-      this.validator.validate(
-        this.Question,
-        value
-      );
+    const result = this.validator.validate(
+      this.Question,
+      value
+    );
 
-    this.errorMessage =
-      result.valid
-        ? null
-        : result.message ?? null;
-
+    this.errorMessage = result.valid
+      ? null
+      : result.message ?? null;
   }
 
-
-
-
-
-
-  get minScale(){
-
+  get minScale() {
     return this.Question.minScale ?? 1;
-
   }
 
-
-
-
-
-
-  get maxScale(){
-
+  get maxScale() {
     return this.Question.maxScale ?? 10;
-
   }
 
-
-
-
-
-
-  get step(){
-
+  get step() {
     return this.Question.step ?? 1;
-
   }
 
-
-
-
-
-
-  get defaultValue(){
-
+  get defaultValue() {
     return this.Question.defaultValue ?? null;
-
   }
 
-
-
-
-
-
-  isReadonly(){
-
+  isReadonly() {
     return this.Question.readOnly === true;
-
   }
 
-
-
-
-
-
-  isRequired(){
-
+  isRequired() {
     return this.Question.required === true;
-
   }
 
-
-
-
-
-
-  getRatingStars(){
-
-    const max =
-      this.Question.maxScale ?? 5;
+  getRatingStars() {
+    const max = this.Question.maxScale ?? 5;
 
     return Array(max)
       .fill(0)
-      .map((_,index)=>index+1);
-
+      .map((_, index) => index + 1);
   }
 
 }

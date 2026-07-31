@@ -1,0 +1,52 @@
+<div class="field-container">
+
+
+    @if(Question.title){
+
+
+        <label class="field-title">
+
+            {{Question.title}}
+
+        </label>
+
+
+    }
+
+
+
+
+
+    <ng-content></ng-content>
+
+
+
+
+
+    <app-field-errors
+
+        [control]="control"
+
+        [Question]="Question">
+
+    </app-field-errors>
+
+
+
+
+
+
+    @if(hasHelp){
+
+
+        <small class="help">
+
+            {{Question.helpText}}
+
+        </small>
+
+
+    }
+
+
+</div>

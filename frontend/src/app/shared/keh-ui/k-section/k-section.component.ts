@@ -1,7 +1,16 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
+
 
 
 @Component({
@@ -24,8 +33,41 @@ import { Question } from '../../../features/forms/models/question.model';
 export class KSectionComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
+
+
+
+
+
+  get cssClass():string {
+
+    return this.Question.cssClass ?? '';
+
+  }
+
+
+
+
+
+  get title():string {
+
+    return this.Question.title ?? '';
+
+
+  }
+
+
+
+
+
+  get description():string {
+
+    return this.Question.description ?? '';
+
+
+  }
+
 
 
 }

@@ -1,11 +1,33 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
-import { Question } from 'src/app/features/forms/models/question.model';
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  MatInputModule
+} from '@angular/material/input';
+
+import {
+  MatFormFieldModule
+} from '@angular/material/form-field';
+
+import {
+  MatButtonModule
+} from '@angular/material/button';
+
+import {
+  Question
+} from 'src/app/features/forms/models/question.model';
+
 
 
 @Component({
@@ -18,7 +40,7 @@ import { Question } from 'src/app/features/forms/models/question.model';
 
     CommonModule,
 
-    FormsModule,
+    ReactiveFormsModule,
 
     MatInputModule,
 
@@ -36,18 +58,56 @@ import { Question } from 'src/app/features/forms/models/question.model';
 export class KLocationComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
 
-  latitude:number = -18.8792;
+  @Input({required:true})
+  control!: FormControl;
 
 
-  longitude:number = 47.5079;
+
+  latitude = -18.8792;
 
 
-  errorMessage:string | null = null;
+  longitude = 47.5079;
+
+
+
+
+  get errorMessage(): string | null {
+
+
+    if(
+
+      !this.control ||
+
+      this.control.valid ||
+
+      !this.control.touched
+
+    ){
+
+      return null;
+
+    }
+
+
+
+    if(this.control.hasError('required')){
+
+      return 'Location is required';
+
+    }
+
+
+
+    return 'Invalid location';
+
+
+  }
+
 
 
 
@@ -56,19 +116,23 @@ export class KLocationComponent {
   ngOnInit():void {
 
 
-    if(this.Question.defaultValue){
+    const value = this.control?.value;
+
+
+
+    if(value){
 
       this.latitude =
-        this.Question.defaultValue.latitude ??
+        value.latitude ??
         this.latitude;
 
 
       this.longitude =
-        this.Question.defaultValue.longitude ??
+        value.longitude ??
         this.longitude;
 
-
     }
+
 
 
     this.updateValue();
@@ -81,11 +145,34 @@ export class KLocationComponent {
 
 
 
+  updateValue():void {
+
+
+    this.control.setValue({
+
+      latitude:this.latitude,
+
+      longitude:this.longitude
+
+    });
+
+
+
+    this.control.markAsDirty();
+
+
+  }
+
+
+
+
+
+
+
   updateLatitude(value:string):void {
 
 
-    this.latitude =
-      Number(value);
+    this.latitude = Number(value);
 
 
     this.updateValue();
@@ -102,8 +189,7 @@ export class KLocationComponent {
   updateLongitude(value:string):void {
 
 
-    this.longitude =
-      Number(value);
+    this.longitude = Number(value);
 
 
     this.updateValue();
@@ -117,118 +203,11 @@ export class KLocationComponent {
 
 
 
-  updateValue():void {
-
-
-    this.Question.defaultValue = {
-
-
-      latitude:this.latitude,
-
-
-      longitude:this.longitude
-
-
-    };
-
-
-    this.validate();
-
-
-  }
-
-
-
-
-
-
-
-  validate():void {
-
-
-    this.errorMessage = null;
-
-
-
-    if(
-
-      this.Question.required &&
-
-      (
-        this.latitude === null ||
-        this.longitude === null
-      )
-
-    ){
-
-      this.errorMessage =
-        'Location is required';
-
-      return;
-
-    }
-
-
-
-
-
-
-    if(
-
-      this.latitude < -90 ||
-
-      this.latitude > 90
-
-    ){
-
-      this.errorMessage =
-        'Latitude must be between -90 and 90';
-
-      return;
-
-    }
-
-
-
-
-
-
-
-    if(
-
-      this.longitude < -180 ||
-
-      this.longitude > 180
-
-    ){
-
-      this.errorMessage =
-        'Longitude must be between -180 and 180';
-
-      return;
-
-    }
-
-
-  }
-
-
-
-
-
-
 
   getCurrentLocation():void {
 
 
-    if(
-
-      !navigator.geolocation
-
-    ){
-
-      this.errorMessage =
-        'Geolocation not supported';
+    if(!navigator.geolocation){
 
       return;
 
@@ -247,21 +226,13 @@ export class KLocationComponent {
           position.coords.latitude;
 
 
+
         this.longitude =
           position.coords.longitude;
 
 
+
         this.updateValue();
-
-
-      },
-
-
-      () => {
-
-
-        this.errorMessage =
-          'Unable to get your location';
 
 
       }
@@ -270,7 +241,6 @@ export class KLocationComponent {
 
 
   }
-
 
 
 }

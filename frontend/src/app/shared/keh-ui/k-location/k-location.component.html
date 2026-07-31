@@ -10,14 +10,17 @@
 
 
 
-<div class="coordinates">
 
+<div class="coordinates">
 
 
 <mat-form-field appearance="outline">
 
+
 <mat-label>
+
 Latitude
+
 </mat-label>
 
 
@@ -27,7 +30,7 @@ matInput
 
 type="number"
 
-[(ngModel)]="latitude"
+[value]="latitude"
 
 (input)="updateLatitude($any($event.target).value)"
 
@@ -44,8 +47,11 @@ type="number"
 
 <mat-form-field appearance="outline">
 
+
 <mat-label>
+
 Longitude
+
 </mat-label>
 
 
@@ -55,7 +61,7 @@ matInput
 
 type="number"
 
-[(ngModel)]="longitude"
+[value]="longitude"
 
 (input)="updateLongitude($any($event.target).value)"
 
@@ -76,6 +82,7 @@ type="number"
 
 @if(!Question.readOnly){
 
+
 <button
 
 mat-raised-button
@@ -89,6 +96,7 @@ type="button"
 📍 Get my location
 
 </button>
+
 
 }
 
@@ -120,8 +128,8 @@ Longitude :
 </div>
 
 
-
 </div>
+
 
 
 
@@ -141,6 +149,7 @@ Longitude :
 
 
 
+
 @if(Question.helpText){
 
 <div class="help">
@@ -150,7 +159,6 @@ Longitude :
 </div>
 
 }
-
 
 
 </div>

@@ -1,11 +1,34 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import {
+  CommonModule
+} from '@angular/common';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  MatFormFieldModule
+} from '@angular/material/form-field';
+
+import {
+  MatSelectModule
+} from '@angular/material/select';
+
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
+
+import {
+  FieldContainerComponent
+} from '../core/field-container/field-container.component';
+
 
 
 @Component({
@@ -18,11 +41,13 @@ import { Question } from '../../../features/forms/models/question.model';
 
     CommonModule,
 
-    FormsModule,
+    ReactiveFormsModule,
 
     MatFormFieldModule,
 
-    MatSelectModule
+    MatSelectModule,
+
+    FieldContainerComponent
 
   ],
 
@@ -34,13 +59,13 @@ import { Question } from '../../../features/forms/models/question.model';
 export class KSelectComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
 
 
-  value:any = '';
-
+  @Input({required:true})
+  control!: FormControl;
 
 
 }

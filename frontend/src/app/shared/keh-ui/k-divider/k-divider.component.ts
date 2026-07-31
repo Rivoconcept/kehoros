@@ -1,6 +1,19 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Question } from 'src/app/features/forms/models/question.model';
+import {
+  Component,
+  Input
+} from '@angular/core';
+
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  FormControl
+} from '@angular/forms';
+
+import {
+  Question
+} from 'src/app/features/forms/models/question.model';
 
 
 
@@ -24,18 +37,25 @@ import { Question } from 'src/app/features/forms/models/question.model';
 export class KDividerComponent {
 
 
-  @Input()
+  @Input({required:true})
   Question!: Question;
 
+
+
+  /**
+   * Présent uniquement pour uniformiser
+   * l'API des composants keh-ui.
+   * Divider n'utilise pas de FormControl.
+   */
+  @Input()
+  control?: FormControl;
 
 
 
 
   get color(): string {
 
-
     return this.Question?.color ?? '#ddd';
-
 
   }
 
@@ -45,9 +65,7 @@ export class KDividerComponent {
 
   get width(): string {
 
-
     return this.Question?.width ?? '100%';
-
 
   }
 
@@ -57,9 +75,7 @@ export class KDividerComponent {
 
   get cssClass(): string {
 
-
     return this.Question?.cssClass ?? '';
-
 
   }
 
@@ -69,9 +85,7 @@ export class KDividerComponent {
 
   get style(): string {
 
-
     return this.Question?.labelStyle ?? '';
-
 
   }
 

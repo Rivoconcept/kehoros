@@ -1,13 +1,46 @@
-<div
+@if(Question){
+
+
+<section
 
     class="section"
 
-    [class]="Question.cssClass || ''"
+    [class]="cssClass"
 
 >
 
 
-    {{ Question.title }}
+    @if(title){
 
 
-</div>
+        <h3>
+
+            {{title}}
+
+        </h3>
+
+
+    }
+
+
+
+
+
+    @if(description){
+
+
+        <p>
+
+            {{description}}
+
+        </p>
+
+
+    }
+
+
+
+</section>
+
+
+}

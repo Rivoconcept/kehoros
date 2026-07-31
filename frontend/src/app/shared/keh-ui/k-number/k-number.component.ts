@@ -1,13 +1,30 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  Input
+} from '@angular/core';
 
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import {
+  CommonModule
+} from '@angular/common';
 
-import { Question } from '../../../features/forms/models/question.model';
+import {
+  FormControl,
+  ReactiveFormsModule
+} from '@angular/forms';
 
-import { FormControl } from "@angular/forms";
+import {
+  MatFormFieldModule
+} from '@angular/material/form-field';
+
+import {
+  MatInputModule
+} from '@angular/material/input';
+
+import {
+  Question
+} from '../../../features/forms/models/question.model';
+
+
 
 @Component({
 
@@ -19,7 +36,7 @@ import { FormControl } from "@angular/forms";
 
     CommonModule,
 
-    FormsModule,
+    ReactiveFormsModule,
 
     MatFormFieldModule,
 
@@ -35,14 +52,76 @@ import { FormControl } from "@angular/forms";
 export class KNumberComponent {
 
 
-    @Input()
-    Question!: Question;
+  @Input({required:true})
+  Question!: Question;
 
-    @Input()
-    control!: FormControl;
 
-    value:number | null = null;
 
+  @Input({required:true})
+  control!: FormControl;
+
+
+
+
+
+
+
+  get errorMessage(): string | null {
+
+
+    if(
+
+      !this.control ||
+
+      this.control.valid ||
+
+      !this.control.touched
+
+    ){
+
+      return null;
+
+    }
+
+
+
+
+
+
+    if(this.control.hasError('required')){
+
+      return 'This field is required.';
+
+    }
+
+
+
+
+
+
+    if(this.control.hasError('min')){
+
+      return `Minimum value: ${this.Question.minValue}`;
+
+    }
+
+
+
+
+
+
+    if(this.control.hasError('max')){
+
+      return `Maximum value: ${this.Question.maxValue}`;
+
+    }
+
+
+
+    return 'Invalid number.';
+
+
+  }
 
 
 }

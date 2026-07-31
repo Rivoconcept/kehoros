@@ -9,18 +9,25 @@
 
 
 
+
+
     @for(option of Question.options; track option.id){
 
 
         <mat-checkbox
 
+
             [checked]="isChecked(option.value)"
 
-            [disabled]="Question.readOnly"
 
-            (change)="toggle(option.value, $event.checked)"
+            [disabled]="Question.readOnly || control.disabled"
+
+
+            (change)="toggle(option.value,$event.checked)"
+
 
         >
+
 
             {{ option.label }}
 
@@ -31,16 +38,6 @@
     }
 
 
-
-    @if(Question.helpText){
-
-        <small class="help">
-
-            {{ Question.helpText }}
-
-        </small>
-
-    }
 
 
 </div>

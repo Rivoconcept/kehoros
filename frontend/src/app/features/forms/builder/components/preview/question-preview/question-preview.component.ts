@@ -4,170 +4,92 @@ import { CommonModule } from '@angular/common';
 
 import {
   ReactiveFormsModule,
-  FormGroup
+  FormGroup,
+  FormControl
 } from '@angular/forms';
 
-
 import { BuilderService } from '../../../services/builder.service';
-
-import { MatIconModule } from '@angular/material/icon';
-
+import { DynamicFormService } from '../../../services/dynamic-form.service';
 
 import { PreviewRendererComponent } from '../preview-renderer/preview-renderer.component';
 
-import { DynamicFormService } from '../../../services/dynamic-form.service';
+import { MatIconModule } from '@angular/material/icon';
 
 import { QuestionType } from '../../../../models/question-type.enum';
 
-
-
 @Component({
-
-  selector:'app-question-preview',
-
-  standalone:true,
-
-  imports:[
-
+  selector: 'app-question-preview',
+  standalone: true,
+  imports: [
     CommonModule,
-
     ReactiveFormsModule,
-
     MatIconModule,
-
     PreviewRendererComponent
-
   ],
-
-  templateUrl:'./question-preview.component.html',
-
-  styleUrl:'./question-preview.component.scss'
-
+  templateUrl: './question-preview.component.html',
+  styleUrl: './question-preview.component.scss'
 })
 export class QuestionPreviewComponent implements OnInit {
 
-
-
-  form!:FormGroup;
-
-
+  form: FormGroup = new FormGroup({});
 
   QuestionType = QuestionType;
 
-
-
   constructor(
+    public builder: BuilderService,
+    private dynamicForm: DynamicFormService
+  ) {}
 
-    public builder:BuilderService,
+  ngOnInit(): void {
 
-    private dynamicForm:DynamicFormService
+    this.builder.template$.subscribe(template => {
 
-  ){}
+      if (!template) {
+        this.form = new FormGroup({});
+        return;
+      }
 
+      this.form = this.dynamicForm.buildForm(template);
 
-
-
-
-  ngOnInit():void{
-
-
-    this.builder.template$
-
-      .subscribe(template=>{
-
-
-        if(template){
-
-
-          this.form =
-            this.dynamicForm.buildForm(
-              template
-            );
-
-
-        }
-
-
-      });
-
+    });
 
   }
 
-
-
-
-
-
-
-  get visibleQuestions(){
-
+  get visibleQuestions() {
 
     return this.builder.questions
-
-      .filter(
-
-        question => !question.hidden
-
-      )
-
-      .sort(
-
-        (a,b)=>a.order - b.order
-
-      );
-
+      .filter(question => !question.hidden)
+      .sort((a, b) => a.order - b.order);
 
   }
 
+  submit(): void {
 
-
-
-
-
-
-  submit(){
-
-
-    if(this.form.invalid){
-
+    if (this.form.invalid) {
 
       this.form.markAllAsTouched();
 
-
       return;
-
 
     }
 
-
-
     console.log(
-
       'FORM RESULT',
-
       this.form.value
-
     );
 
-
   }
 
+  getControl(id: string): FormControl {
 
+    const control = this.form.get(id);
 
+    if (control instanceof FormControl) {
+      return control;
+    }
 
-
-
-
-  getControl(id:string){
-
-
-    return this.form?.get(id) as any;
-
+    return new FormControl();
 
   }
-
-
-
-
 
 }

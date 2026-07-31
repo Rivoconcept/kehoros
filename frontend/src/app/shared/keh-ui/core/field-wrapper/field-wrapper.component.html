@@ -1,0 +1,53 @@
+<div class="field-wrapper">
+
+
+    @if(Question.title){
+
+        <label class="field-label">
+
+            {{Question.title}}
+
+            @if(Question.required){
+
+                <span class="required">
+                    *
+                </span>
+
+            }
+
+        </label>
+
+    }
+
+
+
+
+    <ng-content></ng-content>
+
+
+
+
+    <app-field-errors
+
+        [control]="control"
+
+        [Question]="Question">
+
+    </app-field-errors>
+
+
+
+
+
+    @if(hasHelp){
+
+        <small class="help">
+
+            {{Question.helpText}}
+
+        </small>
+
+    }
+
+
+</div>
