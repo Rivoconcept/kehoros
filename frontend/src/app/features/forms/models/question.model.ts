@@ -74,6 +74,7 @@ export interface Question {
         | 'URL'
         | 'NUMBER'
         | 'DATE'
+        | 'PASSWORD'
         | 'REGEX';
 
 

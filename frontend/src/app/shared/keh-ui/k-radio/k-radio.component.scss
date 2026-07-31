@@ -1,0 +1,41 @@
+.radio-field {
+
+    width:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+}
+
+
+
+.title {
+
+    font-weight:600;
+
+}
+
+
+
+mat-radio-group {
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+
+
+.help {
+
+    color:#777;
+
+    font-size:13px;
+
+}

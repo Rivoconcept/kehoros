@@ -1,0 +1,46 @@
+<div class="checkbox-field">
+
+
+    <label class="title">
+
+        {{ Question.title || 'Choose options' }}
+
+    </label>
+
+
+
+    @for(option of Question.options; track option.id){
+
+
+        <mat-checkbox
+
+            [checked]="isChecked(option.value)"
+
+            [disabled]="Question.readOnly"
+
+            (change)="toggle(option.value, $event.checked)"
+
+        >
+
+            {{ option.label }}
+
+
+        </mat-checkbox>
+
+
+    }
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

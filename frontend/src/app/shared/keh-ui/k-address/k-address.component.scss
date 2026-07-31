@@ -1,0 +1,70 @@
+.address-field {
+
+    width:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+}
+
+
+mat-form-field {
+
+    width:100%;
+
+}
+
+
+
+.row {
+
+    display:flex;
+
+    gap:12px;
+
+}
+
+
+
+.row mat-form-field {
+
+    flex:1;
+
+}
+
+
+
+.validation-error {
+
+    color:#d32f2f;
+
+    font-size:13px;
+
+    font-weight:500;
+
+}
+
+
+
+.help {
+
+    color:#777;
+
+    font-size:13px;
+
+}
+
+
+
+@media(max-width:700px){
+
+    .row {
+
+        flex-direction:column;
+
+    }
+
+}

@@ -1,89 +1,55 @@
+```html
 <div class="properties">
 
 @if(Question){
 
-
 <h2>Properties</h2>
 
-
-
 <mat-form-field appearance="outline" class="full">
-
     <mat-label>Title</mat-label>
-
     <input
         matInput
         [(ngModel)]="Question.title"
-        (ngModelChange)="update()"
-    >
-
+        (ngModelChange)="update()">
 </mat-form-field>
 
-
-
-
 <mat-form-field appearance="outline" class="full">
-
     <mat-label>Description</mat-label>
-
     <textarea
         matInput
         rows="3"
         [(ngModel)]="Question.description"
         (ngModelChange)="update()">
     </textarea>
-
 </mat-form-field>
 
-
-
-
 <mat-form-field appearance="outline" class="full">
-
     <mat-label>Placeholder</mat-label>
-
     <input
         matInput
         [(ngModel)]="Question.placeholder"
-        (ngModelChange)="update()"
-    >
-
+        (ngModelChange)="update()">
 </mat-form-field>
 
-
-
-
 <mat-form-field appearance="outline" class="full">
-
     <mat-label>Help text</mat-label>
-
     <textarea
         matInput
         rows="2"
         [(ngModel)]="Question.helpText"
         (ngModelChange)="update()">
     </textarea>
-
 </mat-form-field>
 
-
-
-
-
 @if(isQuestion){
-
 
 <mat-form-field appearance="outline" class="full">
 
     <mat-label>Response type</mat-label>
 
     <mat-select
-
         [value]="Question.type"
-
-        (selectionChange)="changeType($event.value)"
-
-    >
+        (selectionChange)="changeType($event.value)">
 
         @for(type of responseTypes; track type.value){
 
@@ -99,145 +65,159 @@
 
 </mat-form-field>
 
-
-
 <mat-slide-toggle
-
     [(ngModel)]="Question.required"
+    (ngModelChange)="update()">
 
-    (ngModelChange)="update()"
-
->
-
-Required
+    Required
 
 </mat-slide-toggle>
 
-
 }
 
+<!-- ================================================= -->
+<!-- VALIDATION -->
+<!-- ================================================= -->
 
-
-
-
-
-@if(
-Question.type === QuestionType.TEXT ||
-Question.type === QuestionType.TEXTAREA
-){
-
-
-<h3>Text validation</h3>
-
-
-<div class="grid-2">
-
-
-<mat-form-field appearance="outline">
-
-<mat-label>Min length</mat-label>
-
-<input
-matInput
-type="number"
-[(ngModel)]="Question.minLength"
-(ngModelChange)="update()"
->
-
-</mat-form-field>
-
-
-
-
-<mat-form-field appearance="outline">
-
-<mat-label>Max length</mat-label>
-
-<input
-matInput
-type="number"
-[(ngModel)]="Question.maxLength"
-(ngModelChange)="update()"
->
-
-</mat-form-field>
-
-
-</div>
-
-
-
+<h3>Validation</h3>
 
 <mat-form-field appearance="outline" class="full">
 
-<mat-label>Pattern</mat-label>
+    <mat-label>Validation type</mat-label>
 
-<input
-matInput
-[(ngModel)]="Question.pattern"
-(ngModelChange)="update()"
->
+    <mat-select
+        [(ngModel)]="Question.validationType"
+        (selectionChange)="update()">
+
+        <mat-option value="TEXT">
+            Text
+        </mat-option>
+
+        <mat-option value="EMAIL">
+            Email
+        </mat-option>
+
+        <mat-option value="PHONE">
+            Phone
+        </mat-option>
+
+        <mat-option value="URL">
+            URL
+        </mat-option>
+
+        <mat-option value="NUMBER">
+            Number
+        </mat-option>
+
+        <mat-option value="DATE">
+            Date
+        </mat-option>
+
+        <mat-option value="PASSWORD">
+            Password
+        </mat-option>
+
+        <mat-option value="REGEX">
+            Regex
+        </mat-option>
+
+    </mat-select>
 
 </mat-form-field>
-
-
-}
-
-
-
-
-
-
-
-@if(
-Question.type === QuestionType.NUMBER
-){
-
-
-<h3>Number validation</h3>
-
 
 <div class="grid-2">
 
-
 <mat-form-field appearance="outline">
 
-<mat-label>Minimum</mat-label>
+    <mat-label>Minimum length</mat-label>
 
-<input
-matInput
-type="number"
-[(ngModel)]="Question.minValue"
-(ngModelChange)="update()"
->
+    <input
+        matInput
+        type="number"
+        [(ngModel)]="Question.minLength"
+        (ngModelChange)="update()">
 
 </mat-form-field>
 
-
-
 <mat-form-field appearance="outline">
 
-<mat-label>Maximum</mat-label>
+    <mat-label>Maximum length</mat-label>
 
-<input
-matInput
-type="number"
-[(ngModel)]="Question.maxValue"
-(ngModelChange)="update()"
->
+    <input
+        matInput
+        type="number"
+        [(ngModel)]="Question.maxLength"
+        (ngModelChange)="update()">
 
 </mat-form-field>
-
 
 </div>
 
+<div class="grid-2">
 
-}
+<mat-form-field appearance="outline">
 
+    <mat-label>Minimum value</mat-label>
 
+    <input
+        matInput
+        type="number"
+        [(ngModel)]="Question.minValue"
+        (ngModelChange)="update()">
 
+</mat-form-field>
 
+<mat-form-field appearance="outline">
 
+    <mat-label>Maximum value</mat-label>
+
+    <input
+        matInput
+        type="number"
+        [(ngModel)]="Question.maxValue"
+        (ngModelChange)="update()">
+
+</mat-form-field>
+
+</div>
+
+<mat-form-field appearance="outline" class="full">
+
+    <mat-label>Regex pattern</mat-label>
+
+    <input
+        matInput
+        [(ngModel)]="Question.pattern"
+        (ngModelChange)="update()">
+
+</mat-form-field>
+
+<mat-form-field appearance="outline" class="full">
+
+    <mat-label>Custom error message</mat-label>
+
+    <input
+        matInput
+        [(ngModel)]="Question.errorMessage"
+        (ngModelChange)="update()">
+
+</mat-form-field>
+
+<mat-slide-toggle
+    [(ngModel)]="Question.trimValue"
+    (ngModelChange)="update()">
+
+    Trim spaces automatically
+
+</mat-slide-toggle>
+
+<mat-slide-toggle
+    [(ngModel)]="Question.validateOnBlur"
+    (ngModelChange)="update()">
+
+    Validate on blur
+
+</mat-slide-toggle>
 
 @if(
 Question.type === QuestionType.RADIO ||
@@ -245,53 +225,28 @@ Question.type === QuestionType.CHECKBOX ||
 Question.type === QuestionType.SELECT
 ){
 
-
 <app-option-editor
-
     [options]="Question.options"
-
-    (optionsChange)="Question.options=$event;update()"
-
->
-
-
+    (optionsChange)="Question.options=$event;update()">
 </app-option-editor>
-
 
 }
 
-
-
-
-
-
-
-<!-- LOGIC CONDITIONNELLE -->
+<!-- LOGIC -->
 
 <h3>Logic / Conditions</h3>
 
-
 <mat-slide-toggle
-
 [(ngModel)]="Question.conditional"
-
-(ngModelChange)="updateCondition()"
-
->
+(ngModelChange)="updateCondition()">
 
 Enable conditional display
 
 </mat-slide-toggle>
 
-
-
-
-
 @if(Question.conditional){
 
-
 <mat-form-field appearance="outline" class="full">
-
 
 <mat-label>
 
@@ -299,19 +254,11 @@ Depends on question
 
 </mat-label>
 
-
-
 <mat-select
-
 [(ngModel)]="Question.dependsOnQuestionId"
-
-(selectionChange)="updateCondition()"
-
->
-
+(selectionChange)="updateCondition()">
 
 @for(q of availableQuestions; track q.id){
-
 
 <mat-option [value]="q.id">
 
@@ -319,24 +266,15 @@ Depends on question
 
 </mat-option>
 
-
 }
-
 
 </mat-select>
 
-
 </mat-form-field>
-
-
-
-
 
 @if(conditionValues.length){
 
-
 <mat-form-field appearance="outline" class="full">
-
 
 <mat-label>
 
@@ -344,19 +282,11 @@ Expected value
 
 </mat-label>
 
-
-
 <mat-select
-
 [(ngModel)]="Question.expectedValue"
-
-(selectionChange)="updateCondition()"
-
->
-
+(selectionChange)="updateCondition()">
 
 @for(value of conditionValues; track value){
-
 
 <mat-option [value]="value">
 
@@ -364,23 +294,16 @@ Expected value
 
 </mat-option>
 
-
 }
-
 
 </mat-select>
 
-
 </mat-form-field>
 
-
 }
-
-@else {
-
+@else{
 
 <mat-form-field appearance="outline" class="full">
-
 
 <mat-label>
 
@@ -388,51 +311,34 @@ Expected value
 
 </mat-label>
 
-
 <input
-
 matInput
-
 [(ngModel)]="Question.expectedValue"
-
-(ngModelChange)="updateCondition()"
-
->
-
+(ngModelChange)="updateCondition()">
 
 </mat-form-field>
 
-
 }
 
-
 }
-
-
 
 <!-- DISPLAY -->
 
-
 <h3>Display</h3>
-
 
 <mat-form-field appearance="outline" class="full">
 
+<mat-label>
 
-<mat-label>Width</mat-label>
+Width
 
+</mat-label>
 
 <mat-select
-
 [(ngModel)]="Question.width"
-
-(selectionChange)="update()"
-
->
-
+(selectionChange)="update()">
 
 @for(width of widthOptions; track width.value){
-
 
 <mat-option [value]="width.value">
 
@@ -440,56 +346,30 @@ matInput
 
 </mat-option>
 
-
 }
-
 
 </mat-select>
 
-
 </mat-form-field>
 
-
-
-
-
-
 <mat-slide-toggle
-
 [(ngModel)]="Question.readOnly"
-
-(ngModelChange)="update()"
-
->
+(ngModelChange)="update()">
 
 Read only
 
 </mat-slide-toggle>
 
-
-
-
-
 <mat-slide-toggle
-
 [(ngModel)]="Question.hidden"
-
-(ngModelChange)="update()"
-
->
+(ngModelChange)="update()">
 
 Hidden
 
 </mat-slide-toggle>
 
-
-
-
-
 }
-
 @else{
-
 
 <div class="empty">
 
@@ -497,8 +377,7 @@ Select an item.
 
 </div>
 
-
 }
 
-
 </div>
+```

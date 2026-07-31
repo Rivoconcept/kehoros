@@ -1,0 +1,44 @@
+@if(Question){
+
+
+<div
+
+    class="label-container"
+
+    [class]="cssClass"
+
+>
+
+
+    <span
+
+        [style.color]="labelColor"
+
+        [style]="labelStyle"
+
+    >
+
+        {{labelText}}
+
+    </span>
+
+
+
+
+    @if(Question.helpText){
+
+
+    <small class="help">
+
+        {{Question.helpText}}
+
+    </small>
+
+
+    }
+
+
+</div>
+
+
+}

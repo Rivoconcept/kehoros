@@ -1,0 +1,63 @@
+<div class="signature-field">
+
+
+    <label class="title">
+
+        {{ Question.title || 'Signature' }}
+
+    </label>
+
+
+
+    <canvas
+
+        #canvas
+
+        width="500"
+
+        height="200"
+
+        (mousedown)="startDrawing($event)"
+
+        (mousemove)="draw($event)"
+
+        (mouseup)="stopDrawing()"
+
+        (mouseleave)="stopDrawing()"
+
+        [class.disabled]="Question.readOnly"
+
+    >
+
+    </canvas>
+
+
+
+    <button
+
+        type="button"
+
+        (click)="clear()"
+
+        [disabled]="Question.readOnly"
+
+    >
+
+        Clear
+
+    </button>
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

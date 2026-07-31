@@ -1,0 +1,72 @@
+<mat-form-field
+
+    appearance="outline"
+
+    class="full"
+
+>
+
+
+    <mat-label>
+
+        {{Question.title || 'Email'}}
+
+    </mat-label>
+
+
+
+
+
+    <input
+
+        matInput
+
+        type="email"
+
+        [value]="emailValue"
+
+        (input)="updateEmail($any($event.target).value)"
+
+        [placeholder]="Question.placeholder || 'example@email.com'"
+
+        [readonly]="Question.readOnly"
+
+        [required]="Question.required"
+
+    >
+
+
+
+</mat-form-field>
+
+
+
+
+
+
+
+@if(errorMessage){
+
+<div class="validation-error">
+
+    {{errorMessage}}
+
+</div>
+
+}
+
+
+
+
+
+
+
+@if(Question.helpText){
+
+<div class="help">
+
+    {{Question.helpText}}
+
+</div>
+
+}

@@ -1,0 +1,51 @@
+<div class="number-field">
+
+
+    <mat-form-field appearance="outline">
+
+
+        <mat-label>
+
+            {{ Question.title || 'Number' }}
+
+        </mat-label>
+
+
+
+        <input
+
+            matInput
+
+            type="number"
+
+            [(ngModel)]="value"
+
+            [placeholder]="Question.placeholder || ''"
+
+            [readonly]="Question.readOnly"
+
+            [required]="Question.required"
+
+            [min]="Question.minValue ?? null"
+
+            [max]="Question.maxValue ?? null"
+
+        >
+
+
+    </mat-form-field>
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

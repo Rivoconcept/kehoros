@@ -1,49 +1,77 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Input,
+  OnInit
+} from "@angular/core";
 
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSliderModule } from '@angular/material/slider';
-
-import { FormControl } from '@angular/forms';
-
-import { Question } from '../../../../models/question.model';
-import { QuestionType } from '../../../../models/question-type.enum';
-
-
-import { KAddressComponent } from '../../k-address/k-address.component';
-import { KLocationComponent } from '../../k-location/k-location.component';
-import { KMapComponent } from '../../k-map/k-map.component';
-import { KPasswordComponent } from '../../k-password/k-password.component';
-import { KUrlComponent } from '../../k-url/k-url.component';
-import { KColorComponent } from '../../k-color/k-color.component';
-import { KRangeComponent } from '../../k-range/k-range.component';
-import { KHiddenComponent } from '../../k-hidden/k-hidden.component';
-import { KDividerComponent } from '../../k-divider/k-divider.component';
-import { KHtmlComponent } from '../../k-html/k-html.component';
-import { KLabelComponent } from '../../k-label/k-label.component';
-import { KPhoneComponent } from '../../k-phone/k-phone.component';
-
+import { CommonModule } from "@angular/common";
 
 import {
-  QuestionValidatorService
-} from '../../../services/question-validator.service';
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule
+} from "@angular/forms";
+
+import { MatInputModule } from "@angular/material/input";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatSelectModule } from "@angular/material/select";
+import { MatRadioModule } from "@angular/material/radio";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatSliderModule } from "@angular/material/slider";
+
+import { Question } from "../../../../models/question.model";
+import { QuestionType } from "../../../../models/question-type.enum";
 
 
+import { QuestionValidatorService } from "../../../services/question-validator.service";
+import { KPhoneComponent } from "src/app/shared/keh-ui/k-phone/k-phone.component";
+import { KAddressComponent } from "src/app/shared/keh-ui/k-address/k-address.component";
+import { KLocationComponent } from "src/app/shared/keh-ui/k-location/k-location.component";
+import { KMapComponent } from "src/app/shared/keh-ui/k-map/k-map.component";
+import { KPasswordComponent } from "src/app/shared/keh-ui/k-password/k-password.component";
+import { KUrlComponent } from "src/app/shared/keh-ui/k-url/k-url.component";
+import { KColorComponent } from "src/app/shared/keh-ui/k-color/k-color.component";
+import { KRangeComponent } from "src/app/shared/keh-ui/k-range/k-range.component";
+import { KHiddenComponent } from "src/app/shared/keh-ui/k-hidden/k-hidden.component";
+import { KDividerComponent } from "src/app/shared/keh-ui/k-divider/k-divider.component";
+import { KHtmlComponent } from "src/app/shared/keh-ui/k-html/k-html.component";
+import { KLabelComponent } from "src/app/shared/keh-ui/k-label/k-label.component";
+import { KEmailComponent } from "src/app/shared/keh-ui/k-email/k-email.component";
+import { KTitleComponent } from "src/app/shared/keh-ui/k-title/k-title.component";
+import { KSectionComponent } from "src/app/shared/keh-ui/k-section/k-section.component";
+import { KParagraphComponent } from "src/app/shared/keh-ui/k-paragraph/k-paragraph.component";
+import { KTextComponent } from "src/app/shared/keh-ui/k-text/k-text.component";
+import { KTextareaComponent } from "src/app/shared/keh-ui/k-textarea/k-textarea.component";
+import { KNumberComponent } from "src/app/shared/keh-ui/k-number/k-number.component";
+import { KDateComponent } from "src/app/shared/keh-ui/k-date/k-date.component";
+import { KTimeComponent } from "src/app/shared/keh-ui/k-time/k-time.component";
+import { KDatetimeComponent } from "src/app/shared/keh-ui/k-datetime/k-datetime.component";
+import { KSelectComponent } from "src/app/shared/keh-ui/k-select/k-select.component";
+import { KRadioComponent } from "src/app/shared/keh-ui/k-radio/k-radio.component";
+import { KCheckboxComponent } from "src/app/shared/keh-ui/k-checkbox/k-checkbox.component";
+import { KSwitchComponent } from "src/app/shared/keh-ui/k-switch/k-switch.component";
+import { KFileComponent } from "src/app/shared/keh-ui/k-file/k-file.component";
+import { KImageComponent } from "src/app/shared/keh-ui/k-image/k-image.component";
+import { KSignatureComponent } from "src/app/shared/keh-ui/k-signature/k-signature.component";
+import { KRatingComponent } from "src/app/shared/keh-ui/k-rating/k-rating.component";
+import { KScaleComponent } from "src/app/shared/keh-ui/k-scale/k-scale.component";
+import { KQrComponent } from "src/app/shared/keh-ui/k-qr/k-qr.component";
+import { KBarcodeComponent } from "src/app/shared/keh-ui/k-barcode/k-barcode.component";
 
 @Component({
 
-  selector:'app-preview-renderer',
+  selector: "app-preview-renderer",
 
-  standalone:true,
+  standalone: true,
 
-  imports:[
+  imports: [
 
     CommonModule,
+
+    FormsModule,
+
+    ReactiveFormsModule,
 
     MatInputModule,
 
@@ -58,7 +86,7 @@ import {
     MatSlideToggleModule,
 
     MatSliderModule,
-
+    MatInputModule,
 
     KPhoneComponent,
 
@@ -82,54 +110,114 @@ import {
 
     KHtmlComponent,
 
-    KLabelComponent
+    KLabelComponent, 
+    
+    KEmailComponent,
+
+    KTitleComponent,
+    KSectionComponent,
+    KParagraphComponent,
+
+    KTextComponent,
+    KTextareaComponent,
+    KNumberComponent,
+
+    KDateComponent,
+    KTimeComponent,
+    KDatetimeComponent,
+
+    KSelectComponent,
+    KRadioComponent,
+    KCheckboxComponent,
+    KSwitchComponent,
+
+    KFileComponent,
+    KImageComponent,
+    KSignatureComponent,
+
+    KRatingComponent,
+    KScaleComponent,
+
+    KQrComponent,
+    KBarcodeComponent,
 
   ],
 
-  templateUrl:'./preview-renderer.component.html',
+  templateUrl: "./preview-renderer.component.html",
 
-  styleUrl:'./preview-renderer.component.scss'
+  styleUrl: "./preview-renderer.component.scss"
 
 })
-export class PreviewRendererComponent {
 
-
-  @Input()
-  Question!:Question;
-
-
+export class PreviewRendererComponent implements OnInit {
 
   @Input()
-  control!:FormControl;
+  Question!: Question;
 
+  @Input()
+  control!: FormControl;
 
+  QuestionType = QuestionType;
 
-  QuestionType =
-    QuestionType;
+  value:any = '';
 
-
-
-  errorMessage:string|null = null;
-
-
+  errorMessage:string | null = null;
 
 
 
   constructor(
-    private validator:QuestionValidatorService
+
+    private validator: QuestionValidatorService
+
   ){}
 
 
 
 
 
-  validate(value:any):void {
+  ngOnInit():void{
+
+    this.value =
+      this.Question?.defaultValue ?? '';
+
+  }
 
 
-    if(!this.Question)
+
+
+
+
+  onValueChange(value:any):void{
+
+    this.value = value;
+
+    this.validate(value);
+
+  }
+
+
+
+
+
+
+  onBlur():void{
+
+    this.validate(this.value);
+
+  }
+
+
+
+
+
+
+  validate(value:any):void{
+
+    if(!this.Question){
+
       return;
 
-
+    }
 
     const result =
       this.validator.validate(
@@ -137,53 +225,10 @@ export class PreviewRendererComponent {
         value
       );
 
-
-
     this.errorMessage =
       result.valid
         ? null
         : result.message ?? null;
-
-
-  }
-
-
-
-
-
-
-  onInput(event:Event):void {
-
-
-    const input =
-      event.target as HTMLInputElement;
-
-
-
-    this.validate(
-      input.value
-    );
-
-
-  }
-
-
-
-
-
-
-  onBlur(event:Event):void {
-
-
-    const input =
-      event.target as HTMLInputElement;
-
-
-
-    this.validate(
-      input.value
-    );
-
 
   }
 
@@ -202,11 +247,13 @@ export class PreviewRendererComponent {
 
 
 
+
   get maxScale(){
 
     return this.Question.maxScale ?? 10;
 
   }
+
 
 
 
@@ -222,11 +269,13 @@ export class PreviewRendererComponent {
 
 
 
+
   get defaultValue(){
 
     return this.Question.defaultValue ?? null;
 
   }
+
 
 
 
@@ -242,6 +291,7 @@ export class PreviewRendererComponent {
 
 
 
+
   isRequired(){
 
     return this.Question.required === true;
@@ -252,26 +302,16 @@ export class PreviewRendererComponent {
 
 
 
-  getRatingStars(){
 
+  getRatingStars(){
 
     const max =
       this.Question.maxScale ?? 5;
 
-
-
     return Array(max)
-
       .fill(0)
-
-      .map(
-        (_,index)=>index+1
-      );
-
+      .map((_,index)=>index+1);
 
   }
-
-
-
 
 }

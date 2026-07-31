@@ -1,0 +1,104 @@
+<div class="map-container">
+
+
+    <div class="map-header">
+
+
+        <span>
+
+            {{ Question.title || 'Map' }}
+
+        </span>
+
+
+    </div>
+
+
+
+
+
+    <div class="map-placeholder">
+
+
+        <div class="marker">
+
+            📍
+
+        </div>
+
+
+
+
+
+        <div class="coordinates">
+
+
+            Latitude :
+            {{ latitude }}
+
+
+            <br>
+
+
+            Longitude :
+            {{ longitude }}
+
+
+            <br>
+
+
+            Zoom :
+            {{ zoom }}
+
+
+            <br>
+
+
+            Provider :
+            {{ provider }}
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+    <button
+
+        type="button"
+
+        class="map-button"
+
+        (click)="openMap()"
+
+    >
+
+        Open map
+
+    </button>
+
+
+
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+
+</div>

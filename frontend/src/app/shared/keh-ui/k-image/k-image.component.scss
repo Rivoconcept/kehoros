@@ -1,0 +1,70 @@
+.image-field {
+
+    width:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+}
+
+
+
+.title {
+
+    font-weight:600;
+
+}
+
+
+
+input[type="file"] {
+
+    padding:10px;
+
+    border:1px dashed #bbb;
+
+    border-radius:8px;
+
+}
+
+
+
+.preview-grid {
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fill,minmax(120px,1fr));
+
+    gap:12px;
+
+}
+
+
+
+.preview-grid img {
+
+    width:100%;
+
+    height:120px;
+
+    object-fit:cover;
+
+    border-radius:8px;
+
+    border:1px solid #ddd;
+
+}
+
+
+
+.help {
+
+    color:#777;
+
+    font-size:13px;
+
+}

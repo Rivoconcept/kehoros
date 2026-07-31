@@ -1,0 +1,83 @@
+.rating-field {
+
+    width:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+
+
+.title {
+
+    font-weight:600;
+
+}
+
+
+
+.stars {
+
+    display:flex;
+
+    gap:5px;
+
+}
+
+
+
+.star {
+
+    border:none;
+
+    background:none;
+
+    font-size:30px;
+
+    cursor:pointer;
+
+    color:#ccc;
+
+    padding:0;
+
+}
+
+
+
+.star.active {
+
+    color:#ffc107;
+
+}
+
+
+
+.star:disabled {
+
+    cursor:default;
+
+}
+
+
+
+.value {
+
+    font-size:13px;
+
+    color:#666;
+
+}
+
+
+
+.help {
+
+    color:#777;
+
+    font-size:13px;
+
+}

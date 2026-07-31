@@ -1,0 +1,102 @@
+<div class="color-field">
+
+
+    <mat-form-field appearance="outline">
+
+
+        <mat-label>
+
+            {{Question.title || 'Color'}}
+
+        </mat-label>
+
+
+
+
+        <input
+
+            matInput
+
+            [value]="colorValue"
+
+            (input)="updateText($any($event.target).value)"
+
+            [readonly]="Question.readOnly"
+
+        >
+
+
+    </mat-form-field>
+
+
+
+
+
+
+    <div class="color-picker">
+
+
+        <input
+
+            type="color"
+
+            [value]="colorValue"
+
+            (input)="updateColor($event)"
+
+            [disabled]="Question.readOnly"
+
+        >
+
+
+
+
+
+
+        <span
+
+            class="preview"
+
+            [style.background]="colorValue"
+
+        >
+
+        </span>
+
+
+
+    </div>
+
+
+
+
+
+
+
+    @if(errorMessage){
+
+        <div class="validation-error">
+
+            {{errorMessage}}
+
+        </div>
+
+    }
+
+
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{Question.helpText}}
+
+        </small>
+
+    }
+
+
+
+</div>

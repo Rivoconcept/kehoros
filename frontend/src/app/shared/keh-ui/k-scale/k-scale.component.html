@@ -1,0 +1,84 @@
+<div class="scale-field">
+
+
+    <div class="header">
+
+
+        <span class="title">
+
+            {{ Question.title || 'Scale' }}
+
+        </span>
+
+
+
+        <span class="value">
+
+            {{ value }}
+
+        </span>
+
+
+    </div>
+
+
+
+    <mat-slider
+
+        [min]="min"
+
+        [max]="max"
+
+        [step]="step"
+
+        [disabled]="Question.readOnly"
+
+    >
+
+
+        <input
+
+            matSliderThumb
+
+            [(ngModel)]="value"
+
+        >
+
+
+    </mat-slider>
+
+
+
+    <div class="labels">
+
+
+        <span>
+
+            {{min}}
+
+        </span>
+
+
+        <span>
+
+            {{max}}
+
+        </span>
+
+
+    </div>
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

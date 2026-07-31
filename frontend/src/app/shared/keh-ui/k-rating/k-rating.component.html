@@ -1,0 +1,67 @@
+<div class="rating-field">
+
+
+    <label class="title">
+
+        {{ Question.title || 'Rating' }}
+
+    </label>
+
+
+
+    <div class="stars">
+
+
+        @for(star of stars(); track $index){
+
+
+            <button
+
+                type="button"
+
+                class="star"
+
+                [class.active]="$index < value"
+
+                [disabled]="Question.readOnly"
+
+                (click)="setRating($index)"
+
+            >
+
+                ★
+
+            </button>
+
+
+        }
+
+
+    </div>
+
+
+
+    @if(value){
+
+        <span class="value">
+
+            {{ value }} / {{ maxRating }}
+
+        </span>
+
+    }
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

@@ -1,952 +1,352 @@
 <div class="preview">
 
 
-@switch(Question.type){
+@switch (Question.type) {
 
 
+  @case (QuestionType.TITLE) {
 
-@case(QuestionType.TITLE){
+    <app-k-title
+      [Question]="Question">
+    </app-k-title>
 
-<h1 class="title">
+  }
 
-    {{Question.title}}
 
-</h1>
 
-}
+  @case (QuestionType.SECTION) {
 
+    <app-k-section
+      [Question]="Question">
+    </app-k-section>
 
+  }
 
 
 
-@case(QuestionType.SECTION){
+  @case (QuestionType.PARAGRAPH) {
 
-<div class="section">
+    <app-k-paragraph
+      [Question]="Question">
+    </app-k-paragraph>
 
-    {{Question.title}}
+  }
 
-</div>
 
-}
 
+  @case (QuestionType.TEXT) {
 
+    <app-k-text
+      [Question]="Question"
+      [control]="control">
+    </app-k-text>
 
+  }
 
 
-@case(QuestionType.PARAGRAPH){
 
-<p class="paragraph">
+  @case (QuestionType.TEXTAREA) {
 
-    {{Question.description}}
+    <app-k-textarea
+      [Question]="Question"
+      [control]="control">
+    </app-k-textarea>
 
-</p>
+  }
 
-}
 
 
+  @case (QuestionType.NUMBER) {
 
+    <app-k-number
+      [Question]="Question"
+      [control]="control">
+    </app-k-number>
 
+  }
 
 
 
-@case(QuestionType.TEXT){
+  @case (QuestionType.EMAIL) {
 
-<mat-form-field appearance="outline">
+    <app-k-email
+      [Question]="Question">
+    </app-k-email>
 
-<mat-label>
+  }
 
-{{Question.title}}
 
-</mat-label>
 
+  @case (QuestionType.PHONE) {
 
-<input
+    <app-k-phone
+      [Question]="Question">
+    </app-k-phone>
 
-matInput
+  }
 
-[placeholder]="Question.placeholder || ''"
 
-[value]="defaultValue || ''"
 
-(input)="onInput($event)"
+  @case (QuestionType.PASSWORD) {
 
-(blur)="onBlur($event)"
+    <app-k-password
+      [Question]="Question">
+    </app-k-password>
 
-[attr.minlength]="Question.minLength"
+  }
 
-[attr.maxlength]="Question.maxLength"
 
-[pattern]="Question.pattern || null"
 
-[readonly]="isReadonly()"
+  @case (QuestionType.URL) {
 
-[required]="isRequired()"
+    <app-k-url
+      [Question]="Question">
+    </app-k-url>
 
->
+  }
 
 
-</mat-form-field>
 
-}
+  @case (QuestionType.DATE) {
 
+    <app-k-date
+      [Question]="Question">
+    </app-k-date>
 
+  }
 
 
 
+  @case (QuestionType.TIME) {
 
+    <app-k-time
+      [Question]="Question">
+    </app-k-time>
 
+  }
 
-@case(QuestionType.TEXTAREA){
 
-<mat-form-field appearance="outline">
 
+  @case (QuestionType.DATETIME) {
 
-<mat-label>
+    <app-k-datetime
+      [Question]="Question">
+    </app-k-datetime>
 
-{{Question.title}}
+  }
 
-</mat-label>
 
 
-<textarea
+  @case (QuestionType.SELECT) {
 
-matInput
+    <app-k-select
+      [Question]="Question">
+    </app-k-select>
 
-rows="3"
+  }
 
-[placeholder]="Question.placeholder || ''"
 
-(input)="onInput($event)"
 
-(blur)="onBlur($event)"
+  @case (QuestionType.RADIO) {
 
-[attr.minlength]="Question.minLength"
+    <app-k-radio
+      [Question]="Question">
+    </app-k-radio>
 
-[attr.maxlength]="Question.maxLength"
+  }
 
-[readonly]="isReadonly()"
 
-[required]="isRequired()"
 
->
+  @case (QuestionType.CHECKBOX) {
 
-{{defaultValue || ''}}
+    <app-k-checkbox
+      [Question]="Question">
+    </app-k-checkbox>
 
-</textarea>
+  }
 
 
-</mat-form-field>
 
-}
+  @case (QuestionType.SWITCH) {
 
+    <app-k-switch
+      [Question]="Question">
+    </app-k-switch>
 
+  }
 
 
 
+  @case (QuestionType.FILE) {
 
+    <app-k-file
+      [Question]="Question">
+    </app-k-file>
 
+  }
 
-@case(QuestionType.NUMBER){
 
-<mat-form-field appearance="outline">
 
+  @case (QuestionType.IMAGE) {
 
-<mat-label>
+    <app-k-image
+      [Question]="Question">
+    </app-k-image>
 
-{{Question.title}}
+  }
 
-</mat-label>
 
 
-<input
+  @case (QuestionType.SIGNATURE) {
 
-matInput
+    <app-k-signature
+      [Question]="Question">
+    </app-k-signature>
 
-type="number"
+  }
 
-[value]="defaultValue"
 
-(input)="onInput($event)"
 
-(blur)="onBlur($event)"
+  @case (QuestionType.RATING) {
 
-[min]="Question.minValue ?? null"
+    <app-k-rating
+      [Question]="Question">
+    </app-k-rating>
 
-[max]="Question.maxValue ?? null"
+  }
 
-[readonly]="isReadonly()"
 
-[required]="isRequired()"
 
->
+  @case (QuestionType.SCALE) {
 
+    <app-k-scale
+      [Question]="Question">
+    </app-k-scale>
 
-</mat-form-field>
+  }
 
-}
 
 
+  @case (QuestionType.RANGE) {
 
+    <app-k-range
+      [Question]="Question">
+    </app-k-range>
 
+  }
 
 
 
+  @case (QuestionType.ADDRESS) {
 
-@case(QuestionType.EMAIL){
+    <app-k-address
+      [Question]="Question">
+    </app-k-address>
 
-<mat-form-field appearance="outline">
+  }
 
 
-<mat-label>
 
-{{Question.title}}
+  @case (QuestionType.LOCATION) {
 
-</mat-label>
+    <app-k-location
+      [Question]="Question">
+    </app-k-location>
 
+  }
 
-<input
 
-matInput
 
-type="email"
+  @case (QuestionType.MAP) {
 
-[value]="defaultValue || ''"
+    <app-k-map
+      [Question]="Question">
+    </app-k-map>
 
-(input)="onInput($event)"
+  }
 
-(blur)="onBlur($event)"
 
-[readonly]="isReadonly()"
 
-[required]="isRequired()"
+  @case (QuestionType.COLOR) {
 
->
+    <app-k-color
+      [Question]="Question">
+    </app-k-color>
 
+  }
 
-</mat-form-field>
 
-}
 
+  @case (QuestionType.HIDDEN) {
 
+    <app-k-hidden
+      [Question]="Question">
+    </app-k-hidden>
 
+  }
 
 
 
+  @case (QuestionType.DIVIDER) {
 
+    <app-k-divider
+      [Question]="Question">
+    </app-k-divider>
 
-@case(QuestionType.PHONE){
+  }
 
-<app-k-phone
 
-    [Question]="Question"
 
->
+  @case (QuestionType.HTML) {
 
-</app-k-phone>
+    <app-k-html
+      [Question]="Question">
+    </app-k-html>
 
-}
+  }
 
 
 
+  @case (QuestionType.LABEL) {
 
+    <app-k-label
+      [Question]="Question">
+    </app-k-label>
 
+  }
 
 
 
-@case(QuestionType.PASSWORD){
+  @case (QuestionType.QR) {
 
-<app-k-password
+    <app-k-qr
+      [Question]="Question">
+    </app-k-qr>
 
-    [Question]="Question"
+  }
 
->
 
-</app-k-password>
 
-}
+  @case (QuestionType.BARCODE) {
 
+    <app-k-barcode
+      [Question]="Question">
+    </app-k-barcode>
 
+  }
 
 
 
+  @default {
 
+    <div class="placeholder">
+      Preview unavailable
+    </div>
 
-
-@case(QuestionType.URL){
-
-<app-k-url
-
-    [Question]="Question"
-
->
-
-</app-k-url>
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.DATE){
-
-<mat-form-field appearance="outline">
-
-
-<mat-label>
-
-{{Question.title}}
-
-</mat-label>
-
-
-<input
-
-matInput
-
-type="date"
-
-[value]="defaultValue"
-
-(input)="onInput($event)"
-
-(blur)="onBlur($event)"
-
-[min]="Question.minDate ?? null"
-
-[max]="Question.maxDate ?? null"
-
-[readonly]="isReadonly()"
-
-[required]="isRequired()"
-
->
-
-
-</mat-form-field>
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.TIME){
-
-<mat-form-field appearance="outline">
-
-
-<mat-label>
-
-{{Question.title}}
-
-</mat-label>
-
-
-<input
-
-matInput
-
-type="time"
-
-[value]="defaultValue"
-
-(input)="onInput($event)"
-
-(blur)="onBlur($event)"
-
-[readonly]="isReadonly()"
-
-[required]="isRequired()"
-
->
-
-
-</mat-form-field>
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.DATETIME){
-
-<mat-form-field appearance="outline">
-
-
-<mat-label>
-
-{{Question.title}}
-
-</mat-label>
-
-
-<input
-
-matInput
-
-type="datetime-local"
-
-[value]="defaultValue"
-
-(input)="onInput($event)"
-
-(blur)="onBlur($event)"
-
-[readonly]="isReadonly()"
-
-[required]="isRequired()"
-
->
-
-
-</mat-form-field>
-
-}
-
-@case(QuestionType.SELECT){
-
-<mat-form-field appearance="outline">
-
-
-<mat-label>
-
-{{Question.title}}
-
-</mat-label>
-
-
-
-<mat-select
-
-[value]="defaultValue"
-
-[disabled]="isReadonly()"
-
->
-
-
-@for(option of Question.options; track option.id){
-
-
-<mat-option
-
-[value]="option.value"
-
->
-
-{{option.label}}
-
-</mat-option>
+  }
 
 
 }
-
-
-</mat-select>
-
-
-
-</mat-form-field>
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.RADIO){
-
-<mat-radio-group
-
-[value]="defaultValue"
-
->
-
-
-@for(option of Question.options; track option.id){
-
-
-<mat-radio-button
-
-[value]="option.value"
-
-[disabled]="isReadonly()"
-
->
-
-{{option.label}}
-
-</mat-radio-button>
-
-
-}
-
-
-</mat-radio-group>
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.CHECKBOX){
-
-
-@for(option of Question.options; track option.id){
-
-
-<mat-checkbox
-
-[disabled]="isReadonly()"
-
->
-
-{{option.label}}
-
-</mat-checkbox>
-
-
-}
-
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.SWITCH){
-
-<mat-slide-toggle
-
-[disabled]="isReadonly()"
-
->
-
-{{Question.title}}
-
-</mat-slide-toggle>
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.FILE){
-
-
-<input
-
-type="file"
-
-[accept]="Question.acceptedFileTypes?.join(',')"
-
-[multiple]="Question.multipleFiles"
-
-[disabled]="isReadonly()"
-
->
-
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.IMAGE){
-
-
-<input
-
-type="file"
-
-accept="image/*"
-
-[multiple]="Question.multipleFiles"
-
-[disabled]="isReadonly()"
-
->
-
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.SIGNATURE){
-
-
-<div class="signature">
-
-Signature
-
-</div>
-
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.RATING){
-
-
-<div class="rating">
-
-
-@for(star of getRatingStars(); track star){
-
-
-<span>
-
-⭐
-
-</span>
-
-
-}
-
-
-</div>
-
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.SCALE){
-
-
-<mat-slider
-
-
-[min]="minScale"
-
-[max]="maxScale"
-
-[step]="step"
-
-
->
-
-<input matSliderThumb>
-
-</mat-slider>
-
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.RANGE){
-
-
-<mat-slider
-
-
-[min]="Question.rangeMin ?? 0"
-
-[max]="Question.rangeMax ?? 100"
-
-[step]="Question.rangeStep ?? 1"
-
-
->
-
-<input matSliderThumb>
-
-</mat-slider>
-
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.ADDRESS){
-
-<app-k-address
-
-    [Question]="Question"
-
->
-
-</app-k-address>
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.LOCATION){
-
-<app-k-location
-
-    [Question]="Question"
-
->
-
-</app-k-location>
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.MAP){
-
-<app-k-map
-
-    [Question]="Question"
-
->
-
-</app-k-map>
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.COLOR){
-
-<app-k-color
-
-    [Question]="Question"
-
->
-
-</app-k-color>
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.HIDDEN){
-
-<app-k-hidden
-
-    [Question]="Question"
-
->
-
-</app-k-hidden>
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.DIVIDER){
-
-<app-k-divider>
-
-</app-k-divider>
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.HTML){
-
-<app-k-html
-
-    [Question]="Question"
-
->
-
-</app-k-html>
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.LABEL){
-
-<app-k-label
-
-    [Question]="Question"
-
->
-
-</app-k-label>
-
-}
-
-@case(QuestionType.QR){
-
-<div class="placeholder">
-
-QR Code
-
-</div>
-
-}
-
-
-
-
-
-
-
-
-@case(QuestionType.BARCODE){
-
-<div class="placeholder">
-
-Barcode
-
-</div>
-
-}
-
-
-
-
-
-
-
-
-@default{
-
-<div class="placeholder">
-
-Preview unavailable
-
-</div>
-
-}
-
-
-}
-
-
-
-
-
-@if(Question.helpText){
-
-<div class="help-text">
-
-{{Question.helpText}}
-
-</div>
-
-}
-
-
-
-
-
-@if(Question.required){
-
-<div class="required">
-
-* Required
-
-</div>
-
-}
-
-
-
-
-
-@if(errorMessage){
-
-<div class="validation-error">
-
-{{errorMessage}}
-
-</div>
-
-}
-
-
-
 
 
 </div>

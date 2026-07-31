@@ -1,0 +1,71 @@
+.scale-field {
+
+    width:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+
+
+.header {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+
+
+.title {
+
+    font-weight:600;
+
+}
+
+
+
+.value {
+
+    font-weight:bold;
+
+}
+
+
+
+mat-slider {
+
+    width:100%;
+
+}
+
+
+
+.labels {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    color:#777;
+
+    font-size:12px;
+
+}
+
+
+
+.help {
+
+    color:#777;
+
+    font-size:13px;
+
+}

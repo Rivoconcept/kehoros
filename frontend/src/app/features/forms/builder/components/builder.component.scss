@@ -1,3 +1,8 @@
+.builder-page,
+.builder-page * {
+    box-sizing:border-box;
+}
+
 .builder-page {
 
     display:flex;
@@ -84,15 +89,24 @@
 
 .panel-title {
 
-    margin:0 0 16px 0;
+    position: sticky;
+    top: -16px; // compense le padding du panneau
 
-    padding-bottom:10px;
+    z-index: 10;
+
+    margin: 0 0 16px 0;
+
+    padding: 16px 0 10px 0;
 
     font-size:18px;
 
     font-weight:600;
 
     color:var(--text);
+
+    text-align:center;
+
+    background:var(--surface);
 
     border-bottom:1px solid var(--border);
 

@@ -1,0 +1,29 @@
+<div class="switch-field">
+
+
+    <mat-slide-toggle
+
+        [(ngModel)]="value"
+
+        [disabled]="Question.readOnly === true"
+
+    >
+
+        {{ Question.title || 'Switch' }}
+
+    </mat-slide-toggle>
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

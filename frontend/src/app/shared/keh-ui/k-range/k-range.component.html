@@ -1,0 +1,119 @@
+<div class="range-field">
+
+
+    <div class="range-header">
+
+
+        <label>
+
+            {{ Question.title || 'Range' }}
+
+        </label>
+
+
+
+        <span>
+
+            {{ value }}
+
+        </span>
+
+
+    </div>
+
+
+
+
+
+
+    <mat-slider
+
+        [min]="min"
+
+        [max]="max"
+
+        [step]="step"
+
+        [disabled]="Question.readOnly"
+
+    >
+
+
+        <input
+
+            matSliderThumb
+
+            [(ngModel)]="value"
+
+            (ngModelChange)="updateValue()"
+
+        >
+
+
+    </mat-slider>
+
+
+
+
+
+
+    <div class="range-info">
+
+
+        <span>
+
+            Min: {{min}}
+
+        </span>
+
+
+
+        <span>
+
+            Max: {{max}}
+
+        </span>
+
+
+
+        <span>
+
+            Step: {{step}}
+
+        </span>
+
+
+    </div>
+
+
+
+
+
+
+    @if(errorMessage){
+
+        <div class="validation-error">
+
+            {{errorMessage}}
+
+        </div>
+
+    }
+
+
+
+
+
+    @if(Question.helpText){
+
+        <small>
+
+            {{Question.helpText}}
+
+        </small>
+
+    }
+
+
+
+</div>

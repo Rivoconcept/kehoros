@@ -1,0 +1,67 @@
+@if(Question){
+
+
+<div
+
+    class="divider-wrapper"
+
+    [class]="cssClass"
+
+>
+
+
+    @if(Question.title){
+
+
+        <div
+
+            class="divider-title"
+
+            [style]="style"
+
+        >
+
+            {{Question.title}}
+
+        </div>
+
+
+    }
+
+
+
+
+
+    <div
+
+        class="divider-line"
+
+        [style.background]="color"
+
+        [style.width]="width"
+
+    >
+
+    </div>
+
+
+
+
+
+    @if(Question.description){
+
+
+        <small class="description">
+
+            {{Question.description}}
+
+        </small>
+
+
+    }
+
+
+</div>
+
+
+}

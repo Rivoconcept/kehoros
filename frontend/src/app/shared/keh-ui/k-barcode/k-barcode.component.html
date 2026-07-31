@@ -1,0 +1,61 @@
+<div class="barcode-field">
+
+
+    <label class="title">
+
+        {{ Question.title || 'Barcode' }}
+
+    </label>
+
+
+
+    <div class="barcode-container">
+
+
+        <div class="barcode">
+
+
+            @for(bar of bars; track $index){
+
+
+                <span
+
+                    [style.height.px]="50"
+
+                    [class.dark]="bar"
+
+                >
+
+                </span>
+
+
+            }
+
+
+        </div>
+
+
+
+        <div class="code">
+
+            {{ value }}
+
+        </div>
+
+
+    </div>
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

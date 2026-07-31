@@ -1,0 +1,54 @@
+<div class="radio-field">
+
+
+    <label class="title">
+
+        {{ Question.title || 'Choose an option' }}
+
+    </label>
+
+
+
+    <mat-radio-group
+
+        [(ngModel)]="value"
+
+        [disabled]="Question.readOnly === true"
+
+    >
+
+
+        @for(option of Question.options; track option.id){
+
+
+            <mat-radio-button
+
+                [value]="option.value"
+
+            >
+
+                {{ option.label }}
+
+
+            </mat-radio-button>
+
+
+        }
+
+
+    </mat-radio-group>
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

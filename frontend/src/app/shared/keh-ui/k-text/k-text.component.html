@@ -1,0 +1,51 @@
+<div class="text-field">
+
+
+    <mat-form-field appearance="outline">
+
+
+        <mat-label>
+
+            {{ Question.title || 'Text' }}
+
+        </mat-label>
+
+
+
+        <input
+
+            matInput
+
+            [(ngModel)]="value"
+
+            [placeholder]="Question.placeholder || ''"
+
+            [readonly]="Question.readOnly"
+
+            [required]="Question.required"
+
+            [attr.minlength]="Question.minLength || null"
+
+            [attr.maxlength]="Question.maxLength || null"
+
+            [pattern]="Question.pattern ?? ''"
+
+        >
+
+
+    </mat-form-field>
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

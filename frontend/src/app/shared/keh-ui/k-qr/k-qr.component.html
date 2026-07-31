@@ -1,0 +1,51 @@
+<div class="qr-field">
+
+
+    <label class="title">
+
+        {{ Question.title || 'QR Code' }}
+
+    </label>
+
+
+
+    <div class="qr-container">
+
+
+        <div class="qr-placeholder">
+
+
+            <div class="icon">
+
+                ▦
+
+            </div>
+
+
+
+            <span>
+
+                {{ value || 'QR Code' }}
+
+            </span>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

@@ -1,0 +1,52 @@
+<div class="textarea-field">
+
+
+    <mat-form-field appearance="outline">
+
+
+        <mat-label>
+
+            {{ Question.title || 'Description' }}
+
+        </mat-label>
+
+
+
+        <textarea
+
+            matInput
+
+            rows="4"
+
+            [(ngModel)]="value"
+
+            [placeholder]="Question.placeholder || ''"
+
+            [readonly]="Question.readOnly"
+
+            [required]="Question.required"
+
+            [attr.minlength]="Question.minLength || null"
+
+            [attr.maxlength]="Question.maxLength || null"
+
+        ></textarea>
+
+
+
+    </mat-form-field>
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

@@ -1,0 +1,67 @@
+@if(Question){
+
+
+<div
+
+    class="html-wrapper"
+
+    [class]="cssClass"
+
+>
+
+
+    @if(Question.title){
+
+
+    <h3
+
+        class="html-title"
+
+        [style.color]="color"
+
+        [style]="labelStyle"
+
+    >
+
+        {{Question.title}}
+
+    </h3>
+
+
+    }
+
+
+
+
+
+    <div
+
+        class="html-container"
+
+        [innerHTML]="content"
+
+    >
+
+    </div>
+
+
+
+
+
+    @if(Question.helpText){
+
+
+    <small class="help">
+
+        {{Question.helpText}}
+
+    </small>
+
+
+    }
+
+
+</div>
+
+
+}

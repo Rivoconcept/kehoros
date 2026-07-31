@@ -1,0 +1,45 @@
+<div class="time-field">
+
+
+    <mat-form-field appearance="outline">
+
+
+        <mat-label>
+
+            {{ Question.title || 'Time' }}
+
+        </mat-label>
+
+
+
+        <input
+
+            matInput
+
+            type="time"
+
+            [(ngModel)]="value"
+
+            [readonly]="Question.readOnly"
+
+            [required]="Question.required"
+
+        >
+
+
+    </mat-form-field>
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

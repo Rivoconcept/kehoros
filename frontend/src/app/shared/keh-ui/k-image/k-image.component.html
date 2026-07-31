@@ -1,0 +1,68 @@
+<div class="image-field">
+
+
+    <label class="title">
+
+        {{ Question.title || 'Upload image' }}
+
+    </label>
+
+
+
+    <input
+
+        type="file"
+
+        accept="image/*"
+
+        [multiple]="Question.multipleFiles"
+
+        [disabled]="Question.readOnly"
+
+        (change)="onImageChange($event)"
+
+    >
+
+
+
+
+    @if(images.length){
+
+
+        <div class="preview-grid">
+
+
+            @for(image of images; track image){
+
+
+                <img
+
+                    [src]="image"
+
+                    alt="preview"
+
+                >
+
+
+            }
+
+
+        </div>
+
+
+    }
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

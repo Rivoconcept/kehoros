@@ -1,0 +1,68 @@
+<div class="url-field">
+
+    <mat-form-field
+        appearance="outline"
+        class="full-width">
+
+        <mat-label>
+
+            {{ Question.title || 'Website URL' }}
+
+        </mat-label>
+
+        <input
+
+            matInput
+
+            type="url"
+
+            [(ngModel)]="urlValue"
+
+            (input)="onInput()"
+
+            (blur)="onBlur()"
+
+            [placeholder]="Question.placeholder || 'https://example.com'"
+
+            [required]="Question.required"
+
+            [readonly]="Question.readOnly"
+
+        >
+
+    </mat-form-field>
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+    @if(errorMessage){
+
+        <div class="validation-error">
+
+            {{ errorMessage }}
+
+        </div>
+
+    }
+
+    @if(!errorMessage && urlValue){
+
+        <button
+            type="button"
+            class="open-link"
+            (click)="openLink()">
+
+            Open link
+
+        </button>
+
+    }
+
+</div>

@@ -1,0 +1,65 @@
+<div class="file-field">
+
+
+    <label class="title">
+
+        {{ Question.title || 'Upload file' }}
+
+    </label>
+
+
+
+    <input
+
+        type="file"
+
+        [multiple]="Question.multipleFiles"
+
+        [accept]="Question.acceptedFileTypes?.join(',')"
+
+        [disabled]="Question.readOnly"
+
+        (change)="onFileChange($event)"
+
+    >
+
+
+
+    @if(files.length){
+
+
+        <div class="file-list">
+
+
+            @for(file of files; track file.name){
+
+
+                <div class="file-item">
+
+                    📄 {{ file.name }}
+
+                </div>
+
+
+            }
+
+
+        </div>
+
+
+    }
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

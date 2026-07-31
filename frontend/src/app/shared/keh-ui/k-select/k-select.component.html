@@ -1,0 +1,61 @@
+<div class="select-field">
+
+
+    <mat-form-field appearance="outline">
+
+
+        <mat-label>
+
+            {{ Question.title || 'Select' }}
+
+        </mat-label>
+
+
+
+        <mat-select
+
+            [(ngModel)]="value"
+
+            [disabled]="Question.readOnly === true"
+
+            [required]="Question.required"
+
+        >
+
+
+            @for(option of Question.options; track option.id){
+
+
+                <mat-option
+
+                    [value]="option.value"
+
+                >
+
+                    {{ option.label }}
+
+                </mat-option>
+
+
+            }
+
+
+        </mat-select>
+
+
+    </mat-form-field>
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>

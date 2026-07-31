@@ -1,0 +1,45 @@
+<div class="datetime-field">
+
+
+    <mat-form-field appearance="outline">
+
+
+        <mat-label>
+
+            {{ Question.title || 'Date and time' }}
+
+        </mat-label>
+
+
+
+        <input
+
+            matInput
+
+            type="datetime-local"
+
+            [(ngModel)]="value"
+
+            [readonly]="Question.readOnly"
+
+            [required]="Question.required"
+
+        >
+
+
+    </mat-form-field>
+
+
+
+    @if(Question.helpText){
+
+        <small class="help">
+
+            {{ Question.helpText }}
+
+        </small>
+
+    }
+
+
+</div>
