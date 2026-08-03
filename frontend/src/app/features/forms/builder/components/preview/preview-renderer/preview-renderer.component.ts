@@ -25,7 +25,7 @@ import { MatSliderModule } from "@angular/material/slider";
 import { Question } from "../../../../models/question.model";
 import { QuestionType } from "../../../../models/question-type.enum";
 
-import { QuestionValidatorService } from "../../../services/question-validator.service";
+import { QuestionValidatorService } from "../../../../services/question-validator.service";
 
 import { KPhoneComponent } from "src/app/shared/keh-ui/k-phone/k-phone.component";
 import { KAddressComponent } from "src/app/shared/keh-ui/k-address/k-address.component";
@@ -144,8 +144,29 @@ export class PreviewRendererComponent implements OnInit, OnChanges {
     this.value = this.Question?.defaultValue ?? "";
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
+
     this.ensureControl();
+
+    this.value =
+      this.control.value ??
+      this.Question.defaultValue ??
+      "";
+
+    if (this.Question.disabled) {
+
+      this.control.disable({
+        emitEvent:false
+      });
+
+    }
+    else {
+
+      this.control.enable({
+        emitEvent:false
+      });
+
+    }
   }
 
   private ensureControl(): void {
@@ -154,10 +175,14 @@ export class PreviewRendererComponent implements OnInit, OnChanges {
     }
   }
 
-  onValueChange(value: any): void {
-    this.value = value;
+
+
+  onValueChange(value:any){
+    this.value=value;
+    this.control.setValue(value);
     this.validate(value);
   }
+
 
   onBlur(): void {
     this.validate(this.value);

@@ -19,3 +19,40 @@
                 └─────────────┬─────────────┘
                               ▼
                          PostgreSQL
+
+
+
+features/forms/models/
+
+├── question.model.ts              ✅
+├── question-option.model.ts       ✅
+├── question-type.enum.ts          ✅
+│
+├── validation-rule.model.ts       ✅
+├── condition.model.ts             ✅
+│
+├── answer.model.ts                ✅
+├── response.model.ts              ✅
+├── result.model.ts                ✅
+│
+├── form-session.model.ts          ✅
+├── assignment.model.ts            ✅
+├── template.model.ts              ✅
+
+Template
+   |
+   |-- Question[]
+   |      |
+   |      |-- QuestionOption[]
+   |      |-- ValidationRule[]
+   |      |-- Condition[]
+   |
+Assignment
+   |
+FormSession
+   |
+Response
+   |
+Answer[]
+   |
+Result

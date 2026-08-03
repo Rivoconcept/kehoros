@@ -1,5 +1,9 @@
 import { QuestionType } from './question-type.enum';
 import { QuestionOption } from './question-option.model';
+import { ValidationRule } from './validation-rule.model';
+import { Condition } from './condition.model';
+import { ConditionGroup } from './condition-group.model';
+
 
 
 export interface Question {
@@ -14,7 +18,7 @@ export interface Question {
     title:string;
 
 
-    description:string;
+    description?:string;
 
 
     type:QuestionType;
@@ -32,10 +36,45 @@ export interface Question {
     order:number;
 
 
-    score:number;
+    score?:number;
 
 
     options:QuestionOption[];
+
+
+
+
+
+    // ==========================
+    // Conditions dynamiques
+    // ==========================
+
+
+    /**
+     * Conditions simples
+     *
+     * Exemple :
+     *
+     * Age > 18
+     */
+    conditions?:Condition[];
+
+
+
+
+    /**
+     * Groupes de conditions multiples
+     *
+     * Exemple :
+     *
+     * (
+     *   Age > 18
+     *   AND
+     *   Pays == France
+     * )
+     *
+     */
+    conditionGroups?:ConditionGroup[];
 
 
 
@@ -59,6 +98,8 @@ export interface Question {
 
 
     pattern?:string;
+
+
 
 
 
@@ -86,6 +127,34 @@ export interface Question {
 
 
     validateOnBlur?:boolean;
+
+
+
+
+
+    // ==========================
+    // Advanced Validation Rules
+    // ==========================
+
+
+    validationRules?:ValidationRule[];
+
+
+
+
+
+    // ==========================
+    // Compatibilité ancienne logique
+    // ==========================
+
+
+    conditional?:boolean;
+
+
+    dependsOnQuestionId?:string;
+
+
+    expectedValue?:any;
 
 
 
@@ -129,7 +198,7 @@ export interface Question {
 
 
     // ==========================
-    // Visibility / Logic
+    // Visibility
     // ==========================
 
 
@@ -139,13 +208,7 @@ export interface Question {
     readOnly?:boolean;
 
 
-    conditional?:boolean;
-
-
-    dependsOnQuestionId?:string;
-
-
-    expectedValue?:any;
+    disabled?:boolean;
 
 
 
@@ -215,15 +278,21 @@ export interface Question {
 
     addressFields?:{
 
+
         street?:boolean;
+
 
         city?:boolean;
 
+
         state?:boolean;
+
 
         zip?:boolean;
 
+
         country?:boolean;
+
 
     };
 
@@ -335,5 +404,7 @@ export interface Question {
 
 
     metadata?:Record<string,any>;
+
+
 
 }

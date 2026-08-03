@@ -102,36 +102,27 @@ export class BuilderService {
 
       id:crypto.randomUUID(),
 
-
       title,
-
 
       description:'',
 
-
       category:'',
-
 
       published:false,
 
-
       archived:false,
 
-
       version:1,
-
 
       questions:[],
 
 
       createdAt:new Date(),
 
-
       updatedAt:new Date()
 
 
     };
-
 
 
     this.save(template);
@@ -155,7 +146,6 @@ export class BuilderService {
 
 
 
-
     localStorage.setItem(
 
       this.STORAGE_KEY,
@@ -163,7 +153,6 @@ export class BuilderService {
       JSON.stringify(template)
 
     );
-
 
 
 
@@ -214,6 +203,23 @@ export class BuilderService {
 
 
 
+      /**
+       * Migration anciens templates
+       */
+      template.questions =
+        (template.questions ?? [])
+        .map(question => ({
+
+          ...question,
+
+          options:
+            question.options ?? []
+
+        }));
+
+
+
+
       template.createdAt =
         new Date(template.createdAt);
 
@@ -221,6 +227,7 @@ export class BuilderService {
 
       template.updatedAt =
         new Date(template.updatedAt);
+
 
 
 
@@ -293,143 +300,131 @@ export class BuilderService {
 
 
 
-    addQuestion(type:QuestionType):void {
+  addQuestion(type:QuestionType):void {
 
 
-          const template =
-            this.template;
+    const template =
+      this.template;
 
 
 
-          if(!template)
-            return;
+    if(!template)
+      return;
 
 
 
 
 
-          const question:Question = {
+    const question:Question = {
 
 
-        id:crypto.randomUUID(),
+      id:crypto.randomUUID(),
 
 
-        templateId:template.id,
+      templateId:template.id,
 
 
-        title:'New Question',
+      title:'New Question',
 
 
-        description:'',
+      description:'',
 
 
-        type,
+      type,
 
 
-        required:false,
+      required:false,
 
 
-        placeholder:'',
+      placeholder:'',
 
 
-        helpText:'',
+      helpText:'',
 
 
-        order:template.questions.length,
+      order:template.questions.length,
 
 
-        score:1,
+      score:1,
 
 
-        options:[],
+      options:[],
 
 
 
-        // Default values
+      defaultValue:null,
 
-        defaultValue:null,
 
 
+      width:'100%',
 
-        // Display
 
-        width:'100%',
+      hidden:false,
 
 
-        hidden:false,
+      readOnly:false,
 
 
-        readOnly:false,
 
+      countryCode:'+261',
 
 
-        // Phone
 
-        countryCode:'+261',
+      minScale:1,
 
 
+      maxScale:10,
 
-        // Range / Scale
 
-        minScale:1,
+      step:1,
 
 
-        maxScale:10,
+      rangeMin:0,
 
 
-        step:1,
+      rangeMax:100,
 
 
-        rangeMin:0,
+      rangeStep:1,
 
 
-        rangeMax:100,
 
+      latitude:-18.8792,
 
-        rangeStep:1,
 
+      longitude:47.5079,
 
 
-        // Map
+      zoom:13,
 
-        latitude: -18.8792,
 
 
-        longitude:47.5079,
+      addressFields:{
 
 
-        zoom:13,
+        street:true,
 
+        city:true,
 
+        state:false,
 
-        // Address
+        zip:true,
 
-        addressFields:{
+        country:true
 
-          street:true,
 
-          city:true,
+      },
 
-          state:false,
 
-          zip:true,
 
-          country:true
+      allowPastDate:true,
 
-        },
 
+      allowFutureDate:true
 
 
-        // Date
+    };
 
-        allowPastDate:true,
-
-
-        allowFutureDate:true
-
-
-
-      };
 
 
 
@@ -487,16 +482,19 @@ export class BuilderService {
 
 
 
-    template.questions[index] =
-      {
 
-        ...updated,
+    template.questions[index] = {
 
-        options:[
-          ...updated.options
-        ]
 
-      };
+      ...updated,
+
+
+      options:[
+        ...(updated.options ?? [])
+      ]
+
+
+    };
 
 
 
@@ -570,15 +568,17 @@ export class BuilderService {
 
       options:
 
-        original.options.map(
-          option => ({
+        (original.options ?? [])
+        .map(option => ({
 
-            ...option,
 
-            id:crypto.randomUUID()
+          ...option,
 
-          })
-        )
+
+          id:crypto.randomUUID()
+
+
+        }))
 
 
     };
@@ -700,7 +700,6 @@ export class BuilderService {
       currentIndex
 
     );
-
 
 
 
@@ -845,6 +844,21 @@ export class BuilderService {
           JSON.parse(
             reader.result as string
           );
+
+
+
+
+
+        template.questions =
+          (template.questions ?? [])
+          .map(question => ({
+
+            ...question,
+
+            options:
+              question.options ?? []
+
+          }));
 
 
 

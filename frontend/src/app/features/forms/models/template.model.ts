@@ -1,25 +1,123 @@
 import { Question } from './question.model';
 
+
 export interface Template {
 
-  id:string;
 
-  title:string;
+    id:string;
 
-  description:string;
 
-  category:string;
+    title:string;
 
-  published:boolean;
 
-  archived:boolean;
+    description:string;
 
-  version:number;
 
-  questions:Question[];
+    category?:string;
 
-  createdAt:Date;
 
-  updatedAt:Date;
+
+    // ==========================
+    // Status
+    // ==========================
+
+
+    published:boolean;
+
+
+    archived:boolean;
+
+
+    version:number;
+
+
+
+    status?:
+        | 'DRAFT'
+        | 'PUBLISHED'
+        | 'ARCHIVED';
+
+
+
+
+
+    // ==========================
+    // Form structure
+    // ==========================
+
+
+    questions:Question[];
+
+
+
+
+
+    // ==========================
+    // Display / UI
+    // ==========================
+
+
+    theme?: {
+
+        primaryColor?:string;
+
+        logo?:string;
+
+        cssClass?:string;
+
+    };
+
+
+
+    showProgressBar?:boolean;
+
+
+    allowSaveDraft?:boolean;
+
+
+    allowMultipleSubmission?:boolean;
+
+
+
+
+
+    // ==========================
+    // Access
+    // ==========================
+
+
+    publicAccess?:boolean;
+
+
+    requiresAuthentication?:boolean;
+
+
+
+
+
+    // ==========================
+    // Metadata
+    // ==========================
+
+
+    tags?:string[];
+
+
+    metadata?:Record<string,any>;
+
+
+
+
+
+    // ==========================
+    // Dates
+    // ==========================
+
+
+    createdAt:Date;
+
+
+    updatedAt:Date;
+
 
 }

@@ -23,13 +23,9 @@
 
 
 
-
-
 h2 {
 
-    margin:0 0 5px;
-
-    color:var(--text);
+    margin:0;
 
     font-size:22px;
 
@@ -39,27 +35,19 @@ h2 {
 
 
 
-
-
 h3 {
 
-    margin:18px 0 0;
+    margin-top:20px;
 
-    color:var(--text);
+    padding-bottom:8px;
+
+    border-bottom:1px solid var(--border);
 
     font-size:16px;
 
     font-weight:700;
 
-    padding-bottom:8px;
-
-    border-bottom:
-
-        1px solid var(--border);
-
 }
-
-
 
 
 
@@ -71,15 +59,11 @@ h3 {
 
 
 
-
-
 mat-form-field {
 
     width:100%;
 
 }
-
-
 
 
 
@@ -89,7 +73,7 @@ mat-form-field {
 
     grid-template-columns:
 
-        repeat(2, minmax(0,1fr));
+        repeat(2,minmax(0,1fr));
 
     gap:14px;
 
@@ -99,9 +83,132 @@ mat-form-field {
 
 
 
-mat-slide-toggle {
+/* ========================= */
+/* CONDITIONS */
+/* ========================= */
 
-    padding:10px 0;
+
+
+.condition-group {
+
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+    padding:18px;
+
+    border-radius:16px;
+
+    background:
+
+        rgba(0,92,180,.05);
+
+    border:
+
+        1px solid
+
+        rgba(0,92,180,.15);
+
+
+}
+
+
+
+
+
+.condition-header {
+
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:12px;
+
+
+}
+
+
+
+.condition-header strong {
+
+
+    font-size:16px;
+
+}
+
+
+
+
+
+.condition-header mat-select {
+
+
+    width:120px;
+
+    border-radius:8px;
+
+}
+
+
+
+
+
+.condition-row {
+
+
+    display:grid;
+
+    grid-template-columns:
+
+        repeat(4,minmax(0,1fr));
+
+    gap:12px;
+
+    align-items:center;
+
+
+}
+
+
+
+
+
+.condition-row button {
+
+
+    justify-self:center;
+
+
+}
+
+
+
+
+
+
+button[mat-raised-button] {
+
+
+    width:max-content;
+
+
+}
+
+
+
+
+
+button[color="warn"] {
+
+
+    color:#d32f2f;
+
 
 }
 
@@ -110,6 +217,7 @@ mat-slide-toggle {
 
 
 .empty {
+
 
     display:flex;
 
@@ -121,23 +229,7 @@ mat-slide-toggle {
 
     color:var(--text-light);
 
-    text-align:center;
-
-    background:rgba(255,255,255,.5);
-
-    border-radius:14px;
-
     font-style:italic;
-
-}
-
-
-
-
-
-::ng-deep .mat-mdc-form-field {
-
-    margin-bottom:4px;
 
 }
 
@@ -155,20 +247,39 @@ mat-slide-toggle {
 
 
 
-@media(max-width:900px){
+@media(max-width:1000px){
+
+
+    .condition-row {
+
+        grid-template-columns:
+
+            1fr;
+
+    }
+
+
+}
+
+
+
+
+
+@media(max-width:700px){
+
+
+    .grid-2 {
+
+        grid-template-columns:
+
+            1fr;
+
+    }
 
 
     .properties {
 
         padding:16px;
-
-    }
-
-
-
-    .grid-2 {
-
-        grid-template-columns:1fr;
 
     }
 

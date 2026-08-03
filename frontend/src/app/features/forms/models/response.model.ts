@@ -1,11 +1,25 @@
+import { Answer } from "./answer.model";
+
 export interface Response {
 
-  id:string;
+    id: string;
 
-  sessionId:string;
+    sessionId: string;
 
-  questionId:string;
+    formId: string;
 
-  value:any;
+    answers: Answer[];
+
+    totalScore?: number;
+
+    submittedAt?: string;
+
+    submittedBy?: string;
+
+    status?:
+        | 'DRAFT'
+        | 'SUBMITTED'
+        | 'VALIDATED'
+        | 'REJECTED';
 
 }

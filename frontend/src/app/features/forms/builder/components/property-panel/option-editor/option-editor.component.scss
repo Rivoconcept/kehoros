@@ -1,12 +1,33 @@
 .options-editor {
 
-    margin-top:20px;
+
+    margin-top:24px;
+
+    padding:18px;
+
+    border-radius:16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,92,180,.06),
+            rgba(0,180,120,.08)
+        );
+
+    border:
+
+        1px solid
+
+        rgba(0,120,160,.15);
 
 }
 
 
 
+
+
 .header {
+
 
     display:flex;
 
@@ -14,40 +35,300 @@
 
     align-items:center;
 
-    margin-bottom:15px;
+    margin-bottom:18px;
+
 
 }
 
 
 
-.option-row {
+.header h3 {
+
+
+    margin:0;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#005c99;
+
+
+}
+
+
+
+.header p {
+
+
+    margin:4px 0 0;
+
+    font-size:13px;
+
+    color:#607d8b;
+
+
+}
+
+
+
+
+
+
+.add-btn {
+
+
+    background:#008f5a;
+
+    color:white;
 
     display:flex;
 
     align-items:center;
 
-    gap:10px;
+    gap:6px;
 
-    margin-bottom:10px;
 
 }
+
+
+
+.add-btn:hover {
+
+
+    background:#007348;
+
+}
+
+
+
+
+
+
+.options-list {
+
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+
+}
+
+
+
+
+
+
+.option-card {
+
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+
+    padding:10px 12px;
+
+
+    background:white;
+
+
+    border-radius:12px;
+
+
+    border:
+
+        1px solid
+
+        rgba(0,92,180,.15);
+
+
+    transition:.2s;
+
+
+}
+
+
+
+.option-card:hover {
+
+
+    border-color:#008f5a;
+
+
+    box-shadow:
+
+        0 4px 12px
+
+        rgba(0,0,0,.08);
+
+
+}
+
+
+
+
+
+
+.number {
+
+
+    width:32px;
+
+    height:32px;
+
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+
+    border-radius:50%;
+
+
+    background:#005c99;
+
+
+    color:white;
+
+
+    font-weight:600;
+
+
+}
+
+
 
 
 
 mat-form-field {
 
+
     flex:1;
+
+    margin:0;
+
 
 }
 
 
 
+
+
+.delete-btn {
+
+
+    color:#d32f2f;
+
+
+}
+
+
+
+.delete-btn:hover {
+
+
+    background:
+
+        rgba(211,47,47,.1);
+
+
+}
+
+
+
+
+
+
 .empty {
 
-    padding:15px;
 
-    color:#777;
+    display:flex;
 
-    text-align:center;
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+
+    gap:8px;
+
+
+    padding:30px;
+
+
+    color:#78909c;
+
+
+    background:white;
+
+
+    border-radius:14px;
+
+
+}
+
+
+
+.empty mat-icon {
+
+
+    font-size:36px;
+
+    width:36px;
+
+    height:36px;
+
+
+}
+
+
+
+
+
+@media(max-width:700px){
+
+
+    .header {
+
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+        gap:12px;
+
+
+    }
+
+
+
+    .option-card {
+
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+
+    }
+
+
+
+    .number {
+
+
+        display:none;
+
+    }
+
 
 }

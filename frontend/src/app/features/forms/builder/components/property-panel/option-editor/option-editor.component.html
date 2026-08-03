@@ -3,14 +3,26 @@
 
     <div class="header">
 
-        <h3>
-            Options
-        </h3>
+
+        <div>
+
+            <h3>
+                Options
+            </h3>
+
+            <p>
+                Configure possible answers
+            </p>
+
+        </div>
+
 
 
         <button
 
             mat-raised-button
+
+            class="add-btn"
 
             type="button"
 
@@ -18,7 +30,11 @@
 
         >
 
-            Add
+            <mat-icon>
+                add
+            </mat-icon>
+
+            Add option
 
         </button>
 
@@ -29,64 +45,86 @@
 
 
 
-    @for(option of options; track option.id; let i=$index){
+
+    <div class="options-list">
 
 
-        <div class="option-row">
+        @for(option of options; track option.id; let i=$index){
 
 
-            <mat-form-field appearance="outline">
+            <div class="option-card">
 
 
-                <mat-label>
-                    Option {{i + 1}}
-                </mat-label>
+                <div class="number">
 
+                    {{i + 1}}
 
-                <input
-
-                    matInput
-
-                    [value]="option.label"
-
-                    (input)="updateLabel(
-                        i,
-                        $any($event.target).value
-                    )"
-
-                />
-
-
-            </mat-form-field>
+                </div>
 
 
 
 
 
-            <button
+                <mat-form-field
+                    appearance="outline"
+                >
 
-                mat-icon-button
-
-                color="warn"
-
-                type="button"
-
-                (click)="remove(i)"
-
-            >
-
-                <mat-icon>
-                    delete
-                </mat-icon>
+                    <mat-label>
+                        Option {{i + 1}}
+                    </mat-label>
 
 
-            </button>
+                    <input
+
+                        matInput
+
+                        [value]="option.label"
+
+                        (input)="updateLabel(
+                            i,
+                            $any($event.target).value
+                        )"
+
+                    />
 
 
-        </div>
+                </mat-form-field>
 
 
-    }
+
+
+
+                <button
+
+                    mat-icon-button
+
+                    class="delete-btn"
+
+                    type="button"
+
+                    (click)="remove(i)"
+
+                >
+
+                    <mat-icon>
+                        delete
+                    </mat-icon>
+
+
+                </button>
+
+
+            </div>
+
+
+        }
+
+
+    </div>
+
+
+
+
 
 
 
@@ -95,12 +133,22 @@
 
         <div class="empty">
 
-            Aucune option
+
+            <mat-icon>
+                playlist_add
+            </mat-icon>
+
+
+            <span>
+                No option configured
+            </span>
+
 
         </div>
 
 
     }
+
 
 
 </div>

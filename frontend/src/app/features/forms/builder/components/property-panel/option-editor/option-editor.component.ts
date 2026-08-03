@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -38,19 +44,44 @@ import { QuestionOption } from '../../../../models/question-option.model';
   styleUrl: './option-editor.component.scss'
 
 })
-
-
 export class OptionEditorComponent {
 
 
+  private _options: QuestionOption[] = [];
+
+
+
   @Input()
-  options: QuestionOption[] = [];
+
+  set options(value: QuestionOption[] | undefined){
+
+    this._options = value
+      ? [...value]
+      : [];
+
+  }
+
+
+
+  get options(): QuestionOption[] {
+
+    return this._options;
+
+  }
+
+
 
 
 
   @Output()
+
   optionsChange =
     new EventEmitter<QuestionOption[]>();
+
+
+
+
+
 
 
 
@@ -58,10 +89,11 @@ export class OptionEditorComponent {
   updateLabel(
     index:number,
     value:string
-  ){
+  ):void {
 
 
-    const option = this.options[index];
+    const option =
+      this.options[index];
 
 
     if(!option)
@@ -72,16 +104,19 @@ export class OptionEditorComponent {
     option.label = value;
 
 
+
     option.value =
       value
+
         .toLowerCase()
+
         .trim()
+
         .replace(/\s+/g,'-');
 
 
 
     this.emit();
-
 
   }
 
@@ -90,18 +125,23 @@ export class OptionEditorComponent {
 
 
 
-  add(){
+
+
+
+  add():void {
 
 
     this.options.push({
 
-      id: crypto.randomUUID(),
+      id:crypto.randomUUID(),
 
       label:'Nouvelle option',
 
-      value:`option-${this.options.length + 1}`,
+      value:
+        `option-${this.options.length + 1}`,
 
-      order:this.options.length
+      order:
+        this.options.length
 
     });
 
@@ -109,7 +149,6 @@ export class OptionEditorComponent {
 
     this.emit();
 
-
   }
 
 
@@ -117,10 +156,16 @@ export class OptionEditorComponent {
 
 
 
-  remove(index:number){
 
 
-    this.options.splice(index,1);
+
+  remove(index:number):void {
+
+
+    this.options.splice(
+      index,
+      1
+    );
 
 
 
@@ -136,18 +181,29 @@ export class OptionEditorComponent {
 
     this.emit();
 
-
   }
 
 
 
 
 
-  private emit(){
+
+
+
+
+  private emit():void {
+
 
     this.optionsChange.emit(
-      [...this.options]
+
+      this.options.map(
+        option=>({
+          ...option
+        })
+      )
+
     );
+
 
   }
 

@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -11,6 +12,8 @@ import { MatButtonModule } from '@angular/material/button';
 
 import { Question } from '../../../../models/question.model';
 import { QuestionType } from '../../../../models/question-type.enum';
+
+import { Condition } from '../../../../models/condition.model';
 
 import { OptionEditorComponent } from '../option-editor/option-editor.component';
 
@@ -54,6 +57,7 @@ import { BuilderService } from '../../../services/builder.service';
 export class PropertyEditorComponent {
 
 
+
   @Input()
   Question!: Question;
 
@@ -70,8 +74,8 @@ export class PropertyEditorComponent {
 
 
   constructor(
-    public builder: BuilderService
-  ) {}
+    public builder:BuilderService
+  ){}
 
 
 
@@ -93,7 +97,7 @@ export class PropertyEditorComponent {
 
     { value: QuestionType.TIME, label:'Time' },
 
-    { value: QuestionType.DATETIME, label:'Date et Time' },
+    { value: QuestionType.DATETIME, label:'Date Time' },
 
     { value: QuestionType.SELECT, label:'Dropdown' },
 
@@ -103,39 +107,19 @@ export class PropertyEditorComponent {
 
     { value: QuestionType.SWITCH, label:'Toggle' },
 
-    { value: QuestionType.FILE, label:'File' },
+    { value:QuestionType.FILE,label:'File' },
 
-    { value: QuestionType.IMAGE, label:'Image' },
+    { value:QuestionType.IMAGE,label:'Image' },
 
-    { value: QuestionType.SIGNATURE, label:'Signature' },
+    { value:QuestionType.SIGNATURE,label:'Signature' },
 
-    { value: QuestionType.RATING, label:'Rating' },
+    { value:QuestionType.RATING,label:'Rating' },
 
-    { value: QuestionType.SCALE, label:'Scale' },
+    { value:QuestionType.SCALE,label:'Scale' },
 
-    { value: QuestionType.QR, label:'QR Code' },
+    { value:QuestionType.QR,label:'QR Code' },
 
-    { value: QuestionType.BARCODE, label:'Barcode' }
-
-  ];
-
-
-
-
-
-  readonly widthOptions = [
-
-    { value:'25%', label:'25%' },
-
-    { value:'33%', label:'33%' },
-
-    { value:'50%', label:'50%' },
-
-    { value:'66%', label:'66%' },
-
-    { value:'75%', label:'75%' },
-
-    { value:'100%', label:'100%' }
+    { value:QuestionType.BARCODE,label:'Barcode' }
 
   ];
 
@@ -143,15 +127,52 @@ export class PropertyEditorComponent {
 
 
 
-  readonly scaleSteps = [
+  readonly operators = [
 
-    1,
-    2,
-    5,
-    10,
-    20
+    {value:'==',label:'Equal'},
+
+    {value:'!=',label:'Different'},
+
+    {value:'>',label:'Greater than'},
+
+    {value:'<',label:'Less than'},
+
+    {value:'>=',label:'Greater or equal'},
+
+    {value:'<=',label:'Less or equal'},
+
+    {value:'contains',label:'Contains'},
+
+    {value:'startsWith',label:'Starts with'},
+
+    {value:'endsWith',label:'Ends with'},
+
+    {value:'empty',label:'Empty'},
+
+    {value:'notEmpty',label:'Not empty'}
 
   ];
+
+
+
+
+
+  readonly conditionActions = [
+
+    {value:'SHOW',label:'Show'},
+
+    {value:'HIDE',label:'Hide'},
+
+    {value:'ENABLE',label:'Enable'},
+
+    {value:'DISABLE',label:'Disable'},
+
+    {value:'REQUIRE',label:'Required'},
+
+    {value:'OPTIONAL',label:'Optional'}
+
+  ];
+
 
 
 
@@ -178,6 +199,7 @@ export class PropertyEditorComponent {
 
     ].includes(this.Question.type);
 
+
   }
 
 
@@ -186,86 +208,17 @@ export class PropertyEditorComponent {
 
 
 
-  /**
-   * Questions utilisables pour les conditions
-   * Exclut la question actuelle
-   */
-  get availableQuestions(): Question[] {
+  get availableQuestions():Question[] {
 
 
     return this.builder.questions.filter(
 
-      q => q.id !== this.Question.id
+      q=>q.id !== this.Question.id
 
     );
 
 
   }
-
-
-
-
-
-  /**
-   * Question sélectionnée comme dépendance
-   */
-  get conditionQuestion(): Question | undefined {
-
-
-    return this.builder.questions.find(
-
-      q => q.id === this.Question.dependsOnQuestionId
-
-    );
-
-
-  }
-
-
-
-
-
-
-
-  /**
-   * Valeurs disponibles pour la condition
-   */
-  get conditionValues(): string[] {
-
-
-    const question = this.conditionQuestion;
-
-
-    if(!question){
-
-      return [];
-
-    }
-
-
-    if(
-
-      question.type === QuestionType.RADIO ||
-
-      question.type === QuestionType.CHECKBOX ||
-
-      question.type === QuestionType.SELECT
-
-    ){
-
-      return question.options.map(
-
-        option => option.value
-
-      );
-
-    }
-
-
-    return [];
-
-  }
-
 
 
 
@@ -278,9 +231,11 @@ export class PropertyEditorComponent {
 
     const updated:Question = {
 
+
       ...this.Question,
 
       type,
+
 
       options:[
 
@@ -288,17 +243,20 @@ export class PropertyEditorComponent {
 
       ]
 
+
     };
 
 
 
     const needsOptions = [
 
+
       QuestionType.RADIO,
 
       QuestionType.CHECKBOX,
 
       QuestionType.SELECT
+
 
     ].includes(type);
 
@@ -310,12 +268,12 @@ export class PropertyEditorComponent {
 
       needsOptions &&
 
-      updated.options.length === 0
+      updated.options.length===0
 
     ){
 
-      updated.options = [
 
+      updated.options=[
 
         {
 
@@ -329,7 +287,6 @@ export class PropertyEditorComponent {
 
         },
 
-
         {
 
           id:crypto.randomUUID(),
@@ -342,8 +299,8 @@ export class PropertyEditorComponent {
 
         }
 
-
       ];
+
 
     }
 
@@ -361,19 +318,173 @@ export class PropertyEditorComponent {
 
 
 
-  updateCondition():void {
+
+    addConditionGroup():void {
 
 
-    this.QuestionChange.emit({
+      if(!this.Question.conditionGroups){
 
-      ...this.Question,
+        this.Question.conditionGroups=[];
 
-      conditional:
-
-        this.Question.conditional ?? false
+      }
 
 
-    });
+
+      this.Question.conditionGroups.push({
+
+        id: crypto.randomUUID(),
+
+        operator:'AND',
+
+        conditions:[
+
+          this.createCondition()
+
+        ]
+
+      });
+
+
+
+      this.update();
+
+
+    }
+
+
+
+
+
+
+
+
+  removeConditionGroup(index:number):void {
+
+
+    this.Question.conditionGroups?.splice(
+
+      index,
+
+      1
+
+    );
+
+
+    this.update();
+
+
+  }
+
+
+
+
+
+
+
+
+  addCondition(index:number):void {
+
+
+    const group =
+
+      this.Question.conditionGroups?.[index];
+
+
+
+    if(!group){
+
+      return;
+
+    }
+
+
+
+    group.conditions.push(
+
+      this.createCondition()
+
+    );
+
+
+    this.update();
+
+
+  }
+
+
+
+
+
+
+
+
+  removeCondition(
+    groupIndex:number,
+    conditionIndex:number
+  ):void {
+
+
+    const group =
+
+      this.Question.conditionGroups?.[groupIndex];
+
+
+
+    if(!group){
+
+      return;
+
+    }
+
+
+
+    group.conditions.splice(
+
+      conditionIndex,
+
+      1
+
+    );
+
+
+    this.update();
+
+
+  }
+
+
+
+
+
+
+
+
+
+  private createCondition():Condition {
+
+
+    return {
+
+
+      id:crypto.randomUUID(),
+
+
+      sourceQuestionId:'',
+
+
+      operator:'==',
+
+
+      expectedValue:'',
+
+
+      action:'SHOW',
+
+
+      enabled:true
+
+
+    };
 
 
   }
@@ -396,7 +507,17 @@ export class PropertyEditorComponent {
 
         ...this.Question.options
 
-      ]
+      ],
+
+
+      conditionGroups:
+
+        this.Question.conditionGroups
+
+          ? [...this.Question.conditionGroups]
+
+          : []
+
 
     });
 
