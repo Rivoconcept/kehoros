@@ -1,0 +1,89 @@
+<div class="page">
+
+
+    <div class="player-container">
+
+
+
+        @if(loading){
+
+            <div class="loading">
+
+                Chargement du formulaire...
+
+            </div>
+
+        }
+
+
+
+
+        @else if(error){
+
+
+            <div class="error">
+
+                {{error}}
+
+            </div>
+
+
+        }
+
+
+
+
+        @else if(template){
+
+
+
+            <div class="player-header">
+
+
+                <h1>
+
+                    {{template.title}}
+
+                </h1>
+
+
+
+                @if(template.description){
+
+                    <p>
+
+                        {{template.description}}
+
+                    </p>
+
+                }
+
+
+            </div>
+
+
+
+
+
+            <div class="player-form">
+
+
+                <app-question-preview
+
+                    [template]="template">
+
+                </app-question-preview>
+
+
+            </div>
+
+
+
+        }
+
+
+
+    </div>
+
+
+</div>

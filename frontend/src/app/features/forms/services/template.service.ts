@@ -160,8 +160,13 @@ export class TemplateService {
     }
 
 
+    play(
+        id:string
+    ):Observable<Template>{
 
+        return this.findOne(id);
 
+    }
 
 
 

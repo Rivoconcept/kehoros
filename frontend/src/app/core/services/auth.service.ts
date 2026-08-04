@@ -102,7 +102,26 @@ export class AuthService {
     return this.router.navigate(['/my-forms']);
   }
 
-  private hasToken(): boolean {
-    return !!localStorage.getItem('access_token');
-  }
+    private hasToken(): boolean {
+      const token = localStorage.getItem('access_token');
+
+      if (!token) {
+        return false;
+      }
+
+      return !this.isTokenExpired(token);
+    }
+
+    private isTokenExpired(token: string): boolean {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+
+        const expiry = payload.exp * 1000;
+
+        return Date.now() > expiry;
+
+      } catch {
+        return true;
+      }
+    }
 }

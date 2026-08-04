@@ -206,16 +206,35 @@ export class BuilderService {
       /**
        * Migration anciens templates
        */
-      template.questions =
-        (template.questions ?? [])
-        .map(question => ({
+    template.questions =
+      (template.questions ?? [])
+      .map(question => ({
 
-          ...question,
+        ...question,
 
-          options:
-            question.options ?? []
+        options: question.options ?? [],
 
-        }));
+        conditions: question.conditions ?? [],
+
+        conditionGroups:
+          (question.conditionGroups ?? []).map(group => ({
+
+            id: group.id ?? crypto.randomUUID(),
+
+            operator: group.operator ?? 'AND',
+
+            conditions:
+              (group.conditions ?? []).map(condition => ({
+
+                enabled: true,
+
+                ...condition
+
+              }))
+
+          }))
+
+      }));
 
 
 
@@ -855,8 +874,27 @@ export class BuilderService {
 
             ...question,
 
-            options:
-              question.options ?? []
+            options: question.options ?? [],
+
+            conditions: question.conditions ?? [],
+
+            conditionGroups:
+              (question.conditionGroups ?? []).map(group => ({
+
+                id: group.id ?? crypto.randomUUID(),
+
+                operator: group.operator ?? 'AND',
+
+                conditions:
+                  (group.conditions ?? []).map(condition => ({
+
+                    enabled: true,
+
+                    ...condition
+
+                  }))
+
+              }))
 
           }));
 

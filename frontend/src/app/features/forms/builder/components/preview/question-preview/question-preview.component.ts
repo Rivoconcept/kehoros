@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnChanges,
+  SimpleChanges
+} from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 
@@ -10,8 +16,8 @@ import {
 } from '@angular/forms';
 
 
-
 import { BuilderService } from '../../../services/builder.service';
+
 import { DynamicFormService } from '../../../services/dynamic-form.service';
 
 import { PreviewRendererComponent } from '../preview-renderer/preview-renderer.component';
@@ -24,30 +30,46 @@ import { ConditionEngineService }
 from 'src/app/features/forms/services/engines/condition-engine.service';
 
 
+import { Template } from '../../../../models/template.model';
+
+
 
 @Component({
+
   selector:'app-question-preview',
 
   standalone:true,
 
   imports:[
+
     CommonModule,
+
     ReactiveFormsModule,
+
     MatIconModule,
+
     PreviewRendererComponent
+
   ],
 
   templateUrl:'./question-preview.component.html',
 
   styleUrl:'./question-preview.component.scss'
+
 })
-export class QuestionPreviewComponent implements OnInit {
+export class QuestionPreviewComponent implements OnInit, OnChanges {
+
+
+  @Input()
+  template?:Template;
+
 
 
   form:FormGroup = new FormGroup({});
 
 
   QuestionType = QuestionType;
+
 
 
 
@@ -70,63 +92,55 @@ export class QuestionPreviewComponent implements OnInit {
   ngOnInit():void {
 
 
-    this.builder.template$
-
-    .subscribe(template=>{
-
-
-      if(!template){
+    /**
+     * Mode Builder
+     */
+    if(!this.template){
 
 
-        this.form =
-          new FormGroup({});
+      this.builder.template$
+
+      .subscribe(template=>{
 
 
-        return;
+        if(template){
 
+          this.loadTemplate(template);
 
-      }
-
-
-
-
-
-      this.form =
-        this.dynamicForm.buildForm(
-          template
-        );
-
-
-
-
-
-      /**
-       * Premier calcul des conditions
-       */
-      this.applyConditions();
-
-
-
-
-
-
-      /**
-       * Recalcul automatique
-       * après modification des valeurs
-       */
-      this.form.valueChanges
-
-      .subscribe(()=>{
-
-
-        this.applyConditions();
+        }
 
 
       });
 
 
+    }
 
-    });
+
+  }
+
+
+
+
+
+
+
+  ngOnChanges(
+    changes:SimpleChanges
+  ):void {
+
+
+    if(
+      changes['template'] &&
+      this.template
+    ){
+
+
+      this.loadTemplate(
+        this.template
+      );
+
+
+    }
 
 
   }
@@ -138,12 +152,70 @@ export class QuestionPreviewComponent implements OnInit {
 
 
 
+  private loadTemplate(
+    template:Template
+  ):void {
+
+
+
+    this.form =
+
+      this.dynamicForm.buildForm(
+        template
+      );
+
+
+
+    this.applyConditions();
+
+
+
+
+
+    this.form.valueChanges
+
+    .subscribe(()=>{
+
+
+      this.applyConditions();
+
+
+    });
+
+
+
+  }
+
+
+
+
+
+
+
+
+  get questions(){
+
+
+    return this.template
+
+      ? this.template.questions
+
+      : this.builder.questions;
+
+
+  }
+
+
+
+
+
+
+
 
   get visibleQuestions(){
 
 
-
-    return this.builder.questions
+    return this.questions
 
 
     .filter(question=>{
@@ -171,24 +243,19 @@ export class QuestionPreviewComponent implements OnInit {
 
 
 
-
-
       return state.visible;
 
 
-
     })
-
 
 
     .sort(
 
       (a,b)=>
 
-        a.order - b.order
+      a.order - b.order
 
     );
-
 
 
   }
@@ -201,24 +268,11 @@ export class QuestionPreviewComponent implements OnInit {
 
 
 
-  /**
-   * Applique les actions des conditions
-   *
-   * SHOW
-   * HIDE
-   * ENABLE
-   * DISABLE
-   * REQUIRE
-   * OPTIONAL
-   */
   applyConditions():void {
 
 
 
-    this.builder.questions.forEach(question=>{
-
-
-
+    this.questions.forEach(question=>{
 
 
       const control:
@@ -228,8 +282,6 @@ export class QuestionPreviewComponent implements OnInit {
         this.form.get(
           question.id
         );
-
-
 
 
 
@@ -257,24 +309,14 @@ export class QuestionPreviewComponent implements OnInit {
 
 
 
-
-
-
-      /**
-       * Désactivation dynamique
-       */
       if(state.disabled){
 
 
-        if(control.enabled){
+        control.disable({
 
-          control.disable({
+          emitEvent:false
 
-            emitEvent:false
-
-          });
-
-        }
+        });
 
 
       }
@@ -282,15 +324,11 @@ export class QuestionPreviewComponent implements OnInit {
       else{
 
 
-        if(control.disabled){
+        control.enable({
 
-          control.enable({
+          emitEvent:false
 
-            emitEvent:false
-
-          });
-
-        }
+        });
 
 
       }
@@ -300,19 +338,13 @@ export class QuestionPreviewComponent implements OnInit {
 
 
 
-
-      /**
-       * Validation dynamique
-       *
-       * Required / Optional
-       */
       this.dynamicForm.updateValidators(
 
-          question,
+        question,
 
-          control,
+        control,
 
-          state.required
+        state.required
 
       );
 
@@ -344,7 +376,6 @@ export class QuestionPreviewComponent implements OnInit {
 
       return;
 
-
     }
 
 
@@ -358,7 +389,6 @@ export class QuestionPreviewComponent implements OnInit {
       this.form.value
 
     );
-
 
 
   }
@@ -376,7 +406,6 @@ export class QuestionPreviewComponent implements OnInit {
   ):FormControl {
 
 
-
     const control =
 
       this.form.get(id);
@@ -384,25 +413,15 @@ export class QuestionPreviewComponent implements OnInit {
 
 
 
+    return control instanceof FormControl
 
-    if(control instanceof FormControl){
+      ? control
 
-
-      return control;
-
-
-    }
-
-
-
-
-
-    return new FormControl();
+      : new FormControl();
 
 
 
   }
-
 
 
 }
