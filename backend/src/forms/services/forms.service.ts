@@ -10,7 +10,7 @@ import { QuestionService } from './question.service';
 export class FormsService {
   constructor(
     private readonly templateService: TemplateService,
-    private readonly QuestionService: QuestionService,
+    private readonly questionService: QuestionService,
     private readonly assignmentService: AssignmentService,
     private readonly responseService: ResponseService,
     private readonly resultService: ResultService,
@@ -110,34 +110,34 @@ export class FormsService {
 
   // Question orchestration
   createQuestion(input: Parameters<QuestionService['createQuestion']>[0]) {
-    return this.QuestionService.createQuestion(input);
+    return this.questionService.createQuestion(input);
   }
 
   findQuestionsByTemplate(templateId: string) {
-    return this.QuestionService.findByTemplate(templateId);
+    return this.questionService.findByTemplate(templateId);
   }
 
   findQuestionById(id: string) {
-    return this.QuestionService.findOne(id);
+    return this.questionService.findOne(id);
   }
 
   updateQuestion(id: string, input: Parameters<QuestionService['updateQuestion']>[1]) {
-    return this.QuestionService.updateQuestion(id, input);
+    return this.questionService.updateQuestion(id, input);
   }
 
   removeQuestion(id: string) {
-    return this.QuestionService.removeQuestion(id);
+    return this.questionService.removeQuestion(id);
   }
 
   createOption(input: Parameters<QuestionService['createOption']>[0]) {
-    return this.QuestionService.createOption(input);
+    return this.questionService.createOption(input);
   }
 
   updateOption(id: string, input: Parameters<QuestionService['updateOption']>[1]) {
-    return this.QuestionService.updateOption(id, input);
+    return this.questionService.updateOption(id, input);
   }
 
   removeOption(id: string) {
-    return this.QuestionService.removeOption(id);
+    return this.questionService.removeOption(id);
   }
 }

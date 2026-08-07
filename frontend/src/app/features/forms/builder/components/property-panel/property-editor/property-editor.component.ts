@@ -16,8 +16,8 @@ import { QuestionType } from '../../../../models/question-type.enum';
 import { Condition } from '../../../../models/condition.model';
 
 import { OptionEditorComponent } from '../option-editor/option-editor.component';
-
 import { BuilderService } from '../../../services/builder.service';
+
 
 
 

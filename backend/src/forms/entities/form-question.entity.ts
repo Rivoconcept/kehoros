@@ -11,7 +11,7 @@ import { FormTemplate } from './form-template.entity';
 import { FormOption } from './form-option.entity';
 import { QuestionType } from '../enums/question-type.enum';
 
-@Entity('form_Questions')
+@Entity('form_questions')
 export class FormQuestion {
 
   @PrimaryGeneratedColumn('uuid')
@@ -20,7 +20,7 @@ export class FormQuestion {
   @Column()
   template_id: string;
 
-  @ManyToOne(() => FormTemplate, t => t.Questions, {
+  @ManyToOne(() => FormTemplate, t => t.questions, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'template_id' })
@@ -56,7 +56,7 @@ export class FormQuestion {
   })
   settings: any;
 
-  @OneToMany(() => FormOption, o => o.Question)
+  @OneToMany(() => FormOption, o => o.question)
   options: FormOption[];
 
 }

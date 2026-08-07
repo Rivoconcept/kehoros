@@ -10,177 +10,171 @@ import { QuestionOption } from '../models/question-option.model';
 
 
 @Injectable({
-    providedIn:'root'
+  providedIn:'root'
 })
 export class QuestionService {
 
 
+  private readonly optionEndpoint = '/forms/options';
 
-    private readonly questionEndpoint = '/forms/Questions';
 
-    private readonly optionEndpoint = '/forms/options';
 
+  constructor(
+    private api: ApiService
+  ) {}
 
 
 
-    constructor(
-        private api:ApiService
-    ){}
+  /**
+   * POST
+   * /forms/templates/:templateId/questions
+   */
+  createQuestion(
+    templateId:string,
+    data:Partial<Question>
+  ):Observable<Question>{
 
 
+    return this.api.post<Question>(
+      `/forms/templates/${templateId}/questions`,
+      data
+    );
 
 
+  }
 
-    createQuestion(
-        data:Partial<Question>
-    ):Observable<Question>{
 
 
-        return this.api.post<Question>(
-            this.questionEndpoint,
-            data
-        );
 
+  /**
+   * GET
+   * /forms/templates/:templateId/questions
+   */
+  findByTemplate(
+    templateId:string
+  ):Observable<Question[]>{
 
-    }
 
+    return this.api.get<Question[]>(
+      `/forms/templates/${templateId}/questions`
+    );
 
 
+  }
 
 
 
 
 
-    findByTemplate(
-        templateId:string
-    ):Observable<Question[]>{
+  /**
+   * GET
+   * /forms/questions/:id
+   */
+  findOne(
+    id:string
+  ):Observable<Question>{
 
 
-        return this.api.get<Question[]>(
-            `/forms/templates/${templateId}/Questions`
-        );
+    return this.api.get<Question>(
+      `/forms/questions/${id}`
+    );
 
 
-    }
+  }
 
 
 
 
 
+  /**
+   * PATCH
+   * /forms/questions/:id
+   */
+  updateQuestion(
+    id:string,
+    data:Partial<Question>
+  ):Observable<Question>{
 
 
+    return this.api.patch<Question>(
+      `/forms/questions/${id}`,
+      data
+    );
 
-    findOne(
-        id:string
-    ):Observable<Question>{
 
+  }
 
-        return this.api.get<Question>(
-            `${this.questionEndpoint}/${id}`
-        );
 
 
-    }
 
 
+  /**
+   * DELETE
+   * /forms/questions/:id
+   */
+  removeQuestion(
+    id:string
+  ):Observable<void>{
 
 
+    return this.api.delete<void>(
+      `/forms/questions/${id}`
+    );
 
 
+  }
 
 
-    updateQuestion(
-        id:string,
-        data:Partial<Question>
-    ):Observable<Question>{
 
 
-        return this.api.patch<Question>(
-            `${this.questionEndpoint}/${id}`,
-            data
-        );
 
+  createOption(
+    data:Partial<QuestionOption>
+  ):Observable<QuestionOption>{
 
-    }
 
+    return this.api.post<QuestionOption>(
+      this.optionEndpoint,
+      data
+    );
 
 
+  }
 
 
 
 
 
-    removeQuestion(
-        id:string
-    ):Observable<void>{
+  updateOption(
+    id:string,
+    data:Partial<QuestionOption>
+  ):Observable<QuestionOption>{
 
 
-        return this.api.delete<void>(
-            `${this.questionEndpoint}/${id}`
-        );
+    return this.api.patch<QuestionOption>(
+      `${this.optionEndpoint}/${id}`,
+      data
+    );
 
 
-    }
+  }
 
 
 
 
 
+  removeOption(
+    id:string
+  ):Observable<void>{
 
 
+    return this.api.delete<void>(
+      `${this.optionEndpoint}/${id}`
+    );
 
-    createOption(
-        data:Partial<QuestionOption>
-    ):Observable<QuestionOption>{
 
+  }
 
-        return this.api.post<QuestionOption>(
-            this.optionEndpoint,
-            data
-        );
-
-
-    }
-
-
-
-
-
-
-
-
-    updateOption(
-        id:string,
-        data:Partial<QuestionOption>
-    ):Observable<QuestionOption>{
-
-
-        return this.api.patch<QuestionOption>(
-            `${this.optionEndpoint}/${id}`,
-            data
-        );
-
-
-    }
-
-
-
-
-
-
-
-
-    removeOption(
-        id:string
-    ):Observable<void>{
-
-
-        return this.api.delete<void>(
-            `${this.optionEndpoint}/${id}`
-        );
-
-
-    }
 
 
 }

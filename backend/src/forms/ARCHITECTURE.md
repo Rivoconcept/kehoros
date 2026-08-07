@@ -4,7 +4,7 @@
 
 Le moteur de formulaires est maintenant complet et structuré selon une architecture en couches :
 
-- **Services métier** : logique des domaines (template, Question, assignation, réponse, résultat)
+- **Services métier** : logique des domaines (template, question, assignation, réponse, résultat)
 - **Service d'orchestration** : coordonne les différents services
 - **Contrôleur API** : expose les endpoints REST sécurisés par JWT
 - **Module** : enregistre toutes les dépendances
@@ -21,7 +21,7 @@ Gère la création et le cycle de vie des formulaires :
 - remove
 
 ### QuestionService
-Gère les Questions et les options des formulaires :
+Gère les questions et les options des formulaires :
 - createQuestion / updateQuestion / removeQuestion
 - findByTemplate / findOne
 - createOption / updateOption / removeOption
@@ -59,23 +59,23 @@ PATCH  /forms/templates/:id                - Modifier
 POST   /forms/templates/:id/publish        - Publier
 POST   /forms/templates/:id/archive        - Archiver
 POST   /forms/templates/:id/duplicate      - Dupliquer
-DELETE /forms/templates/:id                - Delete
+DELETE /forms/templates/:id                - Supprimer
 ```
 
 ### Questions (sécurisés par JWT)
 ```
-POST   /forms/Questions                    - Créer
-GET    /forms/templates/:templateId/Questions - Lister par template
-GET    /forms/Questions/:id                - Détail
-PATCH  /forms/Questions/:id                - Modifier
-DELETE /forms/Questions/:id                - Delete
+POST   /forms/questions                    - Créer
+GET    /forms/templates/:templateId/questions - Lister par template
+GET    /forms/questions/:id                - Détail
+PATCH  /forms/questions/:id                - Modifier
+DELETE /forms/questions/:id                - Supprimer
 ```
 
 ### Options (sécurisés par JWT)
 ```
 POST   /forms/options                      - Créer
 PATCH  /forms/options/:id                  - Modifier
-DELETE /forms/options/:id                  - Delete
+DELETE /forms/options/:id                  - Supprimer
 ```
 
 ### Assignations (sécurisés par JWT)
@@ -89,7 +89,7 @@ PATCH  /forms/assignments/:id/status       - Changer le statut
 ### Réponses (partiellement sécurisé)
 ```
 POST   /forms/responses/start              - Démarrer une réponse
-POST   /forms/responses/draft              - Save brouillon
+POST   /forms/responses/draft              - Sauvegarder brouillon
 POST   /forms/responses/submit             - Soumettre (sécurisé)
 GET    /forms/responses/:assignmentId      - Récupérer réponses
 ```
@@ -107,9 +107,9 @@ GET    /forms/results/:responseId          - Récupérer résultats
    POST /forms/templates
    ```
 
-2. **Ajout de Questions** :
+2. **Ajout de questions** :
    ```
-   POST /forms/Questions
+   POST /forms/questions
    ```
 
 3. **Ajout d'options** (pour radio/checkbox/select) :
@@ -174,9 +174,9 @@ Le module FormsModule :
 
 ## Prochaines étapes recommandées
 
-1. Add des validations côté frontend
+1. Ajouter des validations côté frontend
 2. Créer le builder de formulaires Angular
 3. Implémenter la sauvegarde automatique des brouillons
-4. Add l'export PDF/Excel
+4. Ajouter l'export PDF/Excel
 5. Implémenter l'historique et versioning
-6. Add le support QR codes et signatures
+6. Ajouter le support QR codes et signatures

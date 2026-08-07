@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
@@ -17,8 +18,15 @@ import { UserRole } from '../../user/user.entity';
 import { FormsService } from '../services/forms.service';
 import { CreateTemplateDto } from '../dto/create-template.dto';
 import type { AssignTemplateInput } from '../services/assignment.service';
-import type { StartResponseInput, SubmitResponseInput } from '../services/response.service';
-import type { CreateQuestionInput, UpdateQuestionInput, CreateOptionInput } from '../services/question.service';
+import type {
+  StartResponseInput,
+  SubmitResponseInput,
+} from '../services/response.service';
+import type {
+  CreateQuestionInput,
+  UpdateQuestionInput,
+  CreateOptionInput,
+} from '../services/question.service';
 
 @Controller('forms')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -61,7 +69,10 @@ export class FormsController {
 
   @Post('templates/:id/duplicate')
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
-  duplicateTemplate(@Param('id') id: string, @Body() body?: { title?: string; category?: string }) {
+  duplicateTemplate(
+    @Param('id') id: string,
+    @Body() body?: { title?: string; category?: string },
+  ) {
     return this.formsService.duplicateTemplate(id, body);
   }
 
@@ -78,7 +89,10 @@ export class FormsController {
   }
 
   @Get('assignments')
-  findAssignments(@Query('userId') userId?: string, @Query('templateId') templateId?: string) {
+  findAssignments(
+    @Query('userId') userId?: string,
+    @Query('templateId') templateId?: string,
+  ) {
     if (userId) {
       return this.formsService.findAssignmentsByUser(userId);
     }
@@ -92,7 +106,10 @@ export class FormsController {
 
   @Patch('assignments/:id/status')
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
-  updateAssignmentStatus(@Param('id') id: string, @Body() body: { status: string }) {
+  updateAssignmentStatus(
+    @Param('id') id: string,
+    @Body() body: { status: string },
+  ) {
     return this.formsService.updateAssignmentStatus(id, body.status);
   }
 
@@ -113,14 +130,22 @@ export class FormsController {
   }
 
   @Get('responses/:assignmentId')
-  findResponsesByAssignment(@Param('assignmentId') assignmentId: string) {
+  findResponsesByAssignment(
+    @Param('assignmentId') assignmentId: string,
+  ) {
     return this.formsService.findResponsesByAssignment(assignmentId);
   }
 
   @Post('results/:responseId/evaluate')
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
-  evaluateResponse(@Param('responseId') responseId: string, @Body() body?: { gradedBy?: string }) {
-    return this.formsService.evaluateResponse(responseId, body?.gradedBy);
+  evaluateResponse(
+    @Param('responseId') responseId: string,
+    @Body() body?: { gradedBy?: string },
+  ) {
+    return this.formsService.evaluateResponse(
+      responseId,
+      body?.gradedBy,
+    );
   }
 
   @Get('results/:responseId')
@@ -128,29 +153,32 @@ export class FormsController {
     return this.formsService.findResultsByResponse(responseId);
   }
 
-  @Post('Questions')
+  @Post('questions')
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
   createQuestion(@Body() dto: CreateQuestionInput) {
     return this.formsService.createQuestion(dto);
   }
 
-  @Get('templates/:templateId/Questions')
+  @Get('templates/:templateId/questions')
   findQuestionsByTemplate(@Param('templateId') templateId: string) {
     return this.formsService.findQuestionsByTemplate(templateId);
   }
 
-  @Get('Questions/:id')
+  @Get('questions/:id')
   findQuestionById(@Param('id') id: string) {
     return this.formsService.findQuestionById(id);
   }
 
-  @Patch('Questions/:id')
+  @Patch('questions/:id')
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
-  updateQuestion(@Param('id') id: string, @Body() dto: UpdateQuestionInput) {
+  updateQuestion(
+    @Param('id') id: string,
+    @Body() dto: UpdateQuestionInput,
+  ) {
     return this.formsService.updateQuestion(id, dto);
   }
 
-  @Delete('Questions/:id')
+  @Delete('questions/:id')
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
   removeQuestion(@Param('id') id: string) {
     return this.formsService.removeQuestion(id);

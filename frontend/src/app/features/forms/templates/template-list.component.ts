@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,111 +9,327 @@ import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
-import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+
+import { FormsService } from '../services/forms.services';
+
 
 
 interface TemplateCard {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  published: boolean;
-  Questions: number;
-  responses: number;
-  createdBy: {
-    id: string;
-    name: string;
-    };
-  updatedAt: Date;
+
+  id:string;
+
+  title:string;
+
+  description:string;
+
+  category:string;
+
+  published:boolean;
+
+  Questions:number;
+
+  responses:number;
+
+  createdBy:string;
+
+  updatedAt:Date;
+
 }
 
+
+
 @Component({
-  selector: 'app-template-list',
-  standalone: true,
-    imports: [
+
+  selector:'app-template-list',
+
+  standalone:true,
+
+  imports:[
+
     CommonModule,
+
     FormsModule,
+
     RouterLink,
 
     MatButtonModule,
-    MatIconModule,
-    MatCardModule,
-    MatMenuModule,
-    MatChipsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ],
-  templateUrl: './template-list.component.html',
-  styleUrl: './template-list.component.scss',
-})
-export class TemplateListComponent {
 
-  constructor(private router: Router) {}
+    MatIconModule,
+
+    MatCardModule,
+
+    MatMenuModule,
+
+    MatChipsModule,
+
+    MatFormFieldModule,
+
+    MatInputModule
+
+  ],
+
+  templateUrl:'./template-list.component.html',
+
+  styleUrl:'./template-list.component.scss'
+
+})
+
+
+export class TemplateListComponent implements OnInit {
+
 
   search = '';
 
-  templates: TemplateCard[] = [
-    {
-        id: '1',
-        title: 'Test de compétence en Français',
-        description: 'Évaluation du niveau linguistique',
+  templates:TemplateCard[] = [];
 
-        category: 'Formation',
 
-        published: true,
 
-        Questions: 24,
 
-        responses: 17,
+  constructor(
 
-        createdBy: {
-            id: '1',
-            name: 'Administrateur',
+    private router:Router,
+
+    private formsService:FormsService
+
+  ){}
+
+
+
+
+  ngOnInit():void {
+
+    this.loadTemplates();
+
+  }
+
+
+
+
+
+
+  loadTemplates():void {
+
+
+    this.formsService
+      .getTemplates()
+
+      .subscribe({
+
+        next:(data:any[])=>{
+
+
+          this.templates = data.map(template=>({
+
+
+            id:template.id,
+
+
+            title:template.title,
+
+
+            description:template.description ?? '',
+
+
+            category:template.category ?? '',
+
+
+            published:
+              template.status === 'published'
+              ||
+              template.status === 'PUBLISHED',
+
+
+            Questions:
+              template.questions?.length
+              ??
+              template.Questions?.length
+              ??
+              0,
+
+
+            responses:
+              template.responses?.length
+              ??
+              0,
+
+
+            createdBy:
+              template.created_by
+              ??
+              'system',
+
+
+            updatedAt:
+              new Date(
+                template.updated_at
+                ??
+                template.updatedAt
+              )
+
+
+          }));
+
+
         },
 
-        updatedAt: new Date(),
-    },
-    {
-        id: '2',
-        title: 'Questionnaire RH',
-        description: 'Collecte d’informations RH',
-        category: 'RH',
-        published: false,
-        Questions: 15,
-        responses: 0,
-        createdBy: {
-            id: '2',
-            name: 'Administrateur',
-        },
-        updatedAt: new Date(),
-    },
-  ];
 
-  get filteredTemplates() {
-    return this.templates.filter(t =>
-      t.title.toLowerCase().includes(this.search.toLowerCase())
+        error:error=>{
+
+
+          console.error(
+
+            'Erreur récupération templates',
+
+            error
+
+          );
+
+
+        }
+
+
+      });
+
+
+  }
+
+
+
+
+
+
+
+  get filteredTemplates():TemplateCard[]{
+
+
+    return this.templates.filter(template=>
+
+
+      template.title
+
+        .toLowerCase()
+
+        .includes(
+
+          this.search.toLowerCase()
+
+        )
+
+
     );
+
+
   }
 
-  createTemplate() {
-    this.router.navigate(['/forms/builder']);
+
+
+
+
+
+
+  /**
+   * Nouveau formulaire
+   *
+   * IMPORTANT :
+   * On ne crée plus en base ici.
+   * Le builder créera réellement le template
+   * uniquement au moment du Save.
+   */
+  createTemplate():void {
+
+
+    this.router.navigate([
+
+      '/forms/builder',
+
+      'new'
+
+    ]);
+
+
   }
 
-  edit(template: TemplateCard) {
-    this.router.navigate(['/forms/builder', template.id]);
+
+
+
+
+
+
+  edit(template:TemplateCard):void {
+
+
+    this.router.navigate([
+
+      '/forms/builder',
+
+      template.id
+
+    ]);
+
+
   }
 
-  duplicate(template: TemplateCard) {
-    console.log('duplicate', template);
+
+
+
+
+
+
+  duplicate(template:TemplateCard):void {
+
+
+    console.log(
+
+      'duplicate',
+
+      template
+
+    );
+
+
   }
 
-  archive(template: TemplateCard) {
-    console.log('archive', template);
+
+
+
+
+
+
+  archive(template:TemplateCard):void {
+
+
+    console.log(
+
+      'archive',
+
+      template
+
+    );
+
+
   }
 
-  delete(template: TemplateCard) {
-    console.log('delete', template);
+
+
+
+
+
+
+  delete(template:TemplateCard):void {
+
+
+    console.log(
+
+      'delete',
+
+      template
+
+    );
+
+
   }
+
+
 
 }

@@ -28,7 +28,6 @@ import { QuestionType } from '../../../models/question-type.enum';
 
     MatTooltipModule,
     
-    QuestionPaletteComponent
 
   ],
 

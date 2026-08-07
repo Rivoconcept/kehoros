@@ -8,8 +8,6 @@ import {
 } from '@angular/cdk/drag-drop';
 
 
-import { BuilderService } from '../../services/builder.service';
-
 import { QuestionType } from '../../../models/question-type.enum';
 import { Question } from '../../../models/question.model';
 
@@ -18,6 +16,7 @@ import { QuestionCardComponent } from '../cards/question-card/question-card.comp
 import { TitleCardComponent } from '../cards/title-card/title-card.component';
 import { SectionCardComponent } from '../cards/section-card/section-card.component';
 import { ParagraphCardComponent } from '../cards/paragraph-card/paragraph-card.component';
+import { BuilderService } from '../../services/builder.service';
 
 
 

@@ -4,8 +4,7 @@ import { FormTemplate } from '../forms/entities/form-template.entity';
 import { FormQuestion } from '../forms/entities/form-question.entity';
 import { FormSession } from '../forms/entities/form-session.entity';
 import { FormAnswer } from '../forms/entities/form-answer.entity';
-import { FormsService } from './forms.service';
-import { FormsController } from './forms.controller';
+
 import { TemplateService } from './services/template.service';
 import { FormOption } from './entities/form-option.entity';
 import { AssignmentService } from './services/assignment.service';
@@ -17,6 +16,8 @@ import { RolesGuard } from '../auth/roles.guard';
 import { FormAssignment } from './entities/form-assignment.entity';
 import { FormResponse } from './entities/form-response.entity';
 import { FormResult } from './entities/form-result.entity';
+import { FormsController } from './controllers/forms.controller';
+import { FormsService } from './services/forms.service';
 
 @Module({
   imports: [

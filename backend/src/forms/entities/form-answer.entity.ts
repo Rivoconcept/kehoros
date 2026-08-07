@@ -61,7 +61,7 @@ export class FormAnswer {
   ManyToOne, JoinColumn, CreateDateColumn
 } from 'typeorm';
 import { FormSession } from './form-session.entity';
-import { FormQuestion } from './form-Question.entity';
+import { FormQuestion } from './form-question.entity';
 
 @Entity('form_answers')
 export class FormAnswer {
@@ -76,11 +76,11 @@ export class FormAnswer {
   session: FormSession;
 
   @Column()
-  Question_id: string;
+  question_id: string;
 
   @ManyToOne(() => FormQuestion, q => q.answers)
-  @JoinColumn({ name: 'Question_id' })
-  Question: FormQuestion;
+  @JoinColumn({ name: 'question_id' })
+  question: FormQuestion;
 
   @Column({ nullable: true })
   answer_text: string;

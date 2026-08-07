@@ -29,7 +29,7 @@ export class RegisterReq {
   @IsOptional()
   @IsString()
   @Matches(/^[+]?[\d\s\-().]{6,20}$/, {
-    message: 'Numéro de Phone invalide',
+    message: 'Numéro de téléphone invalide',
   })
   phone?: string;
 

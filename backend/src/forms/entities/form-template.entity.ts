@@ -48,7 +48,7 @@ export class FormTemplate {
   created_by: string;
 
   @OneToMany(() => FormQuestion, q => q.template)
-  Questions: FormQuestion[];
+  questions: FormQuestion[];
 
   @OneToMany(() => FormAssignment, a => a.template)
   assignments: FormAssignment[];

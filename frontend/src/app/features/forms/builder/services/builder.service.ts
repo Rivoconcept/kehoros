@@ -1,11 +1,30 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 
-import { Template } from '../../models/template.model';
-import { Question } from '../../models/question.model';
-import { QuestionType } from '../../models/question-type.enum';
+import { BuilderStateService } 
+from './builder/builder-state.service';
 
-import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { BuilderTemplateService } 
+from './builder/builder-template.service';
+
+import { BuilderQuestionService } 
+from './builder/builder-question.service';
+
+import { BuilderSortService } 
+from './builder/builder-sort.service';
+
+import { BuilderFileService } 
+from './builder/builder-file.service';
+
+
+import { Question } 
+from '../../models/question.model';
+
+import { QuestionType } 
+from '../../models/question-type.enum';
+
+import { Template } 
+from '../../models/template.model';
+
 
 
 @Injectable({
@@ -14,54 +33,38 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 export class BuilderService {
 
 
-  private readonly STORAGE_KEY =
-    'kehoros-template';
+  constructor(
 
+    private state: BuilderStateService,
 
+    private templateService: BuilderTemplateService,
 
-  private readonly templateSubject =
-    new BehaviorSubject<Template | null>(null);
+    private questionService: BuilderQuestionService,
+
+    private sortService: BuilderSortService,
+
+    private fileService: BuilderFileService
+
+  ){}
 
 
 
   template$ =
-    this.templateSubject.asObservable();
-
-
-
-
-  private readonly selectedQuestionSubject =
-    new BehaviorSubject<Question | null>(null);
+    this.state.template$;
 
 
 
   selectedQuestion$ =
-    this.selectedQuestionSubject.asObservable();
+    this.state.selectedQuestion$;
 
 
 
 
+  get template():Template|null {
 
-
-  constructor(){
-
-    this.load();
+    return this.state.template;
 
   }
-
-
-
-
-
-
-
-  get template():Template | null {
-
-    return this.templateSubject.value;
-
-  }
-
-
 
 
 
@@ -69,11 +72,9 @@ export class BuilderService {
 
   get questions():Question[] {
 
-    return this.template?.questions ?? [];
+    return this.state.questions;
 
   }
-
-
 
 
 
@@ -81,9 +82,7 @@ export class BuilderService {
 
   get visibleQuestions():Question[] {
 
-    return this.questions.filter(
-      question => !question.hidden
-    );
+    return this.state.visibleQuestions;
 
   }
 
@@ -91,42 +90,11 @@ export class BuilderService {
 
 
 
+  loadTemplate(
+    id:string
+  ):void {
 
-
-
-  createTemplate(title:string):void {
-
-
-    const template:Template = {
-
-
-      id:crypto.randomUUID(),
-
-      title,
-
-      description:'',
-
-      category:'',
-
-      published:false,
-
-      archived:false,
-
-      version:1,
-
-      questions:[],
-
-
-      createdAt:new Date(),
-
-      updatedAt:new Date()
-
-
-    };
-
-
-    this.save(template);
-
+    this.templateService.loadTemplate(id);
 
   }
 
@@ -134,543 +102,51 @@ export class BuilderService {
 
 
 
+  /**
+   * Création locale uniquement.
+   * Aucun appel API.
+   * Le POST sera fait uniquement au Save.
+   */
+    createTemplate(
+    data:{
+      title:string;
+      description?:string;
+      category?:string;
+    }
+    ):void {
 
-
-
-
-  save(template:Template):void {
-
-
-    template.updatedAt =
-      new Date();
-
-
-
-    localStorage.setItem(
-
-      this.STORAGE_KEY,
-
-      JSON.stringify(template)
-
-    );
-
-
-
-    this.templateSubject.next({
-
-      ...template,
-
-      questions:[
-        ...template.questions
-      ]
-
-    });
-
-
-  }
-
-
-
-
-
-
-
-
-
-  load():void {
-
-
-    const data =
-      localStorage.getItem(
-        this.STORAGE_KEY
+      this.templateService.createTemplateLocal(
+        data
       );
-
-
-
-    if(!data){
-
-      return;
 
     }
 
 
 
-    try {
 
-
-      const template:Template =
-        JSON.parse(data);
-
-
-
-      /**
-       * Migration anciens templates
-       */
-    template.questions =
-      (template.questions ?? [])
-      .map(question => ({
-
-        ...question,
-
-        options: question.options ?? [],
-
-        conditions: question.conditions ?? [],
-
-        conditionGroups:
-          (question.conditionGroups ?? []).map(group => ({
-
-            id: group.id ?? crypto.randomUUID(),
-
-            operator: group.operator ?? 'AND',
-
-            conditions:
-              (group.conditions ?? []).map(condition => ({
-
-                enabled: true,
-
-                ...condition
-
-              }))
-
-          }))
-
-      }));
-
-
-
-
-      template.createdAt =
-        new Date(template.createdAt);
-
-
-
-      template.updatedAt =
-        new Date(template.updatedAt);
-
-
-
-
-      this.templateSubject.next(
-        template
-      );
-
-
-    }
-    catch(error){
-
-
-      console.error(
-        'Chargement template impossible',
-        error
-      );
-
-
-    }
-
-
-  }
-
-
-
-
-
-
-
-
-
-  selectQuestion(id:string):void {
-
-
-    const question =
-      this.questions.find(
-        q => q.id === id
-      );
-
-
-
-    this.selectedQuestionSubject.next(
-      question ?? null
-    );
-
-
-  }
-
-
-
-
-
-
-
-
-
-  getSelectedQuestion():Question | null {
-
-
-    return this.selectedQuestionSubject.value;
-
-
-  }
-
-
-
-
-
-
-
-
-
-  addQuestion(type:QuestionType):void {
-
-
-    const template =
-      this.template;
-
-
-
-    if(!template)
-      return;
-
-
-
-
-
-    const question:Question = {
-
-
-      id:crypto.randomUUID(),
-
-
-      templateId:template.id,
-
-
-      title:'New Question',
-
-
-      description:'',
-
-
-      type,
-
-
-      required:false,
-
-
-      placeholder:'',
-
-
-      helpText:'',
-
-
-      order:template.questions.length,
-
-
-      score:1,
-
-
-      options:[],
-
-
-
-      defaultValue:null,
-
-
-
-      width:'100%',
-
-
-      hidden:false,
-
-
-      readOnly:false,
-
-
-
-      countryCode:'+261',
-
-
-
-      minScale:1,
-
-
-      maxScale:10,
-
-
-      step:1,
-
-
-      rangeMin:0,
-
-
-      rangeMax:100,
-
-
-      rangeStep:1,
-
-
-
-      latitude:-18.8792,
-
-
-      longitude:47.5079,
-
-
-      zoom:13,
-
-
-
-      addressFields:{
-
-
-        street:true,
-
-        city:true,
-
-        state:false,
-
-        zip:true,
-
-        country:true
-
-
-      },
-
-
-
-      allowPastDate:true,
-
-
-      allowFutureDate:true
-
-
-    };
-
-
-
-
-
-    template.questions.push(
-      question
-    );
-
-
-
-    this.save(template);
-
-
-
-    this.selectQuestion(
-      question.id
-    );
-
-
-  }
-
-
-
-
-
-
-
-
-
-  updateQuestion(updated:Question):void {
-
-
-    const template =
-      this.template;
-
-
-
-    if(!template)
-      return;
-
-
-
-
-
-    const index =
-      template.questions.findIndex(
-        q => q.id === updated.id
-      );
-
-
-
-    if(index === -1)
-      return;
-
-
-
-
-
-    template.questions[index] = {
-
-
-      ...updated,
-
-
-      options:[
-        ...(updated.options ?? [])
-      ]
-
-
-    };
-
-
-
-
-    this.save(template);
-
-
-
-    this.selectQuestion(
-      updated.id
-    );
-
-
-  }
-
-
-
-
-
-
-
-
-
-  duplicateQuestion(id:string):void {
-
-
-    const template =
-      this.template;
-
-
-
-    if(!template)
-      return;
-
-
-
-
-
-    const original =
-      template.questions.find(
-        q => q.id === id
-      );
-
-
-
-    if(!original)
-      return;
-
-
-
-
-
-    const copy:Question = {
-
-
-      ...original,
-
-
-      id:crypto.randomUUID(),
-
-
-      title:
-        `${original.title} (copy)`,
-
-
-
-      order:
-        template.questions.length,
-
-
-
-      options:
-
-        (original.options ?? [])
-        .map(option => ({
-
-
-          ...option,
-
-
-          id:crypto.randomUUID()
-
-
-        }))
-
-
-    };
-
-
-
-
-
-    template.questions.push(
-      copy
-    );
-
-
-
-    this.save(template);
-
-
-
-    this.selectQuestion(
-      copy.id
-    );
-
-
-  }
-
-
-
-
-
-
-
-
-
-  removeQuestion(id:string):void {
-
-
-    const template =
-      this.template;
-
-
-
-    if(!template)
-      return;
-
-
-
-
-
-    template.questions =
-      template.questions.filter(
-        q => q.id !== id
-      );
-
-
-
-
-    template.questions.forEach(
-      (question,index)=>{
-
-        question.order=index;
-
+    createTemplateLocal(
+      data:{
+        title:string;
+        description?:string;
+        category?:string;
       }
-    );
+    ):void {
+
+      this.templateService.createTemplateLocal(data);
+
+    }
 
 
 
 
-    this.save(template);
+
+  save(
+    template?:Template
+  ):void {
 
 
-
-    this.selectedQuestionSubject.next(
-      null
+    this.templateService.saveTemplate(
+      template
     );
 
 
@@ -679,6 +155,50 @@ export class BuilderService {
 
 
 
+
+  addQuestion(type: QuestionType): void {
+     console.log(
+   'BuilderService addQuestion',
+   type
+ );
+    this.questionService.addQuestion(type);
+  }
+
+
+
+
+
+  updateQuestion(
+    question:Question
+  ):void {
+
+    this.questionService.updateQuestion(question);
+
+  }
+
+
+
+
+
+  duplicateQuestion(
+    id:string
+  ):void {
+
+    this.questionService.duplicateQuestion(id);
+
+  }
+
+
+
+
+
+  removeQuestion(
+    id:string
+  ):void {
+
+    this.questionService.removeQuestion(id);
+
+  }
 
 
 
@@ -689,74 +209,12 @@ export class BuilderService {
     currentIndex:number
   ):void {
 
-
-
-    const template =
-      this.template;
-
-
-
-    if(!template)
-      return;
-
-
-
-
-
-    const selected =
-      this.selectedQuestionSubject.value;
-
-
-
-
-
-    moveItemInArray(
-
-      template.questions,
-
+    this.sortService.reorderQuestions(
       previousIndex,
-
       currentIndex
-
     );
-
-
-
-
-
-    template.questions.forEach(
-      (question,index)=>{
-
-        question.order=index;
-
-      }
-    );
-
-
-
-
-
-    this.save(template);
-
-
-
-
-
-    if(selected){
-
-      this.selectQuestion(
-        selected.id
-      );
-
-    }
-
-
 
   }
-
-
-
-
 
 
 
@@ -764,74 +222,7 @@ export class BuilderService {
 
   exportTemplate():void {
 
-
-    const template =
-      this.template;
-
-
-
-    if(!template)
-      return;
-
-
-
-
-
-    const json =
-      JSON.stringify(
-        template,
-        null,
-        2
-      );
-
-
-
-
-
-    const blob =
-      new Blob(
-
-        [json],
-
-        {
-          type:'application/json'
-        }
-
-      );
-
-
-
-
-
-    const url =
-      URL.createObjectURL(
-        blob
-      );
-
-
-
-
-
-    const link =
-      document.createElement('a');
-
-
-
-    link.href=url;
-
-
-
-    link.download =
-      `${template.title}.json`;
-
-
-
-    link.click();
-
-
-
-    URL.revokeObjectURL(url);
-
+    this.fileService.exportTemplate();
 
   }
 
@@ -839,121 +230,35 @@ export class BuilderService {
 
 
 
-
-
-
-
-  importTemplate(file:File):void {
-
-
-    const reader =
-      new FileReader();
-
-
-
-
-
-    reader.onload = ()=>{
-
-
-      try{
-
-
-        const template:Template =
-          JSON.parse(
-            reader.result as string
-          );
-
-
-
-
-
-        template.questions =
-          (template.questions ?? [])
-          .map(question => ({
-
-            ...question,
-
-            options: question.options ?? [],
-
-            conditions: question.conditions ?? [],
-
-            conditionGroups:
-              (question.conditionGroups ?? []).map(group => ({
-
-                id: group.id ?? crypto.randomUUID(),
-
-                operator: group.operator ?? 'AND',
-
-                conditions:
-                  (group.conditions ?? []).map(condition => ({
-
-                    enabled: true,
-
-                    ...condition
-
-                  }))
-
-              }))
-
-          }));
-
-
-
-
-
-        template.createdAt =
-          new Date(
-            template.createdAt
-          );
-
-
-
-        template.updatedAt =
-          new Date(
-            template.updatedAt
-          );
-
-
-
-
-
-        this.save(template);
-
-
-
-
-        this.selectedQuestionSubject.next(
-          null
-        );
-
-
-
-      }
-      catch(error){
-
-
-        console.error(
-          'Import JSON impossible',
-          error
-        );
-
-
-      }
-
-
-    };
-
-
-
-
-
-    reader.readAsText(file);
-
+  importTemplate(
+    file:File
+  ):void {
+
+    this.fileService.importTemplate(file);
 
   }
 
 
+
+
+
+  selectQuestion(
+    id:string
+  ):void {
+
+    this.state.selectQuestion(id);
+
+  }
+
+
+
+
+
+  getSelectedQuestion():Question|null {
+
+    return this.state.getSelectedQuestion();
+
+  }
 
 
 }

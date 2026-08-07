@@ -1,8 +1,7 @@
-import { Question } from './question.model';
+import { Question } from "./question.model";
 
 
 export interface Template {
-
 
     id:string;
 
@@ -17,10 +16,7 @@ export interface Template {
 
 
 
-    // ==========================
     // Status
-    // ==========================
-
 
     published:boolean;
 
@@ -31,7 +27,6 @@ export interface Template {
     version:number;
 
 
-
     status?:
         | 'DRAFT'
         | 'PUBLISHED'
@@ -39,23 +34,14 @@ export interface Template {
 
 
 
+    // Structure formulaire
 
-
-    // ==========================
-    // Form structure
-    // ==========================
-
-
-    questions:Question[];
+    questions: Question[];
 
 
 
 
-
-    // ==========================
-    // Display / UI
-    // ==========================
-
+    // Apparence
 
     theme?: {
 
@@ -80,11 +66,7 @@ export interface Template {
 
 
 
-
-    // ==========================
-    // Access
-    // ==========================
-
+    // Accès
 
     publicAccess?:boolean;
 
@@ -94,25 +76,17 @@ export interface Template {
 
 
 
-
-    // ==========================
-    // Metadata
-    // ==========================
-
+    // Métadonnées
 
     tags?:string[];
 
 
-    metadata?:Record<string,any>;
+    metadata?:Record<string, any>;
 
 
 
 
-
-    // ==========================
     // Dates
-    // ==========================
-
 
     createdAt:Date;
 

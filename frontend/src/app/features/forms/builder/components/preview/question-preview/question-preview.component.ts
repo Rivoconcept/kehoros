@@ -16,21 +16,26 @@ import {
 } from '@angular/forms';
 
 
-import { BuilderService } from '../../../services/builder.service';
-
 import { DynamicFormService } from '../../../services/dynamic-form.service';
 
-import { PreviewRendererComponent } from '../preview-renderer/preview-renderer.component';
+import { PreviewRendererComponent }
+from '../preview-renderer/preview-renderer.component';
 
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule }
+from '@angular/material/icon';
 
-import { QuestionType } from '../../../../models/question-type.enum';
+import { QuestionType }
+from '../../../../models/question-type.enum';
 
 import { ConditionEngineService }
 from 'src/app/features/forms/services/engines/condition-engine.service';
 
+import { Template }
+from '../../../../models/template.model';
 
-import { Template } from '../../../../models/template.model';
+import { Question }
+from 'src/app/features/forms/models/question.model';
+import { BuilderService } from '../../../services/builder.service';
 
 
 
@@ -57,7 +62,10 @@ import { Template } from '../../../../models/template.model';
   styleUrl:'./question-preview.component.scss'
 
 })
-export class QuestionPreviewComponent implements OnInit, OnChanges {
+
+
+export class QuestionPreviewComponent
+implements OnInit, OnChanges {
 
 
   @Input()
@@ -66,6 +74,7 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
 
 
   form:FormGroup = new FormGroup({});
+
 
 
   QuestionType = QuestionType;
@@ -88,13 +97,9 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
 
 
 
-
   ngOnInit():void {
 
 
-    /**
-     * Mode Builder
-     */
     if(!this.template){
 
 
@@ -130,8 +135,11 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
 
 
     if(
+
       changes['template'] &&
+
       this.template
+
     ){
 
 
@@ -151,15 +159,12 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
 
 
 
-
   private loadTemplate(
     template:Template
   ):void {
 
 
-
     this.form =
-
       this.dynamicForm.buildForm(
         template
       );
@@ -170,19 +175,35 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
 
 
 
-
-
     this.form.valueChanges
 
     .subscribe(()=>{
 
-
       this.applyConditions();
-
 
     });
 
 
+  }
+
+
+
+
+
+
+
+  get questions():Question[] {
+
+
+    if(this.template){
+
+      return this.template.questions ?? [];
+
+    }
+
+
+    return this.builder.questions;
+
 
   }
 
@@ -192,33 +213,13 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
 
 
 
-
-  get questions(){
-
-
-    return this.template
-
-      ? this.template.questions
-
-      : this.builder.questions;
-
-
-  }
-
-
-
-
-
-
-
-
-  get visibleQuestions(){
+  get visibleQuestions():Question[] {
 
 
     return this.questions
 
 
-    .filter(question=>{
+    .filter((question:Question)=>{
 
 
       if(question.hidden){
@@ -226,7 +227,6 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
         return false;
 
       }
-
 
 
 
@@ -251,7 +251,7 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
 
     .sort(
 
-      (a,b)=>
+      (a:Question,b:Question)=>
 
       a.order - b.order
 
@@ -266,13 +266,13 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
 
 
 
-
-
   applyConditions():void {
 
 
 
-    this.questions.forEach(question=>{
+    this.questions.forEach(
+
+      (question:Question)=>{
 
 
       const control:
@@ -290,7 +290,6 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
         return;
 
       }
-
 
 
 
@@ -337,7 +336,6 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
 
 
 
-
       this.dynamicForm.updateValidators(
 
         question,
@@ -349,14 +347,10 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
       );
 
 
-
     });
 
 
-
   }
-
-
 
 
 
@@ -376,8 +370,8 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
 
       return;
 
-    }
 
+    }
 
 
 
@@ -399,8 +393,6 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
 
 
 
-
-
   getControl(
     id:string
   ):FormControl {
@@ -412,7 +404,6 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
 
 
 
-
     return control instanceof FormControl
 
       ? control
@@ -420,8 +411,8 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
       : new FormControl();
 
 
-
   }
+
 
 
 }
