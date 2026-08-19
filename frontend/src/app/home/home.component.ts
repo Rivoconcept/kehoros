@@ -1,14 +1,14 @@
-import { Component } from '@angular/core';
+// import { Component } from '@angular/core';
 
-@Component({
-  selector: 'app-home',
-  standalone: true,
-  template: `
-    <div style="padding: 20px;">
-      <h2>Home Page</h2>
-      <p>Kehoros is loading...</p>
-    </div>
-  `,
-  styles: []
-})
-export class HomeComponent {}
+// @Component({
+//   selector: 'app-home',
+//   standalone: true,
+//   template: `
+//     <div style="padding: 20px;">
+//       <h2>Home Page</h2>
+//       <p>Kehoros is loading...</p>
+//     </div>
+//   `,
+//   styles: []
+// })
+// export class HomeComponent {}

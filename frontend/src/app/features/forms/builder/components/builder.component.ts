@@ -165,21 +165,21 @@ export class BuilderComponent implements OnInit {
 
 
 
-  drop(
-    event:CdkDragDrop<Question[]>
-  ):void {
+  // drop(
+  //   event:CdkDragDrop<Question[]>
+  // ):void {
 
 
-    this.builder.reorderQuestions(
+  //   this.builder.reorderQuestions(
 
-      event.previousIndex,
+  //     event.previousIndex,
 
-      event.currentIndex
+  //     event.currentIndex
 
-    );
+  //   );
 
 
-  }
+  // }
 
 
 

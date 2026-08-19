@@ -9,21 +9,27 @@ import {
 
 import { FormTemplate } from './form-template.entity';
 import { FormOption } from './form-option.entity';
+
 import { QuestionType } from '../enums/question-type.enum';
 
 @Entity('form_questions')
 export class FormQuestion {
-
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
   template_id: string;
 
-  @ManyToOne(() => FormTemplate, t => t.questions, {
-    onDelete: 'CASCADE',
+  @ManyToOne(
+    () => FormTemplate,
+    t => t.questions,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
+  @JoinColumn({
+    name: 'template_id',
   })
-  @JoinColumn({ name: 'template_id' })
   template: FormTemplate;
 
   @Column()
@@ -41,22 +47,35 @@ export class FormQuestion {
   })
   type: QuestionType;
 
-  @Column({ default: false })
+  @Column({
+    default: false,
+  })
   required: boolean;
 
-  @Column({ default: 0 })
+  @Column({
+    default: 0,
+  })
   position: number;
 
-  @Column({ default: 0 })
+  @Column({
+    default: 0,
+  })
   points: number;
 
+  /**
+   * Les propriétés avancées du Question frontend
+   * sont conservées ici sous forme JSONB.
+   */
   @Column({
     type: 'jsonb',
     nullable: true,
+    default: () => "'{}'",
   })
-  settings: any;
+  settings: Record<string, any>;
 
-  @OneToMany(() => FormOption, o => o.question)
+  @OneToMany(
+    () => FormOption,
+    o => o.question,
+  )
   options: FormOption[];
-
 }

@@ -1,23 +1,26 @@
-import { Component } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { MatIconModule } from "@angular/material/icon";
-
-
-import { QuestionPaletteComponent } from "../question-palette/question-palette.component";
-
-import { QuestionType } from "../../../models/question-type.enum";
-import { BuilderService } from "../../services/builder.service";
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { QuestionPaletteComponent } from '../question-palette/question-palette.component';
+import { BuilderService } from '../../services/builder.service';
+import { QuestionType } from '../../../models/question-type.enum';
 
 @Component({
-  selector: "app-toolbar",
-
+  selector: 'app-toolbar',
   standalone: true,
-
-  imports: [CommonModule, MatIconModule, QuestionPaletteComponent],
-
-  templateUrl: "./toolbar.component.html",
-
-  styleUrl: "./toolbar.component.scss",
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatDividerModule,
+    QuestionPaletteComponent
+  ],
+  templateUrl: './toolbar.component.html',
+  styleUrl: './toolbar.component.scss'
 })
 export class ToolbarComponent {
   showFieldMenu = false;
@@ -34,18 +37,11 @@ export class ToolbarComponent {
 
   addQuestion(type: QuestionType): void {
     this.builder.addQuestion(type);
-
-    this.showFieldMenu = false;
+    this.closeFieldMenu();
   }
 
   save(): void {
-    const template = this.builder.template;
-
-    if (!template) return;
-
-    this.builder.save(template);
-
-    console.log("Template saved");
+    this.builder.save();
   }
 
   export(): void {
@@ -54,27 +50,16 @@ export class ToolbarComponent {
 
   import(event: Event): void {
     const input = event.target as HTMLInputElement;
-
-    const file = input.files?.[0];
-
-    if (!file) return;
-
-    this.builder.importTemplate(file);
-
-    input.value = "";
+    if (input.files && input.files[0]) {
+      this.builder.importTemplate(input.files[0]);
+    }
   }
 
   newTemplate(): void {
-    const title = prompt("Nom du questionnaire");
-
-    if (!title) return;
-
-    this.builder.createTemplate({
-      title: title.trim(),
-
-      description: "",
-
-      category: "general",
+    this.builder.createTemplateLocal({
+      title: 'Nouveau questionnaire',
+      description: '',
+      category: 'general'
     });
   }
 }

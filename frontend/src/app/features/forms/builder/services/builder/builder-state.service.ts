@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs';
+import { Question } from 'src/app/features/forms/models/question.model';
+import { Template } from 'src/app/features/forms/models/template.model';
 
-import { Template } from '../../../models/template.model';
-import { Question } from '../../../models/question.model';
 
 
 @Injectable({
@@ -87,8 +87,23 @@ export class BuilderStateService {
   }
 
 
+  public initNewTemplate(): void {
+    const newTemplate: Template = {
+      id: '',
+      title: 'Nouveau Questionnaire',
+      description: '',
+      questions: [],
+      published: false,
+      archived: false,
+      version: 1,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
 
-
+    this.setTemplate(newTemplate);
+    this.setSelectedQuestion(null);
+    this.setDirty(false);
+  }
 
 
 
@@ -135,11 +150,6 @@ export class BuilderStateService {
 
 
   }
-
-
-
-
-
 
 
 

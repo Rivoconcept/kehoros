@@ -1,104 +1,52 @@
 export enum QuestionType {
-
-
   // Basic inputs
-
-  TEXT = 'TEXT',
-
-  TEXTAREA = 'TEXTAREA',
-
-  NUMBER = 'NUMBER',
-
-  EMAIL = 'EMAIL',
-
-  PHONE = 'PHONE',
-
-  PASSWORD = 'PASSWORD',
-
-  URL = 'URL',
-
-
+  TEXT = 'text',
+  TEXTAREA = 'textarea',
+  NUMBER = 'number',
+  EMAIL = 'email',
+  PHONE = 'phone',
+  PASSWORD = 'password',
+  URL = 'url',
 
   // Date / Time
-
-  DATE = 'DATE',
-
-  TIME = 'TIME',
-
-  DATETIME = 'DATETIME',
-
-
+  DATE = 'date',
+  TIME = 'time',
+  DATETIME = 'datetime',
 
   // Advanced inputs
-
-  ADDRESS = 'ADDRESS',
-
-  LOCATION = 'LOCATION',
-
-  MAP = 'MAP',
-
-
+  ADDRESS = 'address',
+  LOCATION = 'location',
+  MAP = 'map',
 
   // Choice fields
-
-  SELECT = 'SELECT',
-
-  RADIO = 'RADIO',
-
-  CHECKBOX = 'CHECKBOX',
-
-  SWITCH = 'SWITCH',
-
-
+  SELECT = 'select',
+  RADIO = 'radio',
+  CHECKBOX = 'checkbox',
+  SWITCH = 'switch',
 
   // Files
-
-  FILE = 'FILE',
-
-  IMAGE = 'IMAGE',
-
-  SIGNATURE = 'SIGNATURE',
-
-
+  FILE = 'file',
+  IMAGE = 'image',
+  SIGNATURE = 'signature',
 
   // Numeric interaction
-
-  RANGE = 'RANGE',
-
-  RATING = 'RATING',
-
-  SCALE = 'SCALE',
-
-
+  RANGE = 'range',
+  RATING = 'rating',
+  SCALE = 'scale',
 
   // Special fields
-
-  COLOR = 'COLOR',
-
-  HIDDEN = 'HIDDEN',
-
-  HTML = 'HTML',
-
-  LABEL = 'LABEL',
-
-  DIVIDER = 'DIVIDER',
-
-
+  COLOR = 'color',
+  HIDDEN = 'hidden',
+  HTML = 'html',
+  LABEL = 'label',
+  DIVIDER = 'divider',
 
   // Codes
-
-  QR = 'QR',
-
-  BARCODE = 'BARCODE',
-
-
+  QR = 'qr',
+  BARCODE = 'barcode',
 
   // Layout
-
-  SECTION = 'SECTION',
-
-  TITLE = 'TITLE',
-
-  PARAGRAPH = 'PARAGRAPH'
-
+  SECTION = 'section',
+  TITLE = 'title',
+  PARAGRAPH = 'paragraph',
 }

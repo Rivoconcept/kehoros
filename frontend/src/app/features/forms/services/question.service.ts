@@ -1,180 +1,96 @@
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs';
-
-import { ApiService } from '../../../core/services/api.service';
-
+import { ApiService } from 'src/app/core/services/api.service';
+import { QuestionType } from '../models/question-type.enum';
 import { Question } from '../models/question.model';
-import { QuestionOption } from '../models/question-option.model';
 
 
+
+export interface CreateQuestionApiPayload {
+  template_id: string;
+
+  title: string;
+
+  description?: string;
+
+  type: QuestionType;
+
+  required?: boolean;
+
+  position?: number;
+
+  points?: number;
+
+  settings?: Record<string, any>;
+}
+
+export interface UpdateQuestionApiPayload {
+  title?: string;
+
+  description?: string;
+
+  type?: QuestionType;
+
+  required?: boolean;
+
+  position?: number;
+
+  points?: number;
+
+  settings?: Record<string, any>;
+}
 
 @Injectable({
-  providedIn:'root'
+  providedIn: 'root',
 })
 export class QuestionService {
-
-
-  private readonly optionEndpoint = '/forms/options';
-
-
+  private endpoint = '/forms/questions';
 
   constructor(
-    private api: ApiService
+    private api: ApiService,
   ) {}
 
-
-
   /**
-   * POST
-   * /forms/templates/:templateId/questions
+   * Création d'une question.
+   *
+   * Endpoint backend :
+   *
+   * POST /forms/questions
    */
   createQuestion(
-    templateId:string,
-    data:Partial<Question>
-  ):Observable<Question>{
-
-
+    data: CreateQuestionApiPayload,
+  ) {
     return this.api.post<Question>(
-      `/forms/templates/${templateId}/questions`,
-      data
+      this.endpoint,
+      data,
     );
-
-
   }
 
-
-
-
   /**
-   * GET
-   * /forms/templates/:templateId/questions
-   */
-  findByTemplate(
-    templateId:string
-  ):Observable<Question[]>{
-
-
-    return this.api.get<Question[]>(
-      `/forms/templates/${templateId}/questions`
-    );
-
-
-  }
-
-
-
-
-
-  /**
-   * GET
-   * /forms/questions/:id
-   */
-  findOne(
-    id:string
-  ):Observable<Question>{
-
-
-    return this.api.get<Question>(
-      `/forms/questions/${id}`
-    );
-
-
-  }
-
-
-
-
-
-  /**
-   * PATCH
-   * /forms/questions/:id
+   * Modification d'une question.
+   *
+   * Endpoint backend :
+   *
+   * PATCH /forms/questions/:id
    */
   updateQuestion(
-    id:string,
-    data:Partial<Question>
-  ):Observable<Question>{
-
-
+    id: string,
+    data: UpdateQuestionApiPayload,
+  ) {
     return this.api.patch<Question>(
-      `/forms/questions/${id}`,
-      data
+      `${this.endpoint}/${id}`,
+      data,
     );
-
-
   }
-
-
-
-
 
   /**
-   * DELETE
-   * /forms/questions/:id
+   * Suppression d'une question.
    */
-  removeQuestion(
-    id:string
-  ):Observable<void>{
-
-
+  deleteQuestion(
+    id: string,
+  ) {
     return this.api.delete<void>(
-      `/forms/questions/${id}`
+      `${this.endpoint}/${id}`,
     );
-
-
   }
-
-
-
-
-
-  createOption(
-    data:Partial<QuestionOption>
-  ):Observable<QuestionOption>{
-
-
-    return this.api.post<QuestionOption>(
-      this.optionEndpoint,
-      data
-    );
-
-
-  }
-
-
-
-
-
-  updateOption(
-    id:string,
-    data:Partial<QuestionOption>
-  ):Observable<QuestionOption>{
-
-
-    return this.api.patch<QuestionOption>(
-      `${this.optionEndpoint}/${id}`,
-      data
-    );
-
-
-  }
-
-
-
-
-
-  removeOption(
-    id:string
-  ):Observable<void>{
-
-
-    return this.api.delete<void>(
-      `${this.optionEndpoint}/${id}`
-    );
-
-
-  }
-
-
-
 }

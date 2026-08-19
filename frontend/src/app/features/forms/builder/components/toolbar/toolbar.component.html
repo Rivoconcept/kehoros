@@ -1,76 +1,82 @@
 <div class="toolbar">
 
-    <div class="title">
-        <h2>
-            {{ builder.template?.title || 'Untitled Form' }}
-        </h2>
-    </div>
+  <div class="title">
+    <h2>
+      {{ builder.template?.title || 'Formulaire sans titre' }}
+    </h2>
+  </div>
 
-    <div class="actions">
+  <div class="actions">
 
-        <div class="add-container">
+    <!-- Bouton principal : Ajouter un champ -->
+    <div class="add-container">
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="toggleFieldMenu(); $event.stopPropagation()">
+        <mat-icon>add</mat-icon>
+        <span>Add field</span>
+      </button>
 
-            <button
-                class="add-field-btn"
-                (click)="toggleFieldMenu(); $event.stopPropagation()">
-
-                <mat-icon>add</mat-icon>
-
-                <span>Add field</span>
-
-            </button>
-
-            @if(showFieldMenu){
-
-                <!-- Fond sombre qui ferme automatiquement le menu -->
-                <div
-                    class="popup-overlay"
-                    (click)="closeFieldMenu()">
-                </div>
-
-                <!-- Fenêtre de la palette -->
-                <div
-                    class="field-popup"
-                    (click)="$event.stopPropagation()">
-
-                    <app-question-palette
-                        (questionAdded)="addQuestion($event)">
-                    </app-question-palette>
-
-                </div>
-
-            }
-
+      @if (showFieldMenu) {
+        <div
+          class="popup-overlay"
+          (click)="closeFieldMenu()">
         </div>
 
-        <button (click)="save()">
-            Save
-        </button>
-
-        <button (click)="export()">
-            Export JSON
-        </button>
-
-        <label class="import-button">
-
-            Import JSON
-
-            <input
-                type="file"
-                accept=".json"
-                hidden
-                (change)="import($event)">
-
-        </label>
-
-        <button
-            class="danger"
-            (click)="newTemplate()">
-
-            New
-
-        </button>
-
+        <div
+          class="field-popup"
+          (click)="$event.stopPropagation()">
+          <app-question-palette
+            (questionAdded)="addQuestion($event)">
+          </app-question-palette>
+        </div>
+      }
     </div>
+
+    <!-- Action principale : Enregistrer -->
+    <button
+      type="button"
+      class="btn btn-success"
+      (click)="save()">
+      <mat-icon>save</mat-icon>
+      <span>Save</span>
+    </button>
+
+    <!-- Menu déroulant pour les actions secondaires -->
+    <button
+      type="button"
+      mat-icon-button
+      [matMenuTriggerFor]="moreMenu"
+      aria-label="Plus d'options"
+      class="more-btn">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #moreMenu="matMenu" xPosition="before">
+      <button mat-menu-item (click)="newTemplate()">
+        <mat-icon>note_add</mat-icon>
+        <span>New Form</span>
+      </button>
+
+      <mat-divider></mat-divider>
+
+      <button mat-menu-item (click)="export()">
+        <mat-icon>download</mat-icon>
+        <span>Export Model</span>
+      </button>
+
+      <label mat-menu-item class="import-label">
+        <mat-icon>upload</mat-icon>
+        <span>Import Model</span>
+        <input
+          type="file"
+          accept=".json"
+          hidden
+          (change)="import($event)">
+      </label>
+    </mat-menu>
+
+  </div>
 
 </div>

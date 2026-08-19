@@ -3,13 +3,17 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+
 import { InjectRepository } from '@nestjs/typeorm';
+
 import { Repository } from 'typeorm';
 
 import { FormAnswer } from '../entities/form-answer.entity';
 import { FormQuestion } from '../entities/form-question.entity';
 import { FormResponse } from '../entities/form-response.entity';
 import { FormResult } from '../entities/form-result.entity';
+
+import { QuestionType } from '../enums/question-type.enum';
 import { ResultStatus } from '../enums/result-status.enum';
 
 @Injectable()
@@ -17,21 +21,34 @@ export class ResultService {
   constructor(
     @InjectRepository(FormResult)
     private readonly resultRepo: Repository<FormResult>,
+
     @InjectRepository(FormResponse)
     private readonly responseRepo: Repository<FormResponse>,
+
     @InjectRepository(FormAnswer)
     private readonly answerRepo: Repository<FormAnswer>,
+
     @InjectRepository(FormQuestion)
     private readonly questionRepo: Repository<FormQuestion>,
   ) {}
 
   async evaluate(responseId: string, gradedBy?: string): Promise<FormResult> {
-    const response = await this.responseRepo.findOne({ where: { id: responseId } });
+    const response = await this.responseRepo.findOne({
+      where: {
+        id: responseId,
+      },
+    });
+
     if (!response) {
       throw new NotFoundException(`Response with id ${responseId} not found`);
     }
 
-    const answers = await this.answerRepo.find({ where: { response_id: response.id } });
+    const answers = await this.answerRepo.find({
+      where: {
+        response_id: response.id,
+      },
+    });
+
     const questions = await this.questionRepo.find();
 
     let score = 0;
@@ -39,32 +56,65 @@ export class ResultService {
 
     for (const question of questions) {
       maxScore += question.points ?? 0;
+
       const answer = answers.find((item) => item.question_id === question.id);
+
       if (!answer) {
         continue;
       }
 
-      if (question.type === 'boolean' && answer.answer_boolean === true) {
+      /*
+       * BOOLEAN
+       */
+      if (
+        question.type === QuestionType.SWITCH &&
+        answer.answer_boolean === true
+      ) {
         score += question.points ?? 0;
       }
 
-      if (question.type === 'number' && answer.answer_number !== undefined) {
+      /*
+       * NUMBER
+       */
+      if (
+        question.type === QuestionType.NUMBER &&
+        answer.answer_number !== undefined
+      ) {
         score += question.points ?? 0;
       }
 
-      if ((question.type === 'radio' || question.type === 'select') && answer.selected_option_id) {
+      /*
+       * RADIO / SELECT
+       */
+      if (
+        (question.type === QuestionType.RADIO ||
+          question.type === QuestionType.SELECT) &&
+        answer.selected_option_id
+      ) {
         score += question.points ?? 0;
       }
 
-      if ((question.type === 'text' || question.type === 'textarea') && answer.answer_text?.trim()) {
+      /*
+       * TEXT / TEXTAREA
+       */
+      if (
+        (question.type === QuestionType.TEXT ||
+          question.type === QuestionType.TEXTAREA) &&
+        answer.answer_text?.trim()
+      ) {
         score += question.points ?? 0;
       }
     }
 
     const percentage = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+
     const status = percentage >= 50 ? ResultStatus.PASSED : ResultStatus.FAILED;
 
-    const existing = await this.resultRepo.findOne({ where: { response_id: response.id } });
+    const existing = await this.resultRepo.findOne({
+      where: {
+        response_id: response.id,
+      },
+    });
 
     if (existing) {
       await this.resultRepo.update(existing.id, {
@@ -75,7 +125,12 @@ export class ResultService {
         graded_by: gradedBy,
         graded_at: new Date(),
       });
-      return this.resultRepo.findOneOrFail({ where: { id: existing.id } });
+
+      return this.resultRepo.findOneOrFail({
+        where: {
+          id: existing.id,
+        },
+      });
     }
 
     const result = this.resultRepo.create({
@@ -92,11 +147,20 @@ export class ResultService {
   }
 
   async findByResponse(responseId: string): Promise<FormResult[]> {
-    return this.resultRepo.find({ where: { response_id: responseId } });
+    return this.resultRepo.find({
+      where: {
+        response_id: responseId,
+      },
+    });
   }
 
   async findOne(id: string): Promise<FormResult> {
-    const result = await this.resultRepo.findOne({ where: { id } });
+    const result = await this.resultRepo.findOne({
+      where: {
+        id,
+      },
+    });
+
     if (!result) {
       throw new NotFoundException(`Result with id ${id} not found`);
     }
@@ -106,11 +170,15 @@ export class ResultService {
 
   async updateStatus(id: string, status: ResultStatus): Promise<FormResult> {
     const result = await this.findOne(id);
+
     if (!Object.values(ResultStatus).includes(status)) {
       throw new BadRequestException('Invalid result status');
     }
 
-    await this.resultRepo.update(id, { status });
+    await this.resultRepo.update(id, {
+      status,
+    });
+
     return this.findOne(id);
   }
 }

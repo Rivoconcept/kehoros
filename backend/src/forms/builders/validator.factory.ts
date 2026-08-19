@@ -2,7 +2,7 @@ import { QuestionType } from '../enums/question-type.enum';
 
 export class ValidatorFactory {
 
-  static validate(type: QuestionType, value: any): boolean {
+static validate(type: QuestionType,value: any,): boolean {
 
     switch (type) {
 
@@ -12,9 +12,6 @@ export class ValidatorFactory {
 
       case QuestionType.NUMBER:
         return typeof value === 'number';
-
-      case QuestionType.BOOLEAN:
-        return typeof value === 'boolean';
 
       case QuestionType.CHECKBOX:
         return Array.isArray(value);
@@ -28,9 +25,7 @@ export class ValidatorFactory {
 
       default:
         return true;
-
     }
 
   }
-
 }

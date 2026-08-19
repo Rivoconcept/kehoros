@@ -64,20 +64,19 @@ export class CanvasComponent {
 
 
 
-  drop(
-    event:CdkDragDrop<Question[]>
-  ):void {
-
-
-    this.builder.reorderQuestions(
-
-      event.previousIndex,
-
-      event.currentIndex
-
-    );
-
-
+  drop(event: CdkDragDrop<Question[]>): void {
+    // CAS 1 : Déplacement/réordonnancement au sein du Canvas uniquement
+    if (event.previousContainer === event.container) {
+      this.builder.reorderQuestions(
+        event.previousIndex,
+        event.currentIndex
+      );
+    } 
+    // CAS 2 : Glisser-déposer depuis la palette vers le Canvas
+    else {
+      const questionType = event.item.data as QuestionType;
+      this.builder.addQuestionAtIndex(questionType, event.currentIndex);
+    }
   }
 
 
