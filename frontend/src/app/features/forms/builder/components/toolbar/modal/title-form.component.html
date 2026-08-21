@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Create New Form</h2>
+
+<mat-dialog-content class="dialog-content">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Form Title</mat-label>
+    <input 
+      matInput 
+      [(ngModel)]="title" 
+      placeholder="e.g. Customer Satisfaction Survey"
+      (keyup.enter)="confirm()"
+      autofocus
+    />
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button type="button" mat-button (click)="cancel()">Cancel</button>
+  <button 
+    type="button" 
+    mat-raised-button 
+    color="primary" 
+    [disabled]="!title.trim()" 
+    (click)="confirm()">
+    Create
+  </button>
+</mat-dialog-actions>

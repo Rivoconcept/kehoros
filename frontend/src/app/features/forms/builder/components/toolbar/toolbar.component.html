@@ -1,14 +1,18 @@
 <div class="toolbar">
 
-  <div class="title">
-    <h2>
-      {{ builder.template?.title || 'Formulaire sans titre' }}
-    </h2>
+  <!-- Titre éditable directement en ligne -->
+  <div class="title-container">
+    <mat-icon class="form-icon">description</mat-icon>
+    <input
+      type="text"
+      class="title-input"
+      [(ngModel)]="title"
+      (ngModelChange)="onTitleChange()"
+      placeholder="Nom du formulaire...">
   </div>
 
   <div class="actions">
-
-    <!-- Bouton principal : Ajouter un champ -->
+    <!-- Bouton Add field, Save, et Menu d'options -->
     <div class="add-container">
       <button
         type="button"
@@ -19,36 +23,23 @@
       </button>
 
       @if (showFieldMenu) {
-        <div
-          class="popup-overlay"
-          (click)="closeFieldMenu()">
-        </div>
-
-        <div
-          class="field-popup"
-          (click)="$event.stopPropagation()">
-          <app-question-palette
-            (questionAdded)="addQuestion($event)">
-          </app-question-palette>
+        <div class="popup-overlay" (click)="closeFieldMenu()"></div>
+        <div class="field-popup" (click)="$event.stopPropagation()">
+          <app-question-palette (questionAdded)="addQuestion($event)"></app-question-palette>
         </div>
       }
     </div>
 
-    <!-- Action principale : Enregistrer -->
-    <button
-      type="button"
-      class="btn btn-success"
-      (click)="save()">
+    <button type="button" class="btn btn-success" (click)="save()">
       <mat-icon>save</mat-icon>
       <span>Save</span>
     </button>
 
-    <!-- Menu déroulant pour les actions secondaires -->
     <button
       type="button"
       mat-icon-button
       [matMenuTriggerFor]="moreMenu"
-      aria-label="Plus d'options"
+      aria-label="More options"
       class="more-btn">
       <mat-icon>more_vert</mat-icon>
     </button>
@@ -58,25 +49,17 @@
         <mat-icon>note_add</mat-icon>
         <span>New Form</span>
       </button>
-
       <mat-divider></mat-divider>
-
       <button mat-menu-item (click)="export()">
         <mat-icon>download</mat-icon>
         <span>Export Model</span>
       </button>
-
       <label mat-menu-item class="import-label">
         <mat-icon>upload</mat-icon>
         <span>Import Model</span>
-        <input
-          type="file"
-          accept=".json"
-          hidden
-          (change)="import($event)">
+        <input type="file" accept=".json" hidden (change)="import($event)">
       </label>
     </mat-menu>
 
   </div>
-
 </div>

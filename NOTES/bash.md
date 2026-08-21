@@ -10,7 +10,7 @@ tree frontend/src/app/features/forms -L 3
 
 curl -i -X POST http://localhost:3000/forms/templates \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg2NjkxNjA4LCJleHAiOjE3ODY2OTI1MDh9.z-lonK16f9-zx5ZhChPs32HVw9-CuPw3bFxefK8RBrw" \
+-H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg3MTIzNTQwLCJleHAiOjE3ODcxMjQ0NDB9.PWNBDNFfX_O5cCp1HXYxXi3ePWItyJlxL0MCFZ8_WrM" \
 -d '{
   "title": "TEST FORMS",
   "description": "Test du builder",
@@ -22,7 +22,7 @@ export TEMPLATE_ID="6fc5c180-a486-4abb-8068-f2af8cf3d750"
 //CREATE QUESTION
 curl -i -X POST http://localhost:3000/forms/questions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg2NjkxNjA4LCJleHAiOjE3ODY2OTI1MDh9.z-lonK16f9-zx5ZhChPs32HVw9-CuPw3bFxefK8RBrw" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg3MTIzNTQwLCJleHAiOjE3ODcxMjQ0NDB9.PWNBDNFfX_O5cCp1HXYxXi3ePWItyJlxL0MCFZ8_WrM" \
   -d '{
     "template_id": "'"$TEMPLATE_ID"'",
     "title": "Quel est votre nom ?",
@@ -44,7 +44,7 @@ On va tester un autre type :
 
   curl -i -X POST http://localhost:3000/forms/questions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg2NjkxNjA4LCJleHAiOjE3ODY2OTI1MDh9.z-lonK16f9-zx5ZhChPs32HVw9-CuPw3bFxefK8RBrw" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg3MTIzNTQwLCJleHAiOjE3ODcxMjQ0NDB9.PWNBDNFfX_O5cCp1HXYxXi3ePWItyJlxL0MCFZ8_WrM" \
   -d '{
     "template_id": "'"$TEMPLATE_ID"'",
     "title": "Quel est votre âge ?",
@@ -64,12 +64,12 @@ On va tester un autre type :
 
   curl -s -X GET \
   "http://localhost:3000/forms/templates/$TEMPLATE_ID" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg2NjkxNjA4LCJleHAiOjE3ODY2OTI1MDh9.z-lonK16f9-zx5ZhChPs32HVw9-CuPw3bFxefK8RBrw" | jq
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg3MTIzNTQwLCJleHAiOjE3ODcxMjQ0NDB9.PWNBDNFfX_O5cCp1HXYxXi3ePWItyJlxL0MCFZ8_WrM" | jq
 
 4. Tester directement l'endpoint des questions
   curl -s -X GET \
   "http://localhost:3000/forms/templates/$TEMPLATE_ID/questions" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg2NjkxNjA4LCJleHAiOjE3ODY2OTI1MDh9.z-lonK16f9-zx5ZhChPs32HVw9-CuPw3bFxefK8RBrw" | jq
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg3MTIzNTQwLCJleHAiOjE3ODcxMjQ0NDB9.PWNBDNFfX_O5cCp1HXYxXi3ePWItyJlxL0MCFZ8_WrM" | jq
 
 
   5. Tester la modification d'une question
@@ -78,7 +78,7 @@ Récupère l'ID de la première question :
 
 curl -s -X GET \
   "http://localhost:3000/forms/templates/$TEMPLATE_ID/questions" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg2NjkxNjA4LCJleHAiOjE3ODY2OTI1MDh9.z-lonK16f9-zx5ZhChPs32HVw9-CuPw3bFxefK8RBrw" | jq
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg3MTIzNTQwLCJleHAiOjE3ODcxMjQ0NDB9.PWNBDNFfX_O5cCp1HXYxXi3ePWItyJlxL0MCFZ8_WrM" | jq
 
 
   Et teste :
@@ -86,7 +86,7 @@ curl -s -X GET \
 curl -i -X PATCH \
   "http://localhost:3000/forms/questions/$QUESTION_ID" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg2NjkxNjA4LCJleHAiOjE3ODY2OTI1MDh9.z-lonK16f9-zx5ZhChPs32HVw9-CuPw3bFxefK8RBrw" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg3MTIzNTQwLCJleHAiOjE3ODcxMjQ0NDB9.PWNBDNFfX_O5cCp1HXYxXi3ePWItyJlxL0MCFZ8_WrM" \
   -d '{
     "title": "Quel est votre nom complet ?",
     "required": false,
@@ -100,26 +100,26 @@ curl -i -X PATCH \
 
   curl -s -X GET \
   "http://localhost:3000/forms/templates/$TEMPLATE_ID/questions" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg2NjkxNjA4LCJleHAiOjE3ODY2OTI1MDh9.z-lonK16f9-zx5ZhChPs32HVw9-CuPw3bFxefK8RBrw" | jq
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg3MTIzNTQwLCJleHAiOjE3ODcxMjQ0NDB9.PWNBDNFfX_O5cCp1HXYxXi3ePWItyJlxL0MCFZ8_WrM" | jq
 
   curl -i -X DELETE \
   "http://localhost:3000/forms/questions/$QUESTION_ID" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg2NjkxNjA4LCJleHAiOjE3ODY2OTI1MDh9.z-lonK16f9-zx5ZhChPs32HVw9-CuPw3bFxefK8RBrw"
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg3MTIzNTQwLCJleHAiOjE3ODcxMjQ0NDB9.PWNBDNFfX_O5cCp1HXYxXi3ePWItyJlxL0MCFZ8_WrM"
 
   curl -s -X GET \
   "http://localhost:3000/forms/templates/$TEMPLATE_ID/questions" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg2NjkxNjA4LCJleHAiOjE3ODY2OTI1MDh9.z-lonK16f9-zx5ZhChPs32HVw9-CuPw3bFxefK8RBrw" | jq
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg3MTIzNTQwLCJleHAiOjE3ODcxMjQ0NDB9.PWNBDNFfX_O5cCp1HXYxXi3ePWItyJlxL0MCFZ8_WrM" | jq
 
   1. Vérifier que le template existe
 curl -i \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg2NjkxNjA4LCJleHAiOjE3ODY2OTI1MDh9.z-lonK16f9-zx5ZhChPs32HVw9-CuPw3bFxefK8RBrw" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg3MTIzNTQwLCJleHAiOjE3ODcxMjQ0NDB9.PWNBDNFfX_O5cCp1HXYxXi3ePWItyJlxL0MCFZ8_WrM" \
   "http://localhost:3000/forms/templates/$TEMPLATE_ID"
 
 
 curl -i -X POST \
 "http://localhost:3000/forms/questions" \
 -H "Content-Type: application/json" \
--H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg2NzExMDgxLCJleHAiOjE3ODY3MTE5ODF9.1pzBWrlsH5AReKzcb2GMSwP09c2IykGyxzCsL6U9kVE" \
+-H "Authorization: Bearer $eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmNDRjZDFiZS00YTg2LTQ0MzgtYThlZi1jMmY5MTdlZDllMzIiLCJlbWFpbCI6InJpdm8uazA5NDlAa2VvYml6LmZyIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg3MTIzNTQwLCJleHAiOjE3ODcxMjQ0NDB9.PWNBDNFfX_O5cCp1HXYxXi3ePWItyJlxL0MCFZ8_WrM$" \
 -d '{
   "template_id": "'"$TEMPLATE_ID"'",
   "title": "Question test",

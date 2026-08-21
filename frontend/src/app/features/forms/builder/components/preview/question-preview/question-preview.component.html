@@ -1,191 +1,79 @@
 <div class="preview">
 
-
-@if(builder.template; as template){
-
+  @if (builder.template || template; as activeTemplate) {
 
     <div class="preview-header">
+      <input
+        type="text"
+        class="editable-title-input"
+        [ngModel]="activeTemplate.title"
+        (ngModelChange)="updateTitle($event)"
+        placeholder="Titre du formulaire..." />
 
-
-        <h2>
-
-            {{template.title}}
-
-        </h2>
-
-
-
-        @if(template.description){
-
-
-            <p>
-
-                {{template.description}}
-
-            </p>
-
-
-        }
-
-
+      <textarea
+        class="editable-desc-input"
+        [ngModel]="activeTemplate.description || ''"
+        (ngModelChange)="updateDescription($event)"
+        placeholder="Ajouter une description..."
+        rows="2"></textarea>
     </div>
-
-
-
-
 
     <div class="form-preview">
 
-
-
-        @for(Question of visibleQuestions; track Question.id){
-
-
-
-          <div
-
-              class="question-preview"
-
-              [ngClass]="Question.cssClass"
-
-              [style.width]="Question.width || '100%'"
-
-              [style.box-sizing]="'border-box'"
-
-          >
-
-
-
-
-
-                @if(
-
-                    Question.type !== QuestionType.TITLE &&
-
-                    Question.type !== QuestionType.SECTION &&
-
-                    Question.type !== QuestionType.PARAGRAPH
-
-                ){
-
-
-                    <h4>
-
-
-                        {{Question.title}}
-
-
-
-                        @if(Question.required){
-
-
-                            <span class="required">
-
-                                *
-
-                            </span>
-
-
-                        }
-
-
-                    </h4>
-
-
-                }
-
-
-
-
-
-
-
-                @if(Question.description){
-
-
-                    <p class="description">
-
-
-                        {{Question.description}}
-
-
-                    </p>
-
-
-                }
-
-
-
-
-
-        @if(form){
-
-        <app-preview-renderer
-
-            [Question]="Question"
-
-            [control]="getControl(Question.id)"
-
-        >
-        </app-preview-renderer>
-
-        }
-
-
-
-
-
-            </div>
-
-
-
-        }
-
-        <button
-
-            mat-raised-button
-
-            color="primary"
-
-            (click)="submit()"
-
-            >
-
-            Submit
-
-        </button>
-
+      @for (Question of visibleQuestions; track Question.id) {
+
+        <div
+          class="question-preview"
+          [ngClass]="Question.cssClass"
+          [style.width]="Question.width || '100%'"
+          [style.box-sizing]="'border-box'">
+
+          @if (
+            Question.type !== QuestionType.TITLE &&
+            Question.type !== QuestionType.SECTION &&
+            Question.type !== QuestionType.PARAGRAPH
+          ) {
+            <h4>
+              {{ Question.title }}
+              @if (Question.required) {
+                <span class="required">*</span>
+              }
+            </h4>
+          }
+
+          @if (Question.description) {
+            <p class="description">
+              {{ Question.description }}
+            </p>
+          }
+
+          @if (form) {
+            <app-preview-renderer
+              [Question]="Question"
+              [control]="getControl(Question.id)">
+            </app-preview-renderer>
+          }
+
+        </div>
+
+      }
+
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="submit()">
+        Submit
+      </button>
 
     </div>
 
-
-}
-
-@else{
-
+  } @else {
 
     <div class="empty">
-
-
-        <mat-icon>
-
-            description
-
-        </mat-icon>
-
-
-
-        <p>
-
-            No form loaded.
-
-        </p>
-
-
+      <mat-icon>description</mat-icon>
+      <p>No form loaded.</p>
     </div>
 
-
-}
-
+  }
 
 </div>

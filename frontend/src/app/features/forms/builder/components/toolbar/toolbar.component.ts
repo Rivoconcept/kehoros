@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -13,6 +14,7 @@ import { QuestionType } from '../../../models/question-type.enum';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
@@ -23,6 +25,10 @@ import { QuestionType } from '../../../models/question-type.enum';
   styleUrl: './toolbar.component.scss'
 })
 export class ToolbarComponent {
+  @Input() title: string = '';
+  @Output() titleChange = new EventEmitter<string>();
+  @Output() saveForm = new EventEmitter<void>();
+
   showFieldMenu = false;
 
   constructor(public builder: BuilderService) {}
@@ -41,6 +47,7 @@ export class ToolbarComponent {
   }
 
   save(): void {
+    this.saveForm.emit();
     this.builder.save();
   }
 
@@ -55,11 +62,16 @@ export class ToolbarComponent {
     }
   }
 
+  // Remise à zéro rapide du formulaire sans ouvrir de modal
   newTemplate(): void {
-    this.builder.createTemplateLocal({
-      title: 'Nouveau questionnaire',
+    this.builder.createTemplate({
+      title: 'New Questionnaire',
       description: '',
       category: 'general'
     });
+  }
+
+  onTitleChange(): void {
+    this.titleChange.emit(this.title);
   }
 }
