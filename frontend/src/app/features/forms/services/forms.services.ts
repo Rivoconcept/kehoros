@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { Template } from '../models/template.model';
 import {
   CreateQuestionApiPayload,
   UpdateQuestionApiPayload,
@@ -17,38 +16,63 @@ export class FormsService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Liste des templates.
+   * List of templates.
    */
   getTemplates(): Observable<any[]> {
     return this.http.get<any[]>(`${this.api}/templates`);
   }
 
   /**
-   * Chargement d'un template.
+   * Load template by ID.
    */
   getTemplateById(id: string): Observable<any> {
     return this.http.get<any>(`${this.api}/templates/${id}`);
   }
 
   /**
-   * Création d'un template.
+   * Create template.
    */
   createTemplate(data: any): Observable<any> {
     return this.http.post<any>(`${this.api}/templates`, data);
   }
 
   /**
-   * Modification d'un template.
+   * Update template.
    */
   updateTemplate(id: string, data: any): Observable<any> {
     return this.http.patch<any>(`${this.api}/templates/${id}`, data);
   }
 
   /**
-   * Reordonnancement global des questions d'un template.
-   *
-   * Permet d'envoyer la liste des IDs ordonnés en une seule requête
-   * et évite les erreurs 404 lors du Drag & Drop.
+   * Publish template.
+   */
+  publishTemplate(id: string): Observable<any> {
+    return this.http.post<any>(`${this.api}/templates/${id}/publish`, {});
+  }
+
+  /**
+   * Duplicate template.
+   */
+  duplicateTemplate(id: string, data?: { title?: string; category?: string }): Observable<any> {
+    return this.http.post<any>(`${this.api}/templates/${id}/duplicate`, data ?? {});
+  }
+
+  /**
+   * Archive template.
+   */
+  archiveTemplate(id: string): Observable<any> {
+    return this.http.post<any>(`${this.api}/templates/${id}/archive`, {});
+  }
+
+  /**
+   * Delete template.
+   */
+  deleteTemplate(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.api}/templates/${id}`);
+  }
+
+  /**
+   * Global reordering of questions.
    */
   reorderQuestions(
     templateId: string,
@@ -61,18 +85,14 @@ export class FormsService {
   }
 
   /**
-   * Création d'une question.
-   *
-   * Backend :
-   * POST /forms/questions
-   * Le template_id est envoyé dans le body.
+   * Create question.
    */
   createQuestion(data: CreateQuestionApiPayload): Observable<any> {
     return this.http.post<any>(`${this.api}/questions`, data);
   }
 
   /**
-   * Modification d'une question.
+   * Update question.
    */
   updateQuestion(
     id: string,
@@ -82,9 +102,16 @@ export class FormsService {
   }
 
   /**
-   * Suppression d'une question.
+   * Delete question.
    */
   deleteQuestion(id: string): Observable<any> {
     return this.http.delete<any>(`${this.api}/questions/${id}`);
+  }
+
+  /**
+   * Restore template.
+   */
+  restoreTemplate(id: string): Observable<any> {
+    return this.http.post<any>(`${this.api}/templates/${id}/restore`, {});
   }
 }

@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 
@@ -16,6 +17,7 @@ import { Roles } from '../../auth/roles.decorator';
 import { UserRole } from '../../user/user.entity';
 
 import { FormsService } from '../services/forms.service';
+import { FormStatus } from '../enums/form-status.enum';
 import { CreateTemplateDto } from '../dto/create-template.dto';
 import type { AssignTemplateInput } from '../services/assignment.service';
 import type {
@@ -35,8 +37,9 @@ export class FormsController {
 
   @Post('templates')
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
-  createTemplate(@Body() dto: CreateTemplateDto) {
-    return this.formsService.createTemplate(dto);
+  createTemplate(@Req() req: any, @Body() dto: CreateTemplateDto) {
+    const userId = req.user?.id || req.user?.userId;
+    return this.formsService.createTemplate({ ...dto, created_by: userId });
   }
 
   @Get('templates')
@@ -70,10 +73,15 @@ export class FormsController {
   @Post('templates/:id/duplicate')
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
   duplicateTemplate(
+    @Req() req: any,
     @Param('id') id: string,
     @Body() body?: { title?: string; category?: string },
   ) {
-    return this.formsService.duplicateTemplate(id, body);
+    const userId = req.user?.id || req.user?.userId;
+    return this.formsService.duplicateTemplate(id, {
+      ...body,
+      created_by: userId,
+    });
   }
 
   @Delete('templates/:id')
@@ -200,5 +208,10 @@ export class FormsController {
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
   removeOption(@Param('id') id: string) {
     return this.formsService.removeOption(id);
+  }
+
+  @Post('templates/:id/restore')
+  async restoreTemplate(@Param('id') id: string) {
+    return this.formsService.updateTemplate(id, { status: 'DRAFT' as FormStatus });
   }
 }

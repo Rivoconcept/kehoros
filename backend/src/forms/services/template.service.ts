@@ -137,6 +137,7 @@ export class TemplateService {
     overrides?: Partial<CreateTemplateDto> & { created_by?: string; title?: string },
   ): Promise<FormTemplate> {
     return this.dataSource.transaction(async (manager) => {
+      // 1. Récupérer le template source avec toutes ses relations
       const source = await manager.findOne(FormTemplate, {
         where: { id },
         relations: {
@@ -153,52 +154,56 @@ export class TemplateService {
       const safeTitle = overrides?.title?.trim() || `${source.title} (copy)`;
       const safeCategory = overrides?.category?.trim() || source.category;
 
-      const { questions, assignments, ...templateData } = source as FormTemplate & {
-        questions?: FormQuestion[];
-        assignments?: unknown[];
-      };
-
-      const duplicatedTemplate = manager.create(FormTemplate, {
-        ...templateData,
+      // 2. Créer une toute NOUVELLE instance de FormTemplate
+      const newTemplate = manager.create(FormTemplate, {
         title: safeTitle,
+        description: source.description ?? null,
         category: safeCategory,
         status: FormStatus.DRAFT,
         is_public: false,
+        duration_minutes: source.duration_minutes ?? null,
+        pass_score: source.pass_score ?? null,
         created_by: overrides?.created_by ?? source.created_by ?? 'system',
       });
 
-      const savedTemplate = await manager.save(FormTemplate, duplicatedTemplate);
+      // Insertion en BDD -> Génération d'un NOUVEL ID unique
+      const savedTemplate = await manager.save(FormTemplate, newTemplate);
 
-      for (const question of source.questions ?? []) {
-        const { id: _questionId, template, options, ...questionData } = question as FormQuestion & {
-          template?: FormTemplate;
-          options?: FormOption[];
-        };
-
-        const savedQuestion = await manager.save(FormQuestion, manager.create(FormQuestion, {
-          ...questionData,
-          template: savedTemplate,
-          template_id: savedTemplate.id,
-        }));
-
-        if (question.options?.length) {
-          const duplicatedOptions = question.options.map((option) => {
-            const { id: _optionId, question: _optionQuestion, ...optionData } = option as FormOption & {
-              question?: FormQuestion;
-            };
-
-            return manager.create(FormOption, {
-              ...optionData,
-              question: savedQuestion,
-              question_id: savedQuestion.id,
-            });
+      // 3. Dupliquer les questions avec les VRAIS noms de colonnes de FormQuestion
+      if (source.questions && source.questions.length > 0) {
+        for (const question of source.questions) {
+          const newQuestion = manager.create(FormQuestion, {
+            title: question.title ?? '',
+            description: question.description ?? null,
+            type: question.type,
+            required: question.required ?? false,
+            position: question.position ?? 0,
+            points: question.points ?? 0,
+            settings: question.settings ? { ...question.settings } : {},
+            template_id: savedTemplate.id,
           });
 
-          await manager.save(FormOption, duplicatedOptions);
+          const savedQuestion = await manager.save(FormQuestion, newQuestion);
+
+          // 4. Dupliquer les options avec les VRAIS noms de colonnes de FormOption
+          if (question.options && question.options.length > 0) {
+            const newOptions = question.options.map((option) =>
+              manager.create(FormOption, {
+                label: option.label ?? '',
+                value: option.value ?? '',
+                is_correct: option.is_correct ?? false,
+                position: option.position ?? 0,
+                question_id: savedQuestion.id,
+              }),
+            );
+
+            await manager.save(FormOption, newOptions);
+          }
         }
       }
 
-      const duplicated = await manager.findOne(FormTemplate, {
+      // 5. Retourner l'entité nouvellement insérée
+      const result = await manager.findOne(FormTemplate, {
         where: { id: savedTemplate.id },
         relations: {
           questions: {
@@ -207,11 +212,11 @@ export class TemplateService {
         },
       });
 
-      if (!duplicated) {
+      if (!result) {
         throw new NotFoundException(`Duplicated template with id ${savedTemplate.id} not found`);
       }
 
-      return duplicated;
+      return result;
     });
   }
 
