@@ -1,97 +1,67 @@
 import { Question } from "./question.model";
 
+export interface UserSummary {
+  id: string;
+  email: string;
+  registrationNumber?: string; // Matricule s'il existe
+  matricule?: string;          // Alternative pour le nom du champ matricule
+  firstName?: string;
+  lastName?: string;
+}
 
 export interface Template {
 
-    id:string;
+    id: string;
 
+    title: string;
 
-    title:string;
+    description: string;
 
-
-    description:string;
-
-
-    category?:string;
-
-
+    category?: string;
 
     // Status
+    published: boolean;
 
-    published:boolean;
+    archived: boolean;
 
-
-    archived:boolean;
-
-
-    version:number;
-
+    version: number;
 
     status?:
         | 'DRAFT'
         | 'PUBLISHED'
         | 'ARCHIVED';
 
-
-
     // Structure formulaire
-
     questions: Question[];
 
-
-
+    // Auteur / Créateur
+    createdBy?: UserSummary | string;
 
     // Apparence
-
     theme?: {
-
-        primaryColor?:string;
-
-        logo?:string;
-
-        cssClass?:string;
-
+        primaryColor?: string;
+        logo?: string;
+        cssClass?: string;
     };
 
+    showProgressBar?: boolean;
 
+    allowSaveDraft?: boolean;
 
-    showProgressBar?:boolean;
-
-
-    allowSaveDraft?:boolean;
-
-
-    allowMultipleSubmission?:boolean;
-
-
-
+    allowMultipleSubmission?: boolean;
 
     // Accès
+    publicAccess?: boolean;
 
-    publicAccess?:boolean;
-
-
-    requiresAuthentication?:boolean;
-
-
-
+    requiresAuthentication?: boolean;
 
     // Métadonnées
+    tags?: string[];
 
-    tags?:string[];
-
-
-    metadata?:Record<string, any>;
-
-
-
+    metadata?: Record<string, any>;
 
     // Dates
+    createdAt: Date;
 
-    createdAt:Date;
-
-
-    updatedAt:Date;
-
-
+    updatedAt: Date;
 }

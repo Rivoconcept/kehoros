@@ -5,6 +5,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 import { User } from '../../user/user.entity';
@@ -15,7 +17,6 @@ import { FormStatus } from '../enums/form-status.enum';
 
 @Entity('form_templates')
 export class FormTemplate {
-
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -44,16 +45,22 @@ export class FormTemplate {
   @Column({ nullable: true })
   pass_score: number;
 
-  @Column()
+  // Clé étrangère sous forme de string (mappée vers la colonne 'created_by' SQL)
+  @Column({ name: 'created_by', nullable: true })
   created_by: string;
 
-  @OneToMany(() => FormQuestion, q => q.template)
+  // Relation vers l'entité User (JoinColumn sur 'created_by')
+  @ManyToOne(() => User, { eager: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'created_by' })
+  createdBy: User;
+
+  @OneToMany(() => FormQuestion, (q) => q.template)
   questions: FormQuestion[];
 
-  @OneToMany(() => FormAssignment, a => a.template)
+  @OneToMany(() => FormAssignment, (a) => a.template)
   assignments: FormAssignment[];
 
-  @OneToMany(() => FormSession, s => s.form)
+  @OneToMany(() => FormSession, (s) => s.form)
   sessions: FormSession[];
 
   @CreateDateColumn()
@@ -61,5 +68,4 @@ export class FormTemplate {
 
   @UpdateDateColumn()
   updated_at: Date;
-
 }

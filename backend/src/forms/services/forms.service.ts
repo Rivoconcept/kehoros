@@ -1,10 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { AssignmentService } from './assignment.service';
 import { ResponseService } from './response.service';
 import { ResultService } from './result.service';
 import { TemplateService } from './template.service';
 import { QuestionService } from './question.service';
+import { FormStatus } from '../enums/form-status.enum';
+import { FormTemplate } from '../entities/form-template.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class FormsService {
@@ -14,6 +18,9 @@ export class FormsService {
     private readonly assignmentService: AssignmentService,
     private readonly responseService: ResponseService,
     private readonly resultService: ResultService,
+
+    @InjectRepository(FormTemplate)
+    private readonly formTemplateRepository: Repository<FormTemplate>,
   ) {}
 
   // Template orchestration
@@ -140,4 +147,21 @@ export class FormsService {
   removeOption(id: string) {
     return this.questionService.removeOption(id);
   }
+  async restoreTemplate(id: string): Promise<FormTemplate> {
+    const updateResult = await this.formTemplateRepository.update(id, {
+      status: FormStatus.DRAFT,
+    });
+
+    if (updateResult.affected === 0) {
+      throw new NotFoundException(`Template with ID ${id} not found`);
+    }
+
+    const restoredTemplate = await this.formTemplateRepository.findOneBy({ id });
+    if (!restoredTemplate) {
+      throw new NotFoundException(`Template with ID ${id} not found after restore`);
+    }
+
+    return restoredTemplate;
+  }
+    
 }

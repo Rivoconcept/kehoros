@@ -23,7 +23,7 @@ interface TemplateCard {
   statusLabel: string;
   Questions: number;
   responses: number;
-  createdBy: string;
+  createdBy: any;
   updatedAt: Date;
 }
 
@@ -82,7 +82,7 @@ export class TemplateListComponent implements OnInit {
               template.Questions?.length ??
               0,
             responses: template.responses?.length ?? 0,
-            createdBy: template.created_by ?? 'system',
+            createdBy: template.createdBy ?? template.created_by ?? 'system',
             updatedAt: new Date(template.updated_at ?? template.updatedAt),
           };
         });
@@ -91,6 +91,21 @@ export class TemplateListComponent implements OnInit {
         console.error('Error fetching templates', error);
       },
     });
+  }
+
+  getCreatedByLabel(createdBy: any): string {
+    if (!createdBy) return 'System';
+
+    if (typeof createdBy === 'object') {
+      return (
+        createdBy.registrationNumber ||
+        createdBy.matricule ||
+        createdBy.email ||
+        'System'
+      );
+    }
+
+    return createdBy;
   }
 
   get filteredTemplates(): TemplateCard[] {
@@ -140,17 +155,15 @@ export class TemplateListComponent implements OnInit {
   }
 
   restore(template: TemplateCard): void {
-    // 1. Déplacements/Mise à jour visuelle immédiate dans l'UI
     template.status = 'draft';
     template.statusLabel = 'Draft';
     this.templates = [...this.templates];
 
-    // 2. Appel du nouvel endpoint de restauration
     this.formsService.restoreTemplate(template.id).subscribe({
       next: () => this.loadTemplates(),
       error: (err) => {
         console.error('Error restoring template', err);
-        this.loadTemplates(); // Annule la mise à jour visuelle en cas d'erreur
+        this.loadTemplates();
       },
     });
   }

@@ -3,9 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { UserService } from '../user/user.service';
 
-
 import { LoginReq } from './requests/login.req';
 import { RegisterReq } from './requests/register.req';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -26,10 +26,9 @@ export class AuthService {
       last_name: dto.last_name,
       manager_id: dto.manager_id,
       department_id: dto.department_id,
-      
     });
     
-    return this.signToken(user.id, user.email, user.role);
+    return this.signToken(user);
   }
 
   async login(dto: LoginReq) {
@@ -49,15 +48,20 @@ export class AuthService {
 
     if (!user.is_active) throw new UnauthorizedException('Account disabled');
 
-    return this.signToken(user.id, user.email, user.role);
+    return this.signToken(user);
   }
 
-  private signToken(userId: string, email: string, role: string) {
-    const payload = { sub: userId, email, role };
+  private signToken(user: User) {
+    const payload = { sub: user.id, email: user.email, role: user.role };
     return {
       access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        role: user.role,
+      },
     };
   }
 }
-
-

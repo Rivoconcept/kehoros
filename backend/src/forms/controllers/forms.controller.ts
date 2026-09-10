@@ -212,6 +212,6 @@ export class FormsController {
 
   @Post('templates/:id/restore')
   async restoreTemplate(@Param('id') id: string) {
-    return this.formsService.updateTemplate(id, { status: 'DRAFT' as FormStatus });
+    return this.formsService.restoreTemplate(id);
   }
 }

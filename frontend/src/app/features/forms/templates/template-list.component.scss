@@ -94,8 +94,12 @@
         justify-content: space-between;
         align-items: flex-start;
         gap: 12px;
+        width: 100%;
 
         .title-container {
+          flex: 1;
+          min-width: 0; /* Permet le tronquage flexbox */
+
           h2 {
             font-size: 1.1rem;
             font-weight: 600;
@@ -110,12 +114,14 @@
               font-size: 20px;
               width: 20px;
               height: 20px;
+              flex-shrink: 0;
             }
 
             .title-text {
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;
+              min-width: 0;
             }
           }
 
@@ -129,6 +135,11 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
           }
+        }
+
+        /* Empêche le bouton 3 points de rétrécir ou de déborder */
+        button[mat-icon-button] {
+          flex-shrink: 0;
         }
       }
 

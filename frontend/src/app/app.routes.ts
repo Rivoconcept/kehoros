@@ -9,73 +9,97 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
-      import('./features/auth/login/login.component').then(m => m.LoginComponent),
+      import('./features/auth/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'register',
     loadComponent: () =>
-      import('./features/auth/register/register.component').then(m => m.RegisterComponent),
+      import('./features/auth/register/register.component').then((m) => m.RegisterComponent),
   },
 
-  // Admin + Manager uniquement
+  // Admin uniquement
   {
     path: 'dashboard',
-    canActivate: [roleGuard(['admin', 'manager'])],
+    canActivate: [roleGuard(['admin'])],
     loadComponent: () =>
-      import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
+      import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
   },
 
+  // Admin + Manager
   {
     path: 'users',
     canActivate: [roleGuard(['admin', 'manager'])],
     loadComponent: () =>
-      import('./features/users/users-list/users-list.component')
-        .then(m => m.UsersListComponent),
+      import('./features/users/users-list/users-list.component').then(
+        (m) => m.UsersListComponent
+      ),
   },
   {
     path: 'forms/templates',
     canActivate: [roleGuard(['admin', 'manager'])],
     loadComponent: () =>
-      import('./features/forms/templates/template-list.component')
-        .then(m => m.TemplateListComponent),
+      import('./features/forms/templates/template-list.component').then(
+        (m) => m.TemplateListComponent
+      ),
   },
-
   {
     path: 'forms/builder',
     canActivate: [roleGuard(['admin', 'manager'])],
     loadComponent: () =>
-      import('./features/forms/builder/components/builder.component')
-        .then(m => m.BuilderComponent),
+      import('./features/forms/builder/components/builder.component').then(
+        (m) => m.BuilderComponent
+      ),
   },
   {
     path: 'forms/builder/:id',
     canActivate: [roleGuard(['admin', 'manager'])],
     loadComponent: () =>
-      import('./features/forms/builder/components/builder.component')
-        .then(m => m.BuilderComponent),
+      import('./features/forms/builder/components/builder.component').then(
+        (m) => m.BuilderComponent
+      ),
   },
   {
     path: 'forms/assignments',
     canActivate: [roleGuard(['admin', 'manager'])],
     loadComponent: () =>
-      import('./features/forms/assignments/assignment.component')
-        .then(m => m.AssignmentComponent),
+      import('./features/forms/assignments/assignment.component').then(
+        (m) => m.AssignmentComponent
+      ),
   },
-
   {
     path: 'forms/results',
     canActivate: [roleGuard(['admin', 'manager'])],
     loadComponent: () =>
-      import('./features/forms/results/results.component')
-        .then(m => m.ResultsComponent),
+      import('./features/forms/results/results.component').then(
+        (m) => m.ResultsComponent
+      ),
+  },
+  {
+    path: 'forms/results/:templateId',
+    canActivate: [roleGuard(['admin', 'manager'])],
+    loadComponent: () =>
+      import('./features/forms/results/results.component').then(
+        (m) => m.ResultsComponent
+      ),
   },
 
+  // Accessible à tout utilisateur authentifié (Role: 'user', 'manager', 'admin')
+  {
+    path: 'forms/my-assignments',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/forms/assignments/assignment.component').then(
+        (m) => m.AssignmentComponent
+      ),
+  },
   {
     path: 'forms/player/:id',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./features/forms/player/form-player.component')
-        .then(m => m.FormPlayerComponent),
+      import('./features/forms/player/form-player.component').then(
+        (m) => m.FormPlayerComponent
+      ),
   },
+
   { path: '**', redirectTo: '/login' },
 ];
