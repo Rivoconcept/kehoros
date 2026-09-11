@@ -1,24 +1,27 @@
+// src/app/core/guards/role.guard.ts
+
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 export const roleGuard = (allowedRoles: string[]): CanActivateFn => {
-  return () => {
+  return (_route, _state) => {
     const authService = inject(AuthService);
     const router = inject(Router);
 
-    if (!authService.isLoggedIn()) {
-      router.navigate(['/login']);
-      return false;
-    }
+    const userRole = authService.getRole();
 
-    const role = authService.getRole();
-    if (allowedRoles.includes(role)) {
+    if (authService.isLoggedIn() && allowedRoles.includes(userRole)) {
       return true;
     }
 
-    // Redirige selon le rôle si pas autorisé
-    authService.redirectByRole();
-    return false;
+    // Redirection vers sa page autorisée si l'utilisateur est déjà connecté
+    if (authService.isLoggedIn()) {
+      if (userRole === 'admin') return router.createUrlTree(['/dashboard']);
+      if (userRole === 'manager') return router.createUrlTree(['/forms/templates']);
+      return router.createUrlTree(['/forms/assignments']);
+    }
+
+    return router.createUrlTree(['/login']);
   };
 };

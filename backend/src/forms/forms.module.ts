@@ -18,6 +18,7 @@ import { FormResponse } from './entities/form-response.entity';
 import { FormResult } from './entities/form-result.entity';
 import { FormsController } from './controllers/forms.controller';
 import { FormsService } from './services/forms.service';
+import { AssignmentsController } from './controllers/assignments.controller';
 
 
 @Module({
@@ -40,6 +41,7 @@ import { FormsService } from './services/forms.service';
     TemplateService,
     QuestionService,
     AssignmentService,
+    AssignmentsController,
     ResponseService,
     ResultService,
     RolesGuard,

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -39,7 +39,10 @@ export class LoginComponent {
   error        = '';
   showPassword = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private activatedRoute: ActivatedRoute,
+  ) {}
 
   onSubmit() {
     this.error = '';
@@ -58,7 +61,8 @@ export class LoginComponent {
       next: async () => {
         this.loading = false;
 
-        const ok = await this.authService.redirectByRole();
+        const returnUrl = this.activatedRoute.snapshot.queryParamMap.get('returnUrl') ?? undefined;
+        const ok = await this.authService.redirectByRole(returnUrl);
 
         if (!ok) {
           this.error = 'Impossible d’accéder à la page demandée.';

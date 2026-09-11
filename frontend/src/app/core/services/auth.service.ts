@@ -92,15 +92,29 @@ export class AuthService {
     );
   }
 
-  redirectByRole(): Promise<boolean> {
+  redirectByRole(returnUrl?: string): Promise<boolean> {
     const role = this.getRole();
 
-    if (role === 'admin' || role === 'manager') {
+    // Si une URL de retour est spécifiée et qu'elle n'est pas le login
+    if (returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('//') && !returnUrl.startsWith('/login')) {
+      // Sécurité : Vérifier que le manager ne tente pas d'aller sur le dashboard réservé aux admins
+      if (!(role === 'manager' && returnUrl.startsWith('/dashboard'))) {
+        return this.router.navigateByUrl(returnUrl);
+      }
+    }
+
+    // Redirection par défaut selon le rôle exact
+    if (role === 'admin') {
       return this.router.navigate(['/dashboard']);
     }
 
-    return this.router.navigate(['/my-forms']);
+    if (role === 'manager') {
+      return this.router.navigate(['/forms/templates']);
+    }
+
+    return this.router.navigate(['/forms/assignments']);
   }
+
 
     private hasToken(): boolean {
       const token = localStorage.getItem('access_token');

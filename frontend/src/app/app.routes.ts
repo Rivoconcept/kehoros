@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 
+// src/app/app.routes.ts
+
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 
@@ -59,14 +61,6 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'forms/assignments',
-    canActivate: [roleGuard(['admin', 'manager'])],
-    loadComponent: () =>
-      import('./features/forms/assignments/assignment.component').then(
-        (m) => m.AssignmentComponent
-      ),
-  },
-  {
     path: 'forms/results',
     canActivate: [roleGuard(['admin', 'manager'])],
     loadComponent: () =>
@@ -74,19 +68,11 @@ export const routes: Routes = [
         (m) => m.ResultsComponent
       ),
   },
-  {
-    path: 'forms/results/:templateId',
-    canActivate: [roleGuard(['admin', 'manager'])],
-    loadComponent: () =>
-      import('./features/forms/results/results.component').then(
-        (m) => m.ResultsComponent
-      ),
-  },
 
-  // Accessible à tout utilisateur authentifié (Role: 'user', 'manager', 'admin')
+  // Accessible à TOUT utilisateur authentifié ('user', 'manager', 'admin')
   {
-    path: 'forms/my-assignments',
-    canActivate: [authGuard],
+    path: 'forms/assignments',
+    canActivate: [authGuard], // 👈 Utiliser authGuard au lieu de roleGuard
     loadComponent: () =>
       import('./features/forms/assignments/assignment.component').then(
         (m) => m.AssignmentComponent
