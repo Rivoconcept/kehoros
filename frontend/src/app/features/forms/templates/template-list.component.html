@@ -106,12 +106,14 @@
 
       <!-- Card Actions -->
       <div class="card-actions">
-        <!-- Allows restoring directly from card if archived -->
-        <button *ngIf="template.status === 'archived'" mat-stroked-button color="accent" (click)="restore(template)">
-          <mat-icon>unarchive</mat-icon> Restore
-        </button>
-        <button *ngIf="template.status !== 'archived'" mat-stroked-button color="primary" (click)="edit(template)">
-          <mat-icon>edit</mat-icon> Edit
+        <!-- Configure & Assign Button -->
+        <button 
+          mat-stroked-button 
+          color="accent" 
+          (click)="assign(template)"
+          [disabled]="template.status === 'archived'"
+          matTooltip="Configure assignment and target audience">
+          <mat-icon>tune</mat-icon> Assign
         </button>
 
         <button mat-flat-button color="primary">

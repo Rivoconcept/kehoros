@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { FormsService } from '../services/forms.services';
 
@@ -42,11 +44,15 @@ interface TemplateCard {
     MatFormFieldModule,
     MatInputModule,
     MatTabsModule,
+    MatSnackBarModule,
+    MatTooltipModule,
   ],
   templateUrl: './template-list.component.html',
   styleUrl: './template-list.component.scss',
 })
 export class TemplateListComponent implements OnInit {
+  private snackBar = inject(MatSnackBar);
+
   search = '';
   templates: TemplateCard[] = [];
   activeTab: 'active' | 'archived' = 'active';
@@ -82,13 +88,14 @@ export class TemplateListComponent implements OnInit {
               template.Questions?.length ??
               0,
             responses: template.responses?.length ?? 0,
-            createdBy: template.createdBy ?? template.created_by ?? 'system',
+            createdBy: template.createdBy ?? template.created_by ?? 'System',
             updatedAt: new Date(template.updated_at ?? template.updatedAt),
           };
         });
       },
       error: (error) => {
         console.error('Error fetching templates', error);
+        this.showNotification('Error loading templates');
       },
     });
   }
@@ -131,12 +138,22 @@ export class TemplateListComponent implements OnInit {
     this.router.navigate(['/forms/builder', template.id]);
   }
 
+  assign(template: TemplateCard): void {
+    this.router.navigate(['/forms/assignments'], {
+      queryParams: { template_id: template.id },
+    });
+  }
+
   duplicate(template: TemplateCard): void {
     this.formsService.duplicateTemplate(template.id).subscribe({
       next: () => {
+        this.showNotification('Template duplicated successfully');
         this.loadTemplates();
       },
-      error: (err) => console.error('Error duplicating template', err),
+      error: (err) => {
+        console.error('Error duplicating template', err);
+        this.showNotification('Error duplicating template');
+      },
     });
   }
 
@@ -146,7 +163,10 @@ export class TemplateListComponent implements OnInit {
     this.templates = [...this.templates];
 
     this.formsService.archiveTemplate(template.id).subscribe({
-      next: () => this.loadTemplates(),
+      next: () => {
+        this.showNotification('Template archived');
+        this.loadTemplates();
+      },
       error: (err) => {
         console.error('Error archiving template', err);
         this.loadTemplates();
@@ -160,7 +180,10 @@ export class TemplateListComponent implements OnInit {
     this.templates = [...this.templates];
 
     this.formsService.restoreTemplate(template.id).subscribe({
-      next: () => this.loadTemplates(),
+      next: () => {
+        this.showNotification('Template restored');
+        this.loadTemplates();
+      },
       error: (err) => {
         console.error('Error restoring template', err);
         this.loadTemplates();
@@ -172,12 +195,20 @@ export class TemplateListComponent implements OnInit {
     if (confirm(`Are you sure you want to delete "${template.title}"?`)) {
       this.templates = this.templates.filter((t) => t.id !== template.id);
       this.formsService.deleteTemplate(template.id).subscribe({
-        next: () => this.loadTemplates(),
+        next: () => {
+          this.showNotification('Template deleted successfully');
+          this.loadTemplates();
+        },
         error: (err) => {
           console.error('Error deleting template', err);
+          this.showNotification('Error deleting template');
           this.loadTemplates();
         },
       });
     }
+  }
+
+  private showNotification(message: string): void {
+    this.snackBar.open(message, 'Close', { duration: 3000 });
   }
 }

@@ -1,3 +1,7 @@
+docker exec -it postgres psql -U backend -d kehoros
+\dt
+\
+
 curl -X POST http://localhost:3000/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"rivo.k0949@keobiz.fr","password":"Kadmin$26"}'

@@ -98,7 +98,7 @@
 
         .title-container {
           flex: 1;
-          min-width: 0; /* Permet le tronquage flexbox */
+          min-width: 0;
 
           h2 {
             font-size: 1.1rem;
@@ -137,7 +137,6 @@
           }
         }
 
-        /* Empêche le bouton 3 points de rétrécir ou de déborder */
         button[mat-icon-button] {
           flex-shrink: 0;
         }
@@ -244,7 +243,8 @@
         button {
           border-radius: 6px;
           font-weight: 500;
-          font-size: 0.875rem;
+          font-size: 0.85rem;
+          padding: 0 8px;
 
           mat-icon {
             font-size: 18px;

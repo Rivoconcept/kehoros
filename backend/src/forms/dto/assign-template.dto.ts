@@ -8,10 +8,11 @@ import {
 export class AssignTemplateDto {
 
   @IsUUID()
-  template_id: string;
+  template_id!: string;
 
+  @IsOptional()
   @IsArray()
-  user_ids: string[];
+  user_ids?: string[];
 
   @IsOptional()
   @IsDateString()

@@ -9,52 +9,72 @@ import {
   Request,
 } from '@nestjs/common';
 
-import { AssignmentService, AssignTemplateInput } from '../services/assignment.service';
+import { AssignmentService, AssignmentTargetType } from '../services/assignment.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+
+export class AssignTemplateDto {
+  template_id: string;
+  deadline?: Date | string;
+  status?: string;
+  target_type?: AssignmentTargetType | 'ALL' | 'DEPARTMENT' | 'INDIVIDUAL' | 'USERS';
+  user_id?: string;
+  user_ids?: string[];
+  registration_numbers?: string[];
+  department_id?: string;
+  department_ids?: string[];
+}
 
 @Controller('forms/assignments')
 @UseGuards(JwtAuthGuard)
 export class AssignmentsController {
   constructor(private readonly assignmentService: AssignmentService) {}
 
-  // GET /forms/assignments : Retourne les assignations selon le rôle
   @Get()
   async findAllOrUserAssignments(@Request() req: any) {
-    const userId = req.user.sub || req.user.id;
-    const userRole = req.user.role;
+    const userId = req.user?.sub || req.user?.id;
+    const userRole = req.user?.role;
 
-    // Si c'est un simple utilisateur, on filtre directement ses assignations via findByUser
     if (userRole === 'user') {
       return this.assignmentService.findByUser(userId);
     }
 
-    // Si admin ou manager, on retourne tout
     return this.assignmentService.findAll();
   }
 
-  // GET /forms/assignments/:id
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.assignmentService.findOne(id);
   }
 
-  // POST /forms/assignments
   @Post()
-  async assign(@Request() req: any, @Body() dto: Omit<AssignTemplateInput, 'assigned_by'>) {
-    const assignedBy = req.user.sub || req.user.id;
+  async assign(@Request() req: any, @Body() dto: AssignTemplateDto) {
+    const assignedBy = req.user?.sub || req.user?.id || req.user?.email;
+
     return this.assignmentService.assign({
       ...dto,
       assigned_by: assignedBy,
     });
   }
 
-  // PATCH /forms/assignments/:id/status
+  @Post('access-settings')
+  async updateAccessSettings(@Request() req: any, @Body() dto: any) {
+    const currentUserId = req.user?.sub || req.user?.id || req.user?.email;
+
+    return this.assignmentService.assign({
+      template_id: dto.template_id,
+      assigned_by: currentUserId,
+      target_type: dto.target_type,
+      department_ids: dto.department_ids || (dto.department_id ? [dto.department_id] : undefined),
+      user_ids: dto.user_ids,
+      registration_numbers: dto.registration_numbers,
+    });
+  }
+
   @Patch(':id/status')
   async updateStatus(@Param('id') id: string, @Body('status') status: string) {
     return this.assignmentService.updateStatus(id, status);
   }
 
-  // PATCH /forms/assignments/:id/cancel
   @Patch(':id/cancel')
   async cancel(@Param('id') id: string) {
     return this.assignmentService.cancel(id);
