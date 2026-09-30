@@ -72,10 +72,9 @@ export const routes: Routes = [
   // Accessible à TOUT utilisateur authentifié ('user', 'manager', 'admin')
   {
     path: 'forms/assignments',
-    canActivate: [authGuard], // 👈 Utiliser authGuard au lieu de roleGuard
     loadComponent: () =>
       import('./features/forms/assignments/assignment.component').then(
-        (m) => m.AssignmentComponent
+        (m) => m.AssignmentsComponent
       ),
   },
   {

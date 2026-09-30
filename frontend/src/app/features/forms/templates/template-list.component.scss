@@ -31,7 +31,6 @@
     }
   }
 
-  /* Toolbar: Tabs aligned Left, Search aligned Right */
   .toolbar {
     display: flex;
     justify-content: space-between;
@@ -61,7 +60,6 @@
     }
   }
 
-  /* Full Width Responsive Grid */
   .cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -142,7 +140,6 @@
         }
       }
 
-      /* Status Badges */
       .chips {
         display: flex;
         gap: 8px;
@@ -178,7 +175,6 @@
         }
       }
 
-      /* Stats Area */
       .stats {
         display: flex;
         align-items: center;
@@ -211,7 +207,6 @@
         }
       }
 
-      /* Card Footer */
       .footer {
         display: flex;
         justify-content: space-between;
@@ -234,7 +229,6 @@
         }
       }
 
-      /* Action Buttons */
       .card-actions {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -257,7 +251,47 @@
     }
   }
 
-  /* Empty State */
+  /* ONGLET 3 : Tableau Synthétique Simple */
+  .assigned-table-container {
+    width: 100%;
+
+    tr.master-row:hover {
+      background-color: #f8fafc;
+    }
+
+    td.text-right, th.text-right {
+      text-align: right;
+    }
+  }
+
+  .badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+
+    &.badge-category {
+      background-color: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    &.badge-published {
+      background-color: #dcfce7;
+      color: #15803d;
+    }
+
+    &.badge-draft {
+      background-color: #fef3c7;
+      color: #b45309;
+    }
+
+    &.badge-archived {
+      background-color: #f1f5f9;
+      color: #64748b;
+    }
+  }
+
   .empty-state {
     text-align: center;
     padding: 60px 20px;

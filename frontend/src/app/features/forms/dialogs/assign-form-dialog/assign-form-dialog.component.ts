@@ -33,6 +33,7 @@ export enum AssignmentTargetType {
 })
 export class AssignFormDialogComponent implements OnInit {
   assignForm!: FormGroup;
+  shareableLink: string;
 
   targetTypes = [
     { value: AssignmentTargetType.ALL, label: 'All Users' },
@@ -44,11 +45,17 @@ export class AssignFormDialogComponent implements OnInit {
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AssignFormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { templateId: string; templateTitle: string; employees?: any[] }
-  ) {}
+  ) {
+    this.shareableLink = `${window.location.origin}/forms/player/${data.templateId}`;
+  }
+
+  copyLink(): void {
+    void navigator.clipboard.writeText(this.shareableLink);
+  }
 
   ngOnInit(): void {
     this.assignForm = this.fb.group({
-      target_type: [AssignmentTargetType.USERS, Validators.required],
+      target_type: [AssignmentTargetType.ALL, Validators.required],
       user_ids: [[]],
     });
   }

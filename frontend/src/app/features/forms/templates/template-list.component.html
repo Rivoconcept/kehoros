@@ -10,11 +10,12 @@
     </button>
   </div>
 
-  <!-- Toolbar with Left Tabs & Right Search Input -->
+  <!-- Toolbar with 3 Tabs & Right Search Input -->
   <div class="toolbar">
-    <mat-tab-group class="custom-tabs" (selectedTabChange)="activeTab = $event.index === 0 ? 'active' : 'archived'">
+    <mat-tab-group class="custom-tabs" (selectedTabChange)="onTabChange($event.index)">
       <mat-tab label="Active"></mat-tab>
       <mat-tab label="Archived"></mat-tab>
+      <mat-tab label="Assigned Forms"></mat-tab>
     </mat-tab-group>
 
     <mat-form-field appearance="outline" class="search-field" subscriptSizing="dynamic">
@@ -24,8 +25,8 @@
     </mat-form-field>
   </div>
 
-  <!-- Grid Layout -->
-  <div class="cards-grid">
+  <!-- ONGLET 1 & 2 : Grid Layout des Cartes -->
+  <div *ngIf="activeTab !== 'assigned'" class="cards-grid">
     <mat-card *ngFor="let template of filteredTemplates" class="template-card" [class.is-archived]="template.status === 'archived'">
       <div class="card-header">
         <div class="title-container">
@@ -50,7 +51,6 @@
             <span>Duplicate</span>
           </button>
           
-          <!-- Contextual Menu: Restore if Archived, Archive if Active -->
           <button mat-menu-item (click)="restore(template)" *ngIf="template.status === 'archived'">
             <mat-icon>unarchive</mat-icon>
             <span>Restore</span>
@@ -67,7 +67,6 @@
         </mat-menu>
       </div>
 
-      <!-- Category & Status Badges -->
       <div class="chips">
         <span class="badge badge-category">{{ template.category }}</span>
         <span class="badge" [ngClass]="{
@@ -79,7 +78,6 @@
         </span>
       </div>
 
-      <!-- Key Metrics -->
       <div class="stats">
         <div class="stat-item">
           <strong>{{ template.Questions }}</strong>
@@ -92,7 +90,6 @@
         </div>
       </div>
 
-      <!-- Card Footer -->
       <div class="footer">
         <div class="meta-item">
           <small>Created by</small>
@@ -104,9 +101,7 @@
         </div>
       </div>
 
-      <!-- Card Actions -->
       <div class="card-actions">
-        <!-- Configure & Assign Button -->
         <button 
           mat-stroked-button 
           color="accent" 
@@ -123,8 +118,57 @@
     </mat-card>
   </div>
 
-  <!-- Empty State -->
-  <div *ngIf="filteredTemplates.length === 0" class="empty-state">
+  <!-- ONGLET 3 : Tableau Synthétique des Formulaires Assignés -->
+  <div *ngIf="activeTab === 'assigned'" class="assigned-table-container">
+    <table mat-table [dataSource]="filteredAssignedGroups" class="mat-elevation-z2 w-100">
+      
+      <!-- Form Title -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef> Form </th>
+        <td mat-cell *matCellDef="let element" class="font-bold">
+          {{ element.templateTitle }}
+        </td>
+      </ng-container>
+
+      <!-- Target Type -->
+      <ng-container matColumnDef="targetType">
+        <th mat-header-cell *matHeaderCellDef> Target Audience </th>
+        <td mat-cell *matCellDef="let element">
+          <span class="badge badge-category">{{ element.targetTypeLabel }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Progress -->
+      <ng-container matColumnDef="progress">
+        <th mat-header-cell *matHeaderCellDef> Completion </th>
+        <td mat-cell *matCellDef="let element">
+          <strong>{{ element.completedCount }} / {{ element.totalAssigned }}</strong> completed
+        </td>
+      </ng-container>
+
+      <!-- Actions (Redirection vers la page dédiée d'analyse/progression) -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="text-right"> Action </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          <button mat-flat-button color="primary" size="small" (click)="viewProgressPage(element)">
+            <mat-icon>bar_chart</mat-icon> Manage Progress
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="assignedColumns"></tr>
+      <tr mat-row *matRowDef="let element; columns: assignedColumns" class="master-row"></tr>
+    </table>
+
+    <div *ngIf="filteredAssignedGroups.length === 0" class="empty-state mt-4">
+      <mat-icon>assignment_late</mat-icon>
+      <h3>No assigned forms found</h3>
+      <p>Assign a form from the "Active" tab to track employee responses.</p>
+    </div>
+  </div>
+
+  <!-- Empty State (Templates) -->
+  <div *ngIf="activeTab !== 'assigned' && filteredTemplates.length === 0" class="empty-state">
     <mat-icon>inbox</mat-icon>
     <h3>No questionnaires found</h3>
     <p>Try adjusting your search query or switching tabs.</p>

@@ -114,4 +114,28 @@ export class FormsService {
   restoreTemplate(id: string): Observable<any> {
     return this.http.post<any>(`${this.api}/templates/${id}/restore`, {});
   }
+
+  /**
+   * Récupère toutes les assignations de formulaires
+   */
+  getAssignments(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.api}/assignments`);
+  }
+
+  createAssignment(data: {
+    template_id: string;
+    assigned_by: string;
+    target_type: string;
+    user_ids?: string[];
+    department_ids?: string[];
+  }): Observable<any[]> {
+    return this.http.post<any[]>(`${this.api}/assignments`, data);
+  }
+
+  /**
+   * Annule / Supprime une assignation par son ID
+   */
+  cancelAssignment(assignmentId: string): Observable<any> {
+    return this.http.patch<any>(`${this.api}/assignments/${assignmentId}/cancel`, {});
+  }
 }

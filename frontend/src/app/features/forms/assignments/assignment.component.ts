@@ -1,240 +1,87 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-import { AuthService } from '../../../core/services/auth.service';
-import { environment } from '../../../../environments/environment';
+import { FormsService } from '../services/forms.services';
 
 export interface FormAssignment {
   id: string;
   template_id: string;
-  template?: { title: string; description: string };
-  user_id?: string;
+  user_id: string;
+  status: string;
+  deadline?: Date | string;
+  template?: { id?: string; title: string }; // <-- Ajout de id?: string
   user?: { first_name: string; last_name: string; email: string };
-  department_id?: string;
   department?: { name: string };
-  status?: string;
-  due_date?: string;
-  created_at: string;
-}
-
-export interface FormTemplate {
-  id: string;
-  title: string;
-}
-
-export interface DepartmentItem {
-  id: string;
-  name: string;
-}
-
-export interface UserItem {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  matricule?: string;
 }
 
 @Component({
-  selector: 'app-assignment',
+  selector: 'app-assignments',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatCardModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
     MatTableModule,
-    MatChipsModule,
+    MatButtonModule,
     MatIconModule,
+    MatCardModule,
+    MatChipsModule,
     MatProgressSpinnerModule,
+    MatTooltipModule,
     MatSnackBarModule,
   ],
   templateUrl: './assignment.component.html',
   styleUrl: './assignment.component.scss',
 })
-export class AssignmentComponent implements OnInit {
-  private http = inject(HttpClient);
-  private authService = inject(AuthService);
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private snackBar = inject(MatSnackBar);
-
-  userRole = this.authService.getRole();
-  isAdminOrManager = this.userRole === 'admin' || this.userRole === 'manager';
-
+export class AssignmentsComponent implements OnInit {
   loading = false;
-  assignments: FormAssignment[] = [];
-  users: UserItem[] = [];
-  departments: DepartmentItem[] = [];
+  isAdminOrManager = true; // À lier à votre service d'authentification
+  templateIdFilter: string | null = null;
 
-  assignForm!: FormGroup;
+  assignments: FormAssignment[] = [];
   displayedColumns: string[] = ['title', 'assignedTo', 'dueDate', 'status', 'actions'];
 
-  preselectedTemplateId: string | null = null;
-  selectedTemplateTitle = '';
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private location: Location,
+    private formsService: FormsService,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
-    this.preselectedTemplateId =
-      this.route.snapshot.queryParamMap.get('template_id') ||
-      this.route.snapshot.queryParamMap.get('templateId');
-
-    if (this.isAdminOrManager) {
-      this.initForm();
-      this.loadFormData();
-    } else {
-      this.displayedColumns = ['title', 'dueDate', 'status', 'actions'];
-    }
-
-    this.loadAssignments();
-  }
-
-  initForm(): void {
-    this.assignForm = this.fb.group({
-      template_title: [{ value: 'Loading template...', disabled: true }],
-      target_type: ['USERS', Validators.required], 
-      department_id: [''],
-      user_ids: [[]],
-      due_date: [''],
-    });
-  }
-
-  getPublicUrl(): string {
-    if (!this.preselectedTemplateId) return '';
-    return `${window.location.origin}/forms/player/${this.preselectedTemplateId}`;
-  }
-
-  copyPublicLink(): void {
-    const url = this.getPublicUrl();
-    if (!url) return;
-
-    navigator.clipboard.writeText(url).then(
-      () => this.showNotification('🔗 Link copied to clipboard!'),
-      () => this.showNotification('Failed to copy link')
-    );
-  }
-
-  loadFormData(): void {
-    if (this.preselectedTemplateId) {
-      this.http.get<FormTemplate>(`${environment.apiUrl}/forms/templates/${this.preselectedTemplateId}`).subscribe({
-        next: (template) => {
-          this.selectedTemplateTitle = template.title;
-          this.assignForm.patchValue({ template_title: template.title });
-        },
-        error: () => {
-          this.http.get<FormTemplate[]>(`${environment.apiUrl}/forms/templates`).subscribe({
-            next: (templates) => {
-              const match = templates.find((t) => t.id === this.preselectedTemplateId);
-              if (match) {
-                this.selectedTemplateTitle = match.title;
-                this.assignForm.patchValue({ template_title: match.title });
-              } else {
-                this.selectedTemplateTitle = this.preselectedTemplateId!;
-                this.assignForm.patchValue({ template_title: this.preselectedTemplateId });
-              }
-            },
-          });
-        },
-      });
-    } else {
-      this.assignForm.patchValue({ template_title: 'No template selected' });
-    }
-
-    this.http.get<UserItem[]>(`${environment.apiUrl}/users`).subscribe({
-      next: (res) => (this.users = res),
-      error: () => (this.users = []),
-    });
-
-    this.http.get<DepartmentItem[]>(`${environment.apiUrl}/departments`).subscribe({
-      next: (res) => (this.departments = res),
-      error: () => (this.departments = []),
+    this.route.queryParams.subscribe((params) => {
+      this.templateIdFilter = params['template_id'] || null;
+      this.loadAssignments();
     });
   }
 
   loadAssignments(): void {
     this.loading = true;
-    this.http.get<FormAssignment[]>(`${environment.apiUrl}/forms/assignments`).subscribe({
-      next: (res) => {
-        this.assignments = [...res]; // Réassignation propre d'un nouveau tableau
+    this.formsService.getAssignments().subscribe({
+      next: (data: FormAssignment[]) => {
+        if (this.templateIdFilter) {
+          this.assignments = data.filter(
+            (a) => a.template_id === this.templateIdFilter || a.template?.id === this.templateIdFilter
+          );
+        } else {
+          this.assignments = data;
+        }
         this.loading = false;
       },
-      error: () => {
-        this.assignments = [];
+      error: (err: any) => {
+        console.error('Error loading assignments', err);
         this.loading = false;
-        this.showNotification('Error loading assignments');
+        this.snackBar.open('Error loading assignments', 'Close', { duration: 3000 });
       },
-    });
-  }
-
-  createAssignment(): void {
-    if (this.assignForm.invalid || !this.preselectedTemplateId) return;
-
-    this.loading = true;
-    const rawValue = this.assignForm.getRawValue();
-
-    let assignedBy = '';
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const decodedPayload = JSON.parse(atob(token.split('.')[1]));
-        assignedBy = decodedPayload.email || decodedPayload.matricule || decodedPayload.sub || '';
-      } catch (e) {
-        console.error('Error decoding JWT token:', e);
-      }
-    }
-
-    if (!assignedBy) {
-      assignedBy = 'rivo.k0949@keobiz.fr';
-    }
-
-    const formattedTargetType = rawValue.target_type || 'ALL';
-
-    const payload: any = {
-      template_id: this.preselectedTemplateId,
-      target_type: formattedTargetType,
-      assigned_by: assignedBy,
-      department_id: formattedTargetType === 'DEPARTMENT' ? rawValue.department_id : null,
-      user_ids: formattedTargetType === 'USERS' ? (rawValue.user_ids || []) : [],
-      due_date: rawValue.due_date ? new Date(rawValue.due_date).toISOString() : null
-    };
-
-    this.http.post(`${environment.apiUrl}/forms/assignments`, payload).subscribe({
-      next: () => {
-        this.loading = false;
-        this.showNotification('Assignment created successfully');
-        
-        // Réinitialiser les champs de sélection du formulaire
-        this.assignForm.patchValue({
-          user_ids: [],
-          department_id: '',
-          due_date: ''
-        });
-
-        this.loadAssignments();
-      },
-      error: (err) => {
-        this.loading = false;
-        console.error('Backend Validation Error Detail:', err.error);
-        this.showNotification(`Error: ${err.error?.message || 'Failed to create assignment'}`);
-      }
     });
   }
 
@@ -242,7 +89,26 @@ export class AssignmentComponent implements OnInit {
     this.router.navigate(['/forms/player', templateId]);
   }
 
-  private showNotification(msg: string): void {
-    this.snackBar.open(msg, 'Close', { duration: 3000 });
+  viewResults(assignment: FormAssignment): void {
+    this.router.navigate(['/forms/results', assignment.id]);
+  }
+
+  cancelAssignment(assignment: FormAssignment): void {
+    if (confirm(`Cancel assignment for ${assignment.user?.first_name || 'this user'}?`)) {
+      this.formsService.cancelAssignment(assignment.id).subscribe({
+        next: () => {
+          this.snackBar.open('Assignment cancelled', 'Close', { duration: 3000 });
+          this.loadAssignments();
+        },
+        error: (err: any) => {
+          console.error('Error cancelling assignment', err);
+          this.snackBar.open('Error cancelling assignment', 'Close', { duration: 3000 });
+        },
+      });
+    }
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

@@ -1,0 +1,93 @@
+:host {
+  display: block;
+  padding: 8px;
+}
+
+h2[mat-dialog-title] {
+  margin: 0 0 16px 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 8px !important;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Shareable Link Section */
+.mb-4 {
+  margin-bottom: 1rem;
+
+  label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 6px;
+  }
+
+  .flex {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    input[matInput] {
+      flex: 1;
+      background-color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.875rem;
+      color: #475569;
+      outline: none;
+
+      &:focus {
+        border-color: #3b82f6;
+      }
+    }
+
+    button {
+      flex-shrink: 0;
+      height: 38px;
+    }
+  }
+}
+
+/* Form Controls Layout */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .w-full {
+    width: 100%;
+  }
+
+  mat-form-field {
+    width: 100%;
+
+    ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+  }
+}
+
+/* Dialog Actions Footer */
+div[mat-dialog-actions] {
+  padding: 16px 0 0 0;
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid #f1f5f9;
+
+  button {
+    border-radius: 6px;
+    font-weight: 500;
+  }
+}

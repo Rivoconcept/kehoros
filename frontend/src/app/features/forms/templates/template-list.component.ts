@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,10 +15,11 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
 
 import { FormsService } from '../services/forms.services';
 import { AssignFormDialogComponent } from '../dialogs/assign-form-dialog/assign-form-dialog.component';
-;
+import { AuthService } from '../../../core/services/auth.service';
 
 interface TemplateCard {
   id: string;
@@ -30,6 +32,15 @@ interface TemplateCard {
   responses: number;
   createdBy: any;
   updatedAt: Date;
+}
+
+export interface FormAssignmentGroup {
+  templateId: string;
+  templateTitle: string;
+  category: string;
+  targetTypeLabel: string;
+  totalAssigned: number;
+  completedCount: number;
 }
 
 @Component({
@@ -50,6 +61,7 @@ interface TemplateCard {
     MatSnackBarModule,
     MatTooltipModule,
     MatDialogModule,
+    MatTableModule,
   ],
   templateUrl: './template-list.component.html',
   styleUrl: './template-list.component.scss',
@@ -57,10 +69,15 @@ interface TemplateCard {
 export class TemplateListComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
+  private authService = inject(AuthService);
 
   search = '';
   templates: TemplateCard[] = [];
-  activeTab: 'active' | 'archived' = 'active';
+  activeTab: 'active' | 'archived' | 'assigned' = 'active';
+
+  // Table Master
+  assignedColumns: string[] = ['title', 'targetType', 'progress', 'actions'];
+  assignedGroups: FormAssignmentGroup[] = [];
 
   constructor(
     private router: Router,
@@ -69,6 +86,7 @@ export class TemplateListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadTemplates();
+    this.loadAssignedForms();
   }
 
   loadTemplates(): void {
@@ -98,9 +116,45 @@ export class TemplateListComponent implements OnInit {
           };
         });
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error fetching templates', error);
         this.showNotification('Error loading templates');
+      },
+    });
+  }
+
+  loadAssignedForms(): void {
+    this.formsService.getAssignments().subscribe({
+      next: (assignments: any[]) => {
+        const groupsMap = new Map<string, FormAssignmentGroup>();
+
+        assignments.forEach((assignment) => {
+          const tId = assignment.template_id || assignment.template?.id;
+          const tTitle = assignment.template?.title || 'Untitled Form';
+          const category = assignment.template?.category || 'General';
+
+          if (!groupsMap.has(tId)) {
+            groupsMap.set(tId, {
+              templateId: tId,
+              templateTitle: tTitle,
+              category: category,
+              targetTypeLabel: assignment.target_type || 'All Users',
+              totalAssigned: 0,
+              completedCount: 0,
+            });
+          }
+
+          const group = groupsMap.get(tId)!;
+          group.totalAssigned++;
+          if (assignment.status === 'completed') {
+            group.completedCount++;
+          }
+        });
+
+        this.assignedGroups = Array.from(groupsMap.values());
+      },
+      error: (err: any) => {
+        console.error('Error fetching assignments', err);
       },
     });
   }
@@ -135,6 +189,27 @@ export class TemplateListComponent implements OnInit {
     });
   }
 
+  get filteredAssignedGroups(): FormAssignmentGroup[] {
+    return this.assignedGroups.filter((group) =>
+      group.templateTitle.toLowerCase().includes(this.search.toLowerCase())
+    );
+  }
+
+  onTabChange(index: number): void {
+    if (index === 0) this.activeTab = 'active';
+    else if (index === 1) this.activeTab = 'archived';
+    else if (index === 2) {
+      this.activeTab = 'assigned';
+      this.loadAssignedForms();
+    }
+  }
+
+  viewProgressPage(group: FormAssignmentGroup): void {
+    this.router.navigate(['/forms/assignments'], {
+      queryParams: { template_id: group.templateId },
+    });
+  }
+
   createTemplate(): void {
     this.router.navigate(['/forms/builder', 'new']);
   }
@@ -154,10 +229,31 @@ export class TemplateListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.showNotification('Form assigned successfully');
-        this.loadTemplates();
+      if (!result) return;
+
+      const payload = this.authService.getPayload();
+      const assignedBy = payload?.sub || payload?.email;
+      if (!assignedBy) {
+        this.showNotification('Unable to identify the current user');
+        return;
       }
+
+      this.formsService.createAssignment({
+        template_id: template.id,
+        assigned_by: assignedBy,
+        target_type: result.target_type,
+        user_ids: result.user_ids || [],
+        department_ids: result.department_ids || [],
+      }).subscribe({
+        next: () => {
+          this.showNotification('Form assigned successfully');
+          this.loadAssignedForms();
+        },
+        error: (err: any) => {
+          console.error('Error assigning form', err);
+          this.showNotification(err.error?.message || 'Error assigning form');
+        },
+      });
     });
   }
 
@@ -167,7 +263,7 @@ export class TemplateListComponent implements OnInit {
         this.showNotification('Template duplicated successfully');
         this.loadTemplates();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error duplicating template', err);
         this.showNotification('Error duplicating template');
       },
@@ -184,7 +280,7 @@ export class TemplateListComponent implements OnInit {
         this.showNotification('Template archived');
         this.loadTemplates();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error archiving template', err);
         this.loadTemplates();
       },
@@ -201,7 +297,7 @@ export class TemplateListComponent implements OnInit {
         this.showNotification('Template restored');
         this.loadTemplates();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error restoring template', err);
         this.loadTemplates();
       },
@@ -216,7 +312,7 @@ export class TemplateListComponent implements OnInit {
           this.showNotification('Template deleted successfully');
           this.loadTemplates();
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Error deleting template', err);
           this.showNotification('Error deleting template');
           this.loadTemplates();

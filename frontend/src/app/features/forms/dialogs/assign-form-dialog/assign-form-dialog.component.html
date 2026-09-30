@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Assign Form: {{ data.template.title }}</h2>
+<h2 mat-dialog-title>Assign Form: {{ data.templateTitle }}</h2>
 
 <mat-dialog-content class="dialog-content">
   <!-- Shareable Link -->
@@ -14,7 +14,7 @@
     <!-- Selected Template (Readonly) -->
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Selected Template</mat-label>
-      <input matInput [value]="data.template.title" readonly />
+      <input matInput [value]="data.templateTitle" readonly />
     </mat-form-field>
 
     <!-- Target Type -->
