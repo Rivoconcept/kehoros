@@ -13,8 +13,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { FormsService } from '../services/forms.services';
+import { AssignFormDialogComponent } from '../dialogs/assign-form-dialog/assign-form-dialog.component';
+;
 
 interface TemplateCard {
   id: string;
@@ -46,12 +49,14 @@ interface TemplateCard {
     MatTabsModule,
     MatSnackBarModule,
     MatTooltipModule,
+    MatDialogModule,
   ],
   templateUrl: './template-list.component.html',
   styleUrl: './template-list.component.scss',
 })
 export class TemplateListComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
 
   search = '';
   templates: TemplateCard[] = [];
@@ -139,8 +144,20 @@ export class TemplateListComponent implements OnInit {
   }
 
   assign(template: TemplateCard): void {
-    this.router.navigate(['/forms/assignments'], {
-      queryParams: { template_id: template.id },
+    const dialogRef = this.dialog.open(AssignFormDialogComponent, {
+      width: '600px',
+      data: {
+        templateId: template.id,
+        templateTitle: template.title,
+      },
+      disableClose: false,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.showNotification('Form assigned successfully');
+        this.loadTemplates();
+      }
     });
   }
 

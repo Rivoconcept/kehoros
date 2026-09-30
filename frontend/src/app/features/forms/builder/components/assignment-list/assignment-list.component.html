@@ -1,0 +1,89 @@
+<div class="page-container">
+  <h2>Form Assignments</h2>
+
+  <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z2">
+    
+    <!-- Title -->
+    <ng-container matColumnDef="templateTitle">
+      <th mat-header-cell *matHeaderCellDef> Questionnaire </th>
+      <td mat-cell *matCellDef="let element"> 
+        <strong>{{ element.templateTitle }}</strong> 
+      </td>
+    </ng-container>
+
+    <!-- Category -->
+    <ng-container matColumnDef="category">
+      <th mat-header-cell *matHeaderCellDef> Category </th>
+      <td mat-cell *matCellDef="let element"> {{ element.category }} </td>
+    </ng-container>
+
+    <!-- Progress -->
+    <ng-container matColumnDef="progress">
+      <th mat-header-cell *matHeaderCellDef> Progression </th>
+      <td mat-cell *matCellDef="let element"> 
+        {{ element.completedCount }} / {{ element.totalAssigned }} completed 
+      </td>
+    </ng-container>
+
+    <!-- Actions -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button color="primary" (click)="$event.stopPropagation();">
+          <mat-icon>add</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Toggle Expand Icon -->
+    <ng-container matColumnDef="expand">
+      <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+          <mat-icon>{{ expandedElement === element ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Expanded Detail Content (Niveau 2 - Employés assignés) -->
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+        <div class="element-detail" [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
+          <div class="inner-table-container">
+            <h4>Assigned Employees</h4>
+            <table class="nested-table">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Assigned Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of element.assignedUsers">
+                  <td>{{ user.name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                    <span class="status-badge" [ngClass]="user.status.toLowerCase()">
+                      {{ user.status }}
+                    </span>
+                  </td>
+                  <td>{{ user.assignedAt | date:'shortDate' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+    <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+        class="element-row"
+        [class.expanded-row]="expandedElement === element"
+        (click)="toggleRow(element)">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+  </table>
+</div>

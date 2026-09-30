@@ -1,0 +1,51 @@
+<h2 mat-dialog-title>Assign Form: {{ data.template.title }}</h2>
+
+<mat-dialog-content class="dialog-content">
+  <!-- Shareable Link -->
+  <div class="mb-4">
+    <label class="font-bold block mb-1">Shareable Link (Slack / Teams / Direct):</label>
+    <div class="flex gap-2">
+      <input matInput [value]="shareableLink" readonly class="border p-2 rounded w-full" />
+      <button mat-stroked-button color="primary" (click)="copyLink()">Copy</button>
+    </div>
+  </div>
+
+  <form [formGroup]="assignForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+    <!-- Selected Template (Readonly) -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Selected Template</mat-label>
+      <input matInput [value]="data.template.title" readonly />
+    </mat-form-field>
+
+    <!-- Target Type -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Target Type</mat-label>
+      <mat-select formControlName="target_type">
+        <mat-option *ngFor="let type of targetTypes" [value]="type.value">
+          {{ type.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Select Employees (Si "Specific Users") -->
+    <mat-form-field
+      *ngIf="assignForm.get('target_type')?.value === 'USERS'"
+      appearance="outline"
+      class="w-full"
+    >
+      <mat-label>Select Employee(s)</mat-label>
+      <mat-select formControlName="user_ids" multiple>
+        <mat-option *ngFor="let emp of data.employees" [value]="emp.id">
+          {{ emp.name }} ({{ emp.matricule }})
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div mat-dialog-actions align="end" class="gap-2">
+      <button mat-button mat-dialog-close type="button">Cancel</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="assignForm.invalid">
+        Confirm Assignment
+      </button>
+    </div>
+  </form>
+</mat-dialog-content>
