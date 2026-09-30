@@ -9,6 +9,8 @@ import { Repository } from 'typeorm';
 import { FormAnswer } from '../entities/form-answer.entity';
 import { FormResponse } from '../entities/form-response.entity';
 import { FormAssignment } from '../entities/form-assignment.entity';
+import { FormQuestion } from '../entities/form-question.entity';
+import { In } from 'typeorm';
 
 export interface StartResponseInput {
   assignment_id: string;
@@ -36,6 +38,8 @@ export class ResponseService {
     private readonly answerRepo: Repository<FormAnswer>,
     @InjectRepository(FormAssignment)
     private readonly assignmentRepo: Repository<FormAssignment>,
+    @InjectRepository(FormQuestion)
+    private readonly questionRepo: Repository<FormQuestion>,
   ) {}
 
   async start(input: StartResponseInput): Promise<FormResponse> {
@@ -65,6 +69,52 @@ export class ResponseService {
       where: { assignment_id: assignmentId },
       order: { started_at: 'DESC' },
     });
+  }
+
+  async getAssignmentResult(assignmentId: string) {
+    const assignment = await this.assignmentRepo.findOne({
+      where: { id: assignmentId },
+      relations: { template: true, user: true },
+    });
+    if (!assignment) {
+      throw new NotFoundException(`Assignment with id ${assignmentId} not found`);
+    }
+
+    const responses = await this.findByAssignment(assignmentId);
+    const response = responses.find((item) => Boolean(item.submitted_at));
+    const answers = response
+      ? await this.answerRepo.find({ where: { response_id: response.id } })
+      : [];
+    const questions = answers.length
+      ? await this.questionRepo.find({
+          where: { id: In(answers.map((answer) => answer.question_id)) },
+        })
+      : [];
+    const questionsById = new Map(questions.map((question) => [question.id, question]));
+
+    return {
+      assignmentId,
+      status: response ? 'completed' : assignment.status,
+      template: assignment.template,
+      user: assignment.user,
+      completed_at: response?.submitted_at ?? assignment.completed_at,
+      time_spent_minutes: response?.duration_seconds
+        ? Math.round(response.duration_seconds / 60)
+        : 0,
+      is_test: false,
+      questions: answers.map((answer) => ({
+        id: answer.question_id,
+        label: questionsById.get(answer.question_id)?.title ?? 'Question',
+        type: questionsById.get(answer.question_id)?.type ?? 'text',
+        userAnswer:
+          answer.answer_text ??
+          answer.answer_number ??
+          answer.answer_boolean ??
+          answer.json_value ??
+          answer.selected_option_id ??
+          '',
+      })),
+    };
   }
 
   async findOne(id: string): Promise<FormResponse> {
@@ -101,6 +151,10 @@ export class ResponseService {
     await this.responseRepo.update(response.id, {
       submitted_at: new Date(),
       duration_seconds: this.computeDurationSeconds(response.started_at),
+    });
+    await this.assignmentRepo.update(response.assignment_id, {
+      status: 'completed',
+      completed_at: new Date(),
     });
 
     return this.findOne(response.id);

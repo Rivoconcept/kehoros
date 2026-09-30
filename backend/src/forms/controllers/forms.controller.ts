@@ -112,6 +112,11 @@ export class FormsController {
     return this.formsService.findAssignments();
   }
 
+  @Get('assignments/:id/result')
+  findAssignmentResult(@Param('id') id: string) {
+    return this.formsService.findAssignmentResult(id);
+  }
+
   @Patch('assignments/:id/status')
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
   updateAssignmentStatus(

@@ -210,6 +210,31 @@ export class TemplateListComponent implements OnInit {
     });
   }
 
+  viewResults(template: TemplateCard): void {
+    this.formsService.getAssignments().subscribe({
+      next: (assignments) => {
+        const templateAssignments = assignments.filter((assignment) =>
+          (assignment.template_id === template.id || assignment.template?.id === template.id) &&
+          assignment.id
+        );
+        const selectedAssignment =
+          templateAssignments.find((assignment) => assignment.status?.toLowerCase() === 'completed') ??
+          templateAssignments[0];
+
+        if (!selectedAssignment) {
+          this.showNotification('No assignments found for this form');
+          return;
+        }
+
+        this.router.navigate(['/forms/results', selectedAssignment.id]);
+      },
+      error: (err: any) => {
+        console.error('Error fetching form results', err);
+        this.showNotification('Error loading form results');
+      },
+    });
+  }
+
   createTemplate(): void {
     this.router.navigate(['/forms/builder', 'new']);
   }

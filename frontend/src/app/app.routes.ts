@@ -61,14 +61,12 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'forms/results',
-    canActivate: [roleGuard(['admin', 'manager'])],
+    path: 'forms/results/:id',
     loadComponent: () =>
-      import('./features/forms/results/results.component').then(
-        (m) => m.ResultsComponent
+      import('./features/forms/results/form-results.component').then(
+        (m) => m.FormResultsComponent
       ),
   },
-
   // Accessible à TOUT utilisateur authentifié ('user', 'manager', 'admin')
   {
     path: 'forms/assignments',

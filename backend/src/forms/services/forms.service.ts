@@ -102,6 +102,10 @@ export class FormsService {
     return this.responseService.findByAssignment(assignmentId);
   }
 
+  findAssignmentResult(assignmentId: string) {
+    return this.responseService.getAssignmentResult(assignmentId);
+  }
+
   // Result orchestration
   evaluateResponse(responseId: string, gradedBy?: string) {
     return this.resultService.evaluate(responseId, gradedBy);

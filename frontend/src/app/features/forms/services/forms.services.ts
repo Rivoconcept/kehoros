@@ -138,4 +138,11 @@ export class FormsService {
   cancelAssignment(assignmentId: string): Observable<any> {
     return this.http.patch<any>(`${this.api}/assignments/${assignmentId}/cancel`, {});
   }
+
+  /**
+   * Récupère le résultat détaillé d'un formulaire assigné
+   */
+  getAssignmentResult(assignmentId: string): Observable<any> {
+    return this.http.get<any>(`${this.api}/assignments/${assignmentId}/result`);
+  }
 }

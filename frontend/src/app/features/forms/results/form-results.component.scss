@@ -1,0 +1,47 @@
+.results-container {
+  padding: 24px;
+
+  .page-header {
+    h2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0;
+    }
+  }
+
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    padding: 60px;
+  }
+
+  .user-card {
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+
+    h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+  }
+
+  .question-card {
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    box-shadow: none;
+
+    &:hover {
+      border-color: #cbd5e1;
+    }
+  }
+
+  .results-tabs {
+    background: transparent;
+  }
+}
