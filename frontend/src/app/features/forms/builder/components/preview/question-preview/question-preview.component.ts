@@ -1,6 +1,8 @@
 import {
   Component,
   Input,
+  Output,
+  EventEmitter,
   OnInit,
   OnChanges,
   SimpleChanges
@@ -10,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 import { DynamicFormService } from '../../../services/dynamic-form.service';
 import { PreviewRendererComponent } from '../preview-renderer/preview-renderer.component';
@@ -28,6 +31,7 @@ import { BuilderService } from '../../../services/builder.service';
     ReactiveFormsModule,
     MatIconModule,
     MatInputModule,
+    MatButtonModule,
     PreviewRendererComponent
   ],
   templateUrl: './question-preview.component.html',
@@ -35,9 +39,15 @@ import { BuilderService } from '../../../services/builder.service';
 })
 export class QuestionPreviewComponent implements OnInit, OnChanges {
   @Input() template?: Template;
+  @Input() isReadOnly: boolean = false; // Mode verrouillé pour le Player
+
+  @Output() answersChange = new EventEmitter<Record<string, any>>();
 
   form: FormGroup = new FormGroup({});
   QuestionType = QuestionType;
+
+  isEditingTitle = false;
+  isEditingDescription = false;
 
   constructor(
     public builder: BuilderService,
@@ -65,8 +75,9 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
     this.form = this.dynamicForm.buildForm(template);
     this.applyConditions();
 
-    this.form.valueChanges.subscribe(() => {
+    this.form.valueChanges.subscribe((values) => {
       this.applyConditions();
+      this.answersChange.emit(values);
     });
   }
 
@@ -106,6 +117,36 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * Indique si la question nécessite un <h4> externe.
+   * Masqué pour les composants qui génèrent déjà leur titre via FieldContainer.
+   */
+  usesExternalTitle(type: QuestionType | string): boolean {
+    const typesWithInternalFieldContainer = [
+      QuestionType.TEXT,
+      QuestionType.TEXTAREA,
+      QuestionType.SELECT,
+      QuestionType.TIME,
+      QuestionType.DATE,
+      QuestionType.DATETIME,
+      QuestionType.TITLE,
+      QuestionType.SECTION,
+      QuestionType.PARAGRAPH,
+    ];
+
+    return !typesWithInternalFieldContainer.includes(type as QuestionType);
+  }
+
+  toggleEditTitle(): void {
+    if (this.isReadOnly) return;
+    this.isEditingTitle = !this.isEditingTitle;
+  }
+
+  toggleEditDescription(): void {
+    if (this.isReadOnly) return;
+    this.isEditingDescription = !this.isEditingDescription;
+  }
+
   updateTitle(newTitle: string): void {
     const current = this.template || this.builder.template;
     if (current) {
@@ -118,14 +159,6 @@ export class QuestionPreviewComponent implements OnInit, OnChanges {
     if (current) {
       current.description = newDescription;
     }
-  }
-
-  submit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    console.log('FORM RESULT', this.form.value);
   }
 
   getControl(id: string): FormControl {

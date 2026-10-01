@@ -145,4 +145,11 @@ export class FormsService {
   getAssignmentResult(assignmentId: string): Observable<any> {
     return this.http.get<any>(`${this.api}/assignments/${assignmentId}/result`);
   }
+
+  /**
+   * Envoie les réponses d'un utilisateur pour un formulaire
+   */
+  submitResponse(payload: any): Observable<any> {
+    return this.http.post('http://localhost:3000/forms/responses/submit', payload);
+  }
 }

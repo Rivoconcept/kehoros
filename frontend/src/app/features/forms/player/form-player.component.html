@@ -1,89 +1,67 @@
 <div class="page">
+  <div class="player-container">
 
+    @if (loading) {
+      <div class="loading">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span>Chargement du formulaire...</span>
+      </div>
+    }
 
-    <div class="player-container">
+    @else if (error) {
+      <div class="error">
+        <mat-icon color="warn">error</mat-icon>
+        <p>{{ error }}</p>
+        <button mat-stroked-button (click)="goBack()">Retour aux formulaires</button>
+      </div>
+    }
 
+    @else if (submitted) {
+      <div class="success-screen">
+        <mat-icon class="success-icon">check_circle</mat-icon>
+        <h2>Merci !</h2>
+        <p>Vos réponses ont été enregistrées avec succès.</p>
+        <button mat-raised-button color="primary" (click)="goBack()">
+          Retour aux formulaires
+        </button>
+      </div>
+    }
 
+    @else if (template) {
+      <!-- Banner Header : Titre + Description côte à côte -->
+      <div class="player-header">
+        <div class="header-content flex items-baseline gap-3 flex-wrap">
+          <h1 class="title">{{ template.title }}</h1>
+          @if (template.description) {
+            <span class="description-separator">•</span>
+            <p class="description">{{ template.description }}</p>
+          }
+        </div>
+      </div>
 
-        @if(loading){
+      <div class="player-form">
+        <!-- QuestionPreview en lecture seule (masque son propre en-tête d'édition) -->
+        <app-question-preview
+          [template]="template"
+          [isReadOnly]="true"
+          (answersChange)="onAnswersChanged($event)">
+        </app-question-preview>
 
-            <div class="loading">
+        <!-- Submit Action Bar -->
+        <div class="form-actions">
+          <button mat-button type="button" (click)="goBack()">Annuler</button>
+          <button
+            mat-raised-button
+            color="primary"
+            class="submit-btn"
+            (click)="submitForm()"
+            [disabled]="submitting">
+            <mat-icon>{{ submitting ? 'hourglass_top' : 'send' }}</mat-icon>
+            {{ submitting ? 'Envoi en cours...' : 'Soumettre le formulaire' }}
+          </button>
+        </div>
+      </div>
+    }
 
-                Chargement du formulaire...
-
-            </div>
-
-        }
-
-
-
-
-        @else if(error){
-
-
-            <div class="error">
-
-                {{error}}
-
-            </div>
-
-
-        }
-
-
-
-
-        @else if(template){
-
-
-
-            <div class="player-header">
-
-
-                <h1>
-
-                    {{template.title}}
-
-                </h1>
-
-
-
-                @if(template.description){
-
-                    <p>
-
-                        {{template.description}}
-
-                    </p>
-
-                }
-
-
-            </div>
-
-
-
-
-
-            <div class="player-form">
-
-
-                <app-question-preview
-
-                    [template]="template">
-
-                </app-question-preview>
-
-
-            </div>
-
-
-
-        }
-
-
-
-    </div>
-
-
+  </div>
 </div>

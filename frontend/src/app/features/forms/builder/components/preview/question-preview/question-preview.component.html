@@ -2,22 +2,84 @@
 
   @if (builder.template || template; as activeTemplate) {
 
-    <div class="preview-header">
-      <input
-        type="text"
-        class="editable-title-input"
-        [ngModel]="activeTemplate.title"
-        (ngModelChange)="updateTitle($event)"
-        placeholder="Titre du formulaire..." />
+    <!-- L'en-tête interne d'édition est masqué en mode ReadOnly (géré par FormPlayerComponent) -->
+    @if (!isReadOnly) {
+      <div class="preview-header">
+        <div class="header-row title-row">
+          @if (!isEditingTitle) {
+            <div class="editable-display-group" (click)="toggleEditTitle()">
+              <h2 class="template-title">{{ activeTemplate.title || 'Titre du formulaire...' }}</h2>
+              <button
+                type="button"
+                mat-icon-button
+                color="primary"
+                class="edit-icon-btn"
+                title="Modifier le titre">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </div>
+          } @else {
+            <div class="editable-input-group">
+              <input
+                type="text"
+                class="editable-title-input"
+                [ngModel]="activeTemplate.title"
+                (ngModelChange)="updateTitle($event)"
+                (keydown.enter)="toggleEditTitle()"
+                placeholder="Titre du formulaire..."
+                autofocus />
+              <button
+                type="button"
+                mat-icon-button
+                color="primary"
+                (click)="toggleEditTitle()"
+                title="Valider">
+                <mat-icon>check</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
 
-      <textarea
-        class="editable-desc-input"
-        [ngModel]="activeTemplate.description || ''"
-        (ngModelChange)="updateDescription($event)"
-        placeholder="Ajouter une description..."
-        rows="2"></textarea>
-    </div>
+        @if (activeTemplate.description || !isReadOnly) {
+          <div class="header-row description-row">
+            @if (!isEditingDescription) {
+              <div class="editable-display-group desc-group" (click)="toggleEditDescription()">
+                <p class="template-description">
+                  {{ activeTemplate.description || 'Ajouter une description...' }}
+                </p>
+                <button
+                  type="button"
+                  mat-icon-button
+                  class="edit-icon-btn small"
+                  title="Modifier la description">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            } @else {
+              <div class="editable-input-group desc-input-group">
+                <textarea
+                  class="editable-desc-input"
+                  [ngModel]="activeTemplate.description || ''"
+                  (ngModelChange)="updateDescription($event)"
+                  placeholder="Ajouter une description..."
+                  rows="2"
+                  autofocus></textarea>
+                <button
+                  type="button"
+                  mat-icon-button
+                  color="primary"
+                  (click)="toggleEditDescription()"
+                  title="Valider">
+                  <mat-icon>check</mat-icon>
+                </button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
 
+    <!-- Liste des questions -->
     <div class="form-preview">
 
       @for (Question of visibleQuestions; track Question.id) {
@@ -28,11 +90,8 @@
           [style.width]="Question.width || '100%'"
           [style.box-sizing]="'border-box'">
 
-          @if (
-            Question.type !== QuestionType.TITLE &&
-            Question.type !== QuestionType.SECTION &&
-            Question.type !== QuestionType.PARAGRAPH
-          ) {
+          <!-- Titre externe uniquement si le sous-composant n'a pas de FieldContainer -->
+          @if (usesExternalTitle(Question.type)) {
             <h4>
               {{ Question.title }}
               @if (Question.required) {
@@ -57,13 +116,6 @@
         </div>
 
       }
-
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="submit()">
-        Submit
-      </button>
 
     </div>
 
