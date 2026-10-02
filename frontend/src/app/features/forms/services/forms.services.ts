@@ -149,7 +149,8 @@ export class FormsService {
   /**
    * Envoie les réponses d'un utilisateur pour un formulaire
    */
-  submitResponse(payload: any): Observable<any> {
-    return this.http.post('http://localhost:3000/forms/responses/submit', payload);
+  submitResponse(payload: { template_id?: string; assignment_id?: string; answers: Record<string, any> }): Observable<any> {
+    // S'assurer d'appeler /responses/submit et non /responses
+    return this.http.post(`${this.apiUrl}/responses/submit`, payload);
   }
 }
