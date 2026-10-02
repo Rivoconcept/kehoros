@@ -85,8 +85,10 @@ export class AssignmentsComponent implements OnInit {
     });
   }
 
-  openPlayer(templateId: string): void {
-    this.router.navigate(['/forms/player', templateId]);
+  openPlayer(templateId: string, assignmentId?: string): void {
+    this.router.navigate(['/forms/player', templateId], {
+      queryParams: assignmentId ? { assignment_id: assignmentId } : {},
+    });
   }
 
   viewResults(assignment: FormAssignment): void {

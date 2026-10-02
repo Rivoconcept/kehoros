@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
@@ -49,7 +49,6 @@ export interface FormAssignmentGroup {
   imports: [
     CommonModule,
     FormsModule,
-    RouterLink,
     MatButtonModule,
     MatIconModule,
     MatCardModule,
@@ -213,20 +212,19 @@ export class TemplateListComponent implements OnInit {
   viewResults(template: TemplateCard): void {
     this.formsService.getAssignments().subscribe({
       next: (assignments) => {
-        const templateAssignments = assignments.filter((assignment) =>
+        const candidates = assignments.filter((assignment) =>
           (assignment.template_id === template.id || assignment.template?.id === template.id) &&
-          assignment.id
+          assignment.id,
         );
-        const selectedAssignment =
-          templateAssignments.find((assignment) => assignment.status?.toLowerCase() === 'completed') ??
-          templateAssignments[0];
+        const selected =
+          candidates.find((assignment) => assignment.status?.toLowerCase() === 'completed') ??
+          candidates[0];
 
-        if (!selectedAssignment) {
+        if (selected) {
+          this.router.navigate(['/forms/results', selected.id]);
+        } else {
           this.showNotification('No assignments found for this form');
-          return;
         }
-
-        this.router.navigate(['/forms/results', selectedAssignment.id]);
       },
       error: (err: any) => {
         console.error('Error fetching form results', err);

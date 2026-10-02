@@ -9,6 +9,7 @@ import { FormStatus } from '../enums/form-status.enum';
 import { FormTemplate } from '../entities/form-template.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ViewGeneratorService } from './view-generator.service';
 
 @Injectable()
 export class FormsService {
@@ -18,6 +19,7 @@ export class FormsService {
     private readonly assignmentService: AssignmentService,
     private readonly responseService: ResponseService,
     private readonly resultService: ResultService,
+    private readonly viewGeneratorService: ViewGeneratorService,
 
     @InjectRepository(FormTemplate)
     private readonly formTemplateRepository: Repository<FormTemplate>,
@@ -40,8 +42,17 @@ export class FormsService {
     return this.templateService.update(id, input);
   }
 
-  publishTemplate(id: string) {
-    return this.templateService.publish(id);
+  async publishTemplate(id: string) {
+    // 1. Publier le template
+    const template = await this.templateService.publish(id);
+
+    // 2. Charger les questions associées
+    const questions = await this.questionService.findByTemplate(id);
+
+    // 3. Générer ou mettre à jour la vue PostgreSQL (view_form_<template_id>)
+    await this.viewGeneratorService.generateViewForTemplate(id, questions);
+
+    return template;
   }
 
   archiveTemplate(id: string) {
@@ -167,5 +178,6 @@ export class FormsService {
 
     return restoredTemplate;
   }
+
     
 }

@@ -2,9 +2,12 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 import { ResultStatus } from '../enums/result-status.enum';
+import { FormResponse } from './form-response.entity';
 
 @Entity('form_results')
 export class FormResult {
@@ -14,6 +17,12 @@ export class FormResult {
 
   @Column()
   response_id: string;
+
+  @ManyToOne(() => FormResponse, (response) => response.results, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'response_id' })
+  response: FormResponse;
 
   @Column({
     default: 0,

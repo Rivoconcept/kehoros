@@ -11,7 +11,7 @@ import {
   providedIn: 'root',
 })
 export class FormsService {
-  private api = 'http://localhost:3000/forms';
+  private apiUrl = 'http://localhost:3000/forms';
 
   constructor(private http: HttpClient) {}
 
@@ -19,56 +19,56 @@ export class FormsService {
    * List of templates.
    */
   getTemplates(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.api}/templates`);
+    return this.http.get<any[]>(`${this.apiUrl}/templates`);
   }
 
   /**
    * Load template by ID.
    */
   getTemplateById(id: string): Observable<any> {
-    return this.http.get<any>(`${this.api}/templates/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/templates/${id}`);
   }
 
   /**
    * Create template.
    */
   createTemplate(data: any): Observable<any> {
-    return this.http.post<any>(`${this.api}/templates`, data);
+    return this.http.post<any>(`${this.apiUrl}/templates`, data);
   }
 
   /**
    * Update template.
    */
   updateTemplate(id: string, data: any): Observable<any> {
-    return this.http.patch<any>(`${this.api}/templates/${id}`, data);
+    return this.http.patch<any>(`${this.apiUrl}/templates/${id}`, data);
   }
 
   /**
    * Publish template.
    */
   publishTemplate(id: string): Observable<any> {
-    return this.http.post<any>(`${this.api}/templates/${id}/publish`, {});
+    return this.http.post<any>(`${this.apiUrl}/templates/${id}/publish`, {});
   }
 
   /**
    * Duplicate template.
    */
   duplicateTemplate(id: string, data?: { title?: string; category?: string }): Observable<any> {
-    return this.http.post<any>(`${this.api}/templates/${id}/duplicate`, data ?? {});
+    return this.http.post<any>(`${this.apiUrl}/templates/${id}/duplicate`, data ?? {});
   }
 
   /**
    * Archive template.
    */
   archiveTemplate(id: string): Observable<any> {
-    return this.http.post<any>(`${this.api}/templates/${id}/archive`, {});
+    return this.http.post<any>(`${this.apiUrl}/templates/${id}/archive`, {});
   }
 
   /**
    * Delete template.
    */
   deleteTemplate(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.api}/templates/${id}`);
+    return this.http.delete<any>(`${this.apiUrl}/templates/${id}`);
   }
 
   /**
@@ -79,7 +79,7 @@ export class FormsService {
     questionOrders: { id: string; order: number }[]
   ): Observable<any> {
     return this.http.patch<any>(
-      `${this.api}/templates/${templateId}/reorder-questions`,
+      `${this.apiUrl}/templates/${templateId}/reorder-questions`,
       { questions: questionOrders }
     );
   }
@@ -88,7 +88,7 @@ export class FormsService {
    * Create question.
    */
   createQuestion(data: CreateQuestionApiPayload): Observable<any> {
-    return this.http.post<any>(`${this.api}/questions`, data);
+    return this.http.post<any>(`${this.apiUrl}/questions`, data);
   }
 
   /**
@@ -98,28 +98,32 @@ export class FormsService {
     id: string,
     data: UpdateQuestionApiPayload
   ): Observable<any> {
-    return this.http.patch<any>(`${this.api}/questions/${id}`, data);
+    return this.http.patch<any>(`${this.apiUrl}/questions/${id}`, data);
   }
 
   /**
    * Delete question.
    */
   deleteQuestion(id: string): Observable<any> {
-    return this.http.delete<any>(`${this.api}/questions/${id}`);
+    return this.http.delete<any>(`${this.apiUrl}/questions/${id}`);
   }
 
   /**
    * Restore template.
    */
   restoreTemplate(id: string): Observable<any> {
-    return this.http.post<any>(`${this.api}/templates/${id}/restore`, {});
+    return this.http.post<any>(`${this.apiUrl}/templates/${id}/restore`, {});
   }
 
   /**
    * Récupère toutes les assignations de formulaires
    */
   getAssignments(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.api}/assignments`);
+    return this.http.get<any[]>(`${this.apiUrl}/assignments`);
+  }
+
+  getAssignmentResult(assignmentId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/assignments/${assignmentId}/result`);
   }
 
   createAssignment(data: {
@@ -129,21 +133,14 @@ export class FormsService {
     user_ids?: string[];
     department_ids?: string[];
   }): Observable<any[]> {
-    return this.http.post<any[]>(`${this.api}/assignments`, data);
+    return this.http.post<any[]>(`${this.apiUrl}/assignments`, data);
   }
 
   /**
    * Annule / Supprime une assignation par son ID
    */
   cancelAssignment(assignmentId: string): Observable<any> {
-    return this.http.patch<any>(`${this.api}/assignments/${assignmentId}/cancel`, {});
-  }
-
-  /**
-   * Récupère le résultat détaillé d'un formulaire assigné
-   */
-  getAssignmentResult(assignmentId: string): Observable<any> {
-    return this.http.get<any>(`${this.api}/assignments/${assignmentId}/result`);
+    return this.http.patch<any>(`${this.apiUrl}/assignments/${assignmentId}/cancel`, {});
   }
 
   /**

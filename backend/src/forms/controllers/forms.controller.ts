@@ -23,6 +23,7 @@ import type { AssignTemplateInput } from '../services/assignment.service';
 import type {
   StartResponseInput,
   SubmitResponseInput,
+  DirectSubmitResponseInput,
 } from '../services/response.service';
 import type {
   CreateQuestionInput,
@@ -138,7 +139,17 @@ export class FormsController {
 
   @Post('responses/submit')
   @Roles(UserRole.USER, UserRole.MANAGER, UserRole.ADMIN)
-  submitResponse(@Body() dto: SubmitResponseInput) {
+  submitResponse(
+    @Req() req: any,
+    @Body() dto: SubmitResponseInput | DirectSubmitResponseInput,
+  ) {
+    if ('template_id' in dto) {
+      return this.formsService.submitResponse({
+        ...dto,
+        user_id: req.user?.id,
+      });
+    }
+
     return this.formsService.submitResponse(dto);
   }
 

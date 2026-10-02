@@ -19,6 +19,7 @@ import { FormResult } from './entities/form-result.entity';
 import { FormsController } from './controllers/forms.controller';
 import { FormsService } from './services/forms.service';
 import { AssignmentsController } from './controllers/assignments.controller';
+import { ViewGeneratorService } from './services/view-generator.service';
 
 
 @Module({
@@ -43,6 +44,7 @@ import { AssignmentsController } from './controllers/assignments.controller';
     AssignmentService,
     AssignmentsController,
     ResponseService,
+    ViewGeneratorService,
     ResultService,
     RolesGuard,
   ],
@@ -53,6 +55,7 @@ import { AssignmentsController } from './controllers/assignments.controller';
     AssignmentService,
     ResponseService,
     ResultService,
+    ViewGeneratorService,
   ],
 })
 export class FormsModule {}

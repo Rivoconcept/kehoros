@@ -33,6 +33,7 @@ export class FormPlayerComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
 
   template?: Template;
+  assignmentId: string | null = null;
   loading = true;
   submitting = false;
   error = '';
@@ -43,6 +44,7 @@ export class FormPlayerComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
+    this.assignmentId = this.route.snapshot.queryParamMap.get('assignment_id');
 
     if (!id) {
       this.error = 'Formulaire introuvable';
@@ -77,6 +79,7 @@ export class FormPlayerComponent implements OnInit {
 
     const payload = {
       template_id: this.template.id,
+      assignment_id: this.assignmentId ?? undefined,
       answers: this.userAnswers,
     };
 
