@@ -1,17 +1,17 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
 
 import {
   CreateQuestionApiPayload,
   UpdateQuestionApiPayload,
-} from './question.service';
+} from "./question.service";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class FormsService {
-  private apiUrl = 'http://localhost:3000/forms';
+  private apiUrl = "http://localhost:3000/forms";
 
   constructor(private http: HttpClient) {}
 
@@ -53,8 +53,14 @@ export class FormsService {
   /**
    * Duplicate template.
    */
-  duplicateTemplate(id: string, data?: { title?: string; category?: string }): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/templates/${id}/duplicate`, data ?? {});
+  duplicateTemplate(
+    id: string,
+    data?: { title?: string; category?: string },
+  ): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/templates/${id}/duplicate`,
+      data ?? {},
+    );
   }
 
   /**
@@ -76,11 +82,11 @@ export class FormsService {
    */
   reorderQuestions(
     templateId: string,
-    questionOrders: { id: string; order: number }[]
+    questionOrders: { id: string; order: number }[],
   ): Observable<any> {
     return this.http.patch<any>(
       `${this.apiUrl}/templates/${templateId}/reorder-questions`,
-      { questions: questionOrders }
+      { questions: questionOrders },
     );
   }
 
@@ -94,10 +100,7 @@ export class FormsService {
   /**
    * Update question.
    */
-  updateQuestion(
-    id: string,
-    data: UpdateQuestionApiPayload
-  ): Observable<any> {
+  updateQuestion(id: string, data: UpdateQuestionApiPayload): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/questions/${id}`, data);
   }
 
@@ -123,7 +126,9 @@ export class FormsService {
   }
 
   getAssignmentResult(assignmentId: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/assignments/${assignmentId}/result`);
+    return this.http.get<any>(
+      `${this.apiUrl}/assignments/${assignmentId}/result`,
+    );
   }
 
   createAssignment(data: {
@@ -140,13 +145,20 @@ export class FormsService {
    * Annule / Supprime une assignation par son ID
    */
   cancelAssignment(assignmentId: string): Observable<any> {
-    return this.http.patch<any>(`${this.apiUrl}/assignments/${assignmentId}/cancel`, {});
+    return this.http.patch<any>(
+      `${this.apiUrl}/assignments/${assignmentId}/cancel`,
+      {},
+    );
   }
 
   /**
    * Envoie les réponses d'un utilisateur pour un formulaire
    */
-  submitResponse(payload: { template_id?: string; assignment_id?: string; answers: Record<string, any> }): Observable<any> {
+  submitResponse(payload: {
+    template_id?: string;
+    assignment_id?: string;
+    answers: Record<string, any>;
+  }): Observable<any> {
     // S'assurer d'appeler /responses/submit et non /responses
     return this.http.post(`${this.apiUrl}/responses/submit`, payload);
   }

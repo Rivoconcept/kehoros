@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
-import { PropertyModule } from './property/property.module';
 import { AuthModule } from './auth/auth.module';
 import { FormsModule } from './forms/forms.module';
+import { InventoryModule } from './inventory/inventory.module';
 
 function parseDatabaseUrl(url: string) {
   const u = new URL(url.replace('?schema=public', ''));
@@ -29,11 +29,13 @@ function parseDatabaseUrl(url: string) {
       }),
     }),
     UserModule,
-    PropertyModule,
     AuthModule,
     FormsModule,
+    InventoryModule,
   ],
   controllers: [],
   providers: [],
 })
 export class AppModule {}
+
+

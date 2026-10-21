@@ -83,7 +83,7 @@ export class FormPlayerComponent implements OnInit {
       answers: this.userAnswers,
     };
 
-    // Soumission de la réponse via le service d'API
+    // Soumission de la réponse via le service d'API  œ
     this.formsService.submitResponse(payload).subscribe({
       next: () => {
         this.submitting = false;

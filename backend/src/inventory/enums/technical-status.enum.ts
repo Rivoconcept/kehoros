@@ -1,0 +1,6 @@
+export enum TechnicalStatus {
+  FUNCTIONAL = 'FUNCTIONAL',
+  DEFECTIVE = 'DEFECTIVE',
+  TO_CHECK = 'TO_CHECK',
+  TO_REPLACE = 'TO_REPLACE',
+}

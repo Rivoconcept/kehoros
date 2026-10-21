@@ -84,5 +84,13 @@ export const routes: Routes = [
       ),
   },
 
+  // {
+  //   path: 'inventory',
+  //   loadComponent: () =>
+  //     import('./inventory/InventoryComponent').then (
+  //       (m) => m
+  //     ),
+  // },
+
   { path: '**', redirectTo: '/login' },
 ];
