@@ -13,10 +13,10 @@ export interface RawApiTemplate {
   archived?: boolean;
   version?: number;
   questions?: any[];
-  created_at?: string;
-  createdAt?: string;
-  updated_at?: string;
-  updatedAt?: string;
+  created_at?: string | Date;
+  createdAt?: string | Date;
+  updated_at?: string | Date;
+  updatedAt?: string | Date;
   [key: string]: any;
 }
 
@@ -57,9 +57,13 @@ export class TemplateApiMapper {
       version: Number(rawVersion),
       status: status, // Type restreint à 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'
       questions: mappedQuestions,
-      createdAt: createdAtRaw ? new Date(createdAtRaw) : new Date(),
-      updatedAt: updatedAtRaw ? new Date(updatedAtRaw) : new Date()
+      createdAt: createdAtRaw ? this.toDate(createdAtRaw) : new Date(),
+      updatedAt: updatedAtRaw ? this.toDate(updatedAtRaw) : new Date()
     };
+  }
+
+  private static toDate(value: string | Date): Date {
+    return value instanceof Date ? new Date(value.getTime()) : new Date(value);
   }
 
   /**

@@ -10,6 +10,9 @@ import { QuestionPreviewComponent } from '../builder/components/preview/question
 import { TemplateService } from '../services/template.service';
 import { FormsService } from '../services/forms.services';
 import { Template } from '../models/template.model';
+import { Question } from '../models/question.model';
+import { QuestionApiMapper } from '../builder/services/builder/builder-question/question-api.mapper';
+import { TemplateApiMapper } from '../builder/services/builder/builder-template/template-api.mapper';
 
 @Component({
   selector: 'app-form-player',
@@ -53,8 +56,22 @@ export class FormPlayerComponent implements OnInit {
     }
 
     this.templateService.findOne(id).subscribe({
-      next: (template) => {
-        this.template = template;
+      next: (data) => {
+        const questions: Question[] = (data.questions ?? []).map((question: any) =>
+          QuestionApiMapper.mapFromApi(question, {
+            id: '',
+            templateId: id,
+            title: '',
+            description: '',
+            type: '' as any,
+            required: false,
+            order: 0,
+            score: 0,
+            options: [],
+          }),
+        );
+
+        this.template = TemplateApiMapper.mapFromApi(data, questions);
         this.loading = false;
       },
       error: (err) => {
