@@ -1,12 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from '../../../user/user.entity';
+import { User } from '../../../user/entities/user.entity';
 import { AssetStatus } from '../../dto/createInventory.dto';
 import { ComputerType } from '../../enums/computer-type.enum';
 import { TechnicalStatus } from '../../enums/technical-status.enum';
-import { TimestampEntites } from 'src/generics/timestamp.entites';
+import { TimestampEntities } from 'src/generics/timestamp.entities';
 
 @Entity('computers')
-export class Computers extends TimestampEntites {
+export class Computers extends TimestampEntities {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

@@ -1,8 +1,5 @@
 <div class="login-container">
-
   <mat-card class="login-card">
-
-    <!-- Logo + Header -->
     <div class="card-header">
       <div class="logo">K</div>
       <h1 class="card-title">Connexion</h1>
@@ -10,57 +7,118 @@
     </div>
 
     <mat-card-content>
-
-      @if(error){
+      @if (error) {
         <div class="error">
           <mat-icon>error_outline</mat-icon>
           <span>{{ error }}</span>
         </div>
       }
 
-      <form (ngSubmit)="onSubmit()">
-
-        <!-- Email -->
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" [(ngModel)]="email" name="email" placeholder="vous@kehoros.mg" required />
-          <mat-icon matSuffix>email</mat-icon>
-        </mat-form-field>
-
-        <!-- Mot de passe -->
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Mot de passe</mat-label>
-          <input matInput [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" required />
-          <button mat-icon-button matSuffix type="button" (click)="showPassword = !showPassword">
-            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-          </button>
-        </mat-form-field>
-
-        <!-- Options -->
-        <div class="options-row">
-          <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe">Se souvenir de moi</mat-checkbox>
-          <a class="forgot-link" routerLink="/forgot-password">Mot de passe oublié ?</a>
+      @if (accountNotFound) {
+        <div class="register-invitation">
+          <span>Aucun compte n'est associé à cette adresse.</span>
+          <a routerLink="/register" [queryParams]="{ email: email }">Créer un compte</a>
         </div>
+      }
 
-        <button mat-raised-button color="primary" class="submit" [disabled]="loading">
-          @if (!loading) {
-            <ng-container>
-              <mat-icon>login</mat-icon>
-              Se connecter
-            </ng-container>
-          } @else {
-            Connexion...
+      @if (otpRequested) {
+        <div class="otp-step-heading">
+          <div class="otp-step-icon"><mat-icon>mark_email_read</mat-icon></div>
+          <h2>Vérifiez votre boîte mail</h2>
+          <p>Nous avons envoyé un code de connexion à <strong>{{ email }}</strong>.</p>
+        </div>
+        <form (ngSubmit)="verifyEmailCode()">
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Code reçu par e-mail</mat-label>
+            <input
+              matInput
+              type="text"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              [(ngModel)]="code"
+              name="code"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              placeholder="000000"
+              required
+            />
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" class="submit" [disabled]="loading">
+            @if (!loading) {
+              <ng-container><mat-icon>verified</mat-icon>Vérifier et se connecter</ng-container>
+            } @else {
+              Vérification...
+            }
+          </button>
+        </form>
+        <div class="otp-actions">
+          <button type="button" class="text-button" (click)="requestEmailCode()" [disabled]="loading">
+            Renvoyer le code
+          </button>
+          <span aria-hidden="true">·</span>
+          <button type="button" class="text-button" (click)="changeEmail()" [disabled]="loading">
+            Modifier l'adresse
+          </button>
+        </div>
+      } @else {
+        <form (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              type="email"
+              [(ngModel)]="email"
+              name="email"
+              placeholder="vous@kehoros.mg"
+              autocomplete="email"
+              required
+            />
+            <mat-icon matSuffix>email</mat-icon>
+          </mat-form-field>
+
+          @if (usePassword) {
+            <mat-form-field appearance="outline" class="full">
+              <mat-label>Mot de passe</mat-label>
+              <input
+                matInput
+                [type]="showPassword ? 'text' : 'password'"
+                [(ngModel)]="password"
+                name="password"
+                autocomplete="current-password"
+                required
+              />
+              <button mat-icon-button matSuffix type="button" (click)="showPassword = !showPassword">
+                <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <div class="options-row">
+              <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe">Se souvenir de moi</mat-checkbox>
+              <a class="forgot-link" routerLink="/forgot-password">Mot de passe oublié ?</a>
+            </div>
           }
+
+          <button mat-raised-button color="primary" class="submit" [disabled]="loading">
+            @if (!loading) {
+              <ng-container>
+                <mat-icon>{{ usePassword ? 'login' : 'mail' }}</mat-icon>
+                Se connecter
+              </ng-container>
+            } @else {
+              {{ usePassword ? 'Connexion...' : 'Envoi du code...' }}
+            }
+          </button>
+        </form>
+
+        <button type="button" class="text-button auth-mode-toggle" (click)="toggleAuthMode()" [disabled]="loading">
+          {{ usePassword ? 'Se connecter avec un code e-mail' : 'Utiliser mon mot de passe' }}
         </button>
-
-      </form>
-
+      }
     </mat-card-content>
 
-    <mat-card-actions>
+    <mat-card-actions class="card-footer-actions">
       <a routerLink="/register">Pas encore de compte ? <strong>S'inscrire</strong></a>
     </mat-card-actions>
-
   </mat-card>
-
 </div>

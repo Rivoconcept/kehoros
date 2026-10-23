@@ -11,7 +11,7 @@ import { AssignmentService } from './services/assignment.service';
 import { ResponseService } from './services/response.service';
 import { ResultService } from './services/result.service';
 import { QuestionService } from './services/question.service';
-import { User } from '../user/user.entity';
+import { User } from '../user/entities/user.entity';
 import { RolesGuard } from '../auth/roles.guard';
 import { FormAssignment } from './entities/form-assignment.entity';
 import { FormResponse } from './entities/form-response.entity';

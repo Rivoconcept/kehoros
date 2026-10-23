@@ -9,7 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import { User } from '../../user/user.entity';
+import { User } from '../../user/entities/user.entity';
 import { FormQuestion } from './form-question.entity';
 import { FormAssignment } from './form-assignment.entity';
 import { FormSession } from './form-session.entity';

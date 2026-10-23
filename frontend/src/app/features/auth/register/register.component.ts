@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
 import { ApiService } from '../../../core/services/api.service';
@@ -84,9 +84,15 @@ export class RegisterComponent implements OnInit {
     { code: 'IN', name: 'Inde',            dial: '+91',  flag: '🇮🇳' },
   ];
 
-  constructor(private authService: AuthService, private api: ApiService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private api: ApiService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
+    this.email = this.route.snapshot.queryParamMap.get('email') ?? '';
     this.loadOptions();
   }
 

@@ -3,7 +3,7 @@ import {
   ManyToOne, OneToMany, JoinColumn, CreateDateColumn
 } from 'typeorm';
 import { FormTemplate } from './form-template.entity';
-import { User } from '../../user/user.entity';
+import { User } from '../../user/entities/user.entity';
 import { FormAnswer } from './form-answer.entity';
 
 export enum SessionStatus {

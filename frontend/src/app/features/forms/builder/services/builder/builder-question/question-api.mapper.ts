@@ -56,7 +56,16 @@ export class QuestionApiMapper {
       required: Boolean(rawRequired),
       order: typeof rawPosition === 'number' ? rawPosition : (typeof rawOrder === 'number' ? rawOrder : fallback.order),
       score: typeof rawPoints === 'number' ? rawPoints : (typeof rawScore === 'number' ? rawScore : fallback.score),
-      options: Array.isArray(rawOptions) ? rawOptions : (fallback.options ?? []),
+      options: Array.isArray(rawOptions)
+        ? rawOptions.map((option: any, index: number) => ({
+            ...option,
+            order: typeof option.position === 'number'
+              ? option.position
+              : typeof option.order === 'number'
+                ? option.order
+                : index
+          }))
+        : (fallback.options ?? []),
 
       // UI
       placeholder: settings['placeholder'] ?? fallback.placeholder,

@@ -14,7 +14,7 @@ import {
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { RolesGuard } from '../../auth/roles.guard';
 import { Roles } from '../../auth/roles.decorator';
-import { UserRole } from '../../user/user.entity';
+import { UserRole } from '../../user/entities/user.entity';
 
 import { FormsService } from '../services/forms.service';
 import { FormStatus } from '../enums/form-status.enum';
@@ -25,8 +25,8 @@ import type {
   SubmitResponseInput,
   DirectSubmitResponseInput,
 } from '../services/response.service';
+import { CreateQuestionDto } from '../dto/create-question.dto';
 import type {
-  CreateQuestionInput,
   UpdateQuestionInput,
   CreateOptionInput,
 } from '../services/question.service';
@@ -179,7 +179,7 @@ export class FormsController {
 
   @Post('questions')
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
-  createQuestion(@Body() dto: CreateQuestionInput) {
+  createQuestion(@Body() dto: CreateQuestionDto) {
     return this.formsService.createQuestion(dto);
   }
 

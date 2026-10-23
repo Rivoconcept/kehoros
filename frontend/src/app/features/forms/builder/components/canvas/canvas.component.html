@@ -12,11 +12,11 @@
     >
 
 
-        @if(builder.questions.length){
+        @if(orderedQuestions.length){
 
 
             @for(
-                question of builder.questions;
+                question of orderedQuestions;
                 track question.id
             ){
 

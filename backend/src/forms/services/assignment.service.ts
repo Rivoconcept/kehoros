@@ -9,7 +9,7 @@ import { In, Repository } from 'typeorm';
 
 import { FormAssignment } from '../entities/form-assignment.entity';
 import { FormTemplate } from '../entities/form-template.entity';
-import { User } from '../../user/user.entity';
+import { User } from '../../user/entities/user.entity';
 
 export enum AssignmentTargetType {
   ALL = 'ALL',

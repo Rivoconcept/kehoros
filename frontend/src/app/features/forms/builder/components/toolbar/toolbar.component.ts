@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +15,7 @@ import { QuestionType } from '../../../models/question-type.enum';
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     FormsModule,
     MatIconModule,
     MatButtonModule,

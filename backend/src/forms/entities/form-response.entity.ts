@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { FormTemplate } from './form-template.entity';
 import { FormResult } from './form-result.entity';
-import { User } from '../../user/user.entity';
+import { User } from '../../user/entities/user.entity';
 
 @Entity('form_responses')
 // Syntaxe correcte TypeORM pour l'index GIN sur JSONB

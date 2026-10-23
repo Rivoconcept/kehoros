@@ -22,6 +22,13 @@ export interface CreateQuestionApiPayload {
   points?: number;
 
   settings?: Record<string, any>;
+
+  options?: Array<{
+    label: string;
+    value: string;
+    is_correct?: boolean;
+    position?: number;
+  }>;
 }
 
 export interface UpdateQuestionApiPayload {
@@ -38,6 +45,13 @@ export interface UpdateQuestionApiPayload {
   points?: number;
 
   settings?: Record<string, any>;
+
+  options?: Array<{
+    label: string;
+    value: string;
+    is_correct?: boolean;
+    position?: number;
+  }>;
 }
 
 @Injectable({

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, forkJoin, of } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable, forkJoin, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 import { Template } from '../../../../models/template.model';
@@ -26,7 +27,8 @@ export class BuilderTemplateSyncOrchestrator {
   constructor(
     private formsService: FormsService,
     private questionService: QuestionService,
-    private state: BuilderStateService
+    private state: BuilderStateService,
+    private snackBar: MatSnackBar
   ) {}
 
   public get isCreating(): boolean {
@@ -95,7 +97,7 @@ export class BuilderTemplateSyncOrchestrator {
           tap(() => this.persistedQuestionIds.delete(id)),
           catchError((err) => {
             console.error(`Erreur suppression question ${id}`, err);
-            return of(null);
+            return throwError(() => err);
           })
         )
       );
@@ -108,7 +110,7 @@ export class BuilderTemplateSyncOrchestrator {
         this.questionService.updateQuestion(question.id, payload).pipe(
           catchError((err) => {
             console.error(`Erreur modification question ${question.id}`, err);
-            return of(null);
+            return throwError(() => err);
           })
         )
       );
@@ -124,7 +126,6 @@ export class BuilderTemplateSyncOrchestrator {
           tap((response: any) => {
             const createdId = response?.id;
             if (createdId) {
-              // Remplacer l'ID temporaire frontend par l'ID réel du serveur
               if (tempId && tempId !== createdId) {
                 this.replaceLocalQuestionId(currentTemplate, tempId, createdId);
               } else {
@@ -134,7 +135,7 @@ export class BuilderTemplateSyncOrchestrator {
           }),
           catchError((err) => {
             console.error(`Erreur création question`, err);
-            return of(null);
+            return throwError(() => err);
           })
         )
       );
@@ -153,6 +154,7 @@ export class BuilderTemplateSyncOrchestrator {
       error: (err) => {
         console.error('Erreur globale durant la synchronisation des questions', err);
         this.creating = false;
+        this.showSaveError(err);
       }
     });
   }
@@ -179,7 +181,12 @@ export class BuilderTemplateSyncOrchestrator {
       this.formsService.createTemplate(payload).subscribe({
         next: (result: any) => {
           const templateId = result['id'];
-          const questions = current.questions ?? [];
+          const activeTemplate = this.state.template ?? current;
+          this.state.setTemplate({
+            ...activeTemplate,
+            id: templateId
+          });
+          const questions = activeTemplate.questions ?? [];
 
           if (questions.length === 0) {
             this.finishSave(current, result);
@@ -191,6 +198,7 @@ export class BuilderTemplateSyncOrchestrator {
         error: (error: unknown) => {
           this.creating = false;
           console.error('Erreur création template', error);
+          this.showSaveError(error);
         }
       });
       return;
@@ -206,6 +214,7 @@ export class BuilderTemplateSyncOrchestrator {
       error: (error: unknown) => {
         this.creating = false;
         console.error('Erreur update template', error);
+        this.showSaveError(error);
       }
     });
   }
@@ -216,7 +225,7 @@ export class BuilderTemplateSyncOrchestrator {
     templateId: string,
     questions: Question[]
   ): void {
-    let saved = 0;
+    let completed = 0;
     let failed = false;
 
     questions.forEach((question) => {
@@ -225,8 +234,6 @@ export class BuilderTemplateSyncOrchestrator {
 
       this.questionService.createQuestion(questionPayload).subscribe({
         next: (savedQuestion: Question) => {
-          saved++;
-
           if (savedQuestion?.id) {
             if (tempId && tempId !== savedQuestion.id) {
               this.replaceLocalQuestionId(current, tempId, savedQuestion.id);
@@ -235,21 +242,43 @@ export class BuilderTemplateSyncOrchestrator {
             }
           }
 
-          if (saved === questions.length && !failed) {
-            this.finishSave(current, result);
-          }
+          completed++;
+          this.finishInitialQuestionSync(current, result, completed, questions.length, failed);
         },
         error: (error: unknown) => {
           failed = true;
-          this.creating = false;
           console.error('Erreur création question', error);
+          completed++;
+          this.finishInitialQuestionSync(current, result, completed, questions.length, failed, error);
         }
       });
     });
   }
 
+  private finishInitialQuestionSync(
+    current: Template,
+    result: any,
+    completed: number,
+    total: number,
+    failed: boolean,
+    error?: unknown
+  ): void {
+    if (completed !== total) {
+      return;
+    }
+
+    this.creating = false;
+    if (failed) {
+      this.showSaveError(error);
+      return;
+    }
+
+    this.finishSave(current, result);
+  }
+
   private replaceLocalQuestionId(template: Template, localId: string, backendId: string): void {
-    const updatedQuestions = (template.questions || []).map((question) => {
+    const activeTemplate = this.state.template ?? template;
+    const updatedQuestions = (activeTemplate.questions || []).map((question) => {
       if (question.id !== localId) {
         return question;
       }
@@ -264,7 +293,7 @@ export class BuilderTemplateSyncOrchestrator {
     this.persistedQuestionIds.add(backendId);
 
     this.state.setTemplate({
-      ...template,
+      ...activeTemplate,
       questions: updatedQuestions
     });
   }
@@ -272,8 +301,9 @@ export class BuilderTemplateSyncOrchestrator {
   private finishSave(current: Template, result: any): void {
     this.creating = false;
 
+    const activeTemplate = this.state.template ?? current;
     const savedTemplate: Template = {
-      ...current,
+      ...activeTemplate,
       id: result['id'],
       updatedAt: new Date(result['updated_at'] ?? result['updatedAt'] ?? new Date())
     };
@@ -281,11 +311,12 @@ export class BuilderTemplateSyncOrchestrator {
     this.persistedQuestionIds = new Set(
       (savedTemplate.questions ?? [])
         .map((q) => q.id)
-        .filter((id): id is string => !!id)
+        .filter((id): id is string => !!id && !id.startsWith('temp-'))
     );
 
     this.state.setTemplate(savedTemplate);
     this.state.setDirty(false);
+    this.snackBar.open('Formulaire enregistré.', 'Fermer', { duration: 3000 });
   }
 
   private finishExistingTemplateSave(current: Template, result: any): void {
@@ -294,7 +325,7 @@ export class BuilderTemplateSyncOrchestrator {
     this.persistedQuestionIds = new Set(
       (activeTemplate.questions ?? [])
         .map((q) => q.id)
-        .filter((id): id is string => !!id)
+        .filter((id): id is string => !!id && !id.startsWith('temp-'))
     );
 
     this.creating = false;
@@ -305,5 +336,18 @@ export class BuilderTemplateSyncOrchestrator {
     });
 
     this.state.setDirty(false);
+    this.snackBar.open('Formulaire enregistré.', 'Fermer', { duration: 3000 });
+  }
+
+  private showSaveError(error: unknown): void {
+    const message =
+      typeof error === 'object' && error !== null && 'error' in error
+        ? (error as { error?: { message?: string } }).error?.message
+        : undefined;
+    this.snackBar.open(
+      typeof message === 'string' ? `Échec de l’enregistrement : ${message}` : 'Échec de l’enregistrement. Vos modifications restent en attente.',
+      'Fermer',
+      { duration: 5000 }
+    );
   }
 }

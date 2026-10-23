@@ -54,6 +54,9 @@ export class CanvasComponent {
 
   QuestionType = QuestionType;
 
+  get orderedQuestions(): Question[] {
+    return [...this.builder.questions].sort((a, b) => a.order - b.order);
+  }
 
 
   constructor(

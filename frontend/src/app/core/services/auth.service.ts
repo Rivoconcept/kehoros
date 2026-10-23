@@ -42,21 +42,26 @@ export class AuthService {
 
   login(dto: LoginDto) {
     return this.http.post<AuthResponse>(`${this.baseUrl}/auth/login`, dto).pipe(
-      tap(res => {
-        localStorage.setItem('access_token', res.access_token);
-        this.isLoggedIn.set(true);
-        this.currentRole.set(this.getRole());
-      })
+      tap(res => this.storeToken(res))
+    );
+  }
+
+  requestEmailCode(email: string) {
+    return this.http.post<{ accountExists: boolean; message?: string }>(
+      `${this.baseUrl}/auth/email-code/request`,
+      { email },
+    );
+  }
+
+  loginWithEmailCode(email: string, code: string) {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/email-code/verify`, { email, code }).pipe(
+      tap(res => this.storeToken(res))
     );
   }
 
   register(dto: RegisterDto) {
     return this.http.post<AuthResponse>(`${this.baseUrl}/auth/register`, dto).pipe(
-      tap(res => {
-        localStorage.setItem('access_token', res.access_token);
-        this.isLoggedIn.set(true);
-        this.currentRole.set(this.getRole());
-      })
+      tap(res => this.storeToken(res))
     );
   }
 
@@ -83,6 +88,12 @@ export class AuthService {
 
   getRole(): string {
     return this.getPayload()?.role || '';
+  }
+
+  private storeToken(res: AuthResponse): void {
+    localStorage.setItem('access_token', res.access_token);
+    this.isLoggedIn.set(true);
+    this.currentRole.set(this.getRole());
   }
 
   updateRole(id:string,role:string){

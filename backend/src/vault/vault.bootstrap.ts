@@ -49,6 +49,22 @@ export class VaultBootstrap {
     process.env.JWT_REFRESH_SECRET = jwtData.data.data.refresh_secret;
     process.env.JWT_EXPIRES = jwtData.data.data.expires;
 
+    const smtpRes = await undiciFetch(`${vaultAddr}/v1/kehoros/data/backend/smtp`, {
+      headers: { 'X-Vault-Token': token },
+      dispatcher,
+    });
+    if (smtpRes.ok) {
+      const smtpData: any = await smtpRes.json();
+      process.env.SMTP_HOST = smtpData.data.data.host;
+      process.env.SMTP_PORT = String(smtpData.data.data.port);
+      process.env.SMTP_SECURE = String(smtpData.data.data.secure);
+      process.env.SMTP_USER = smtpData.data.data.username;
+      process.env.SMTP_PASSWORD = smtpData.data.data.password;
+      process.env.SMTP_FROM = smtpData.data.data.from;
+    } else if (smtpRes.status !== 404) {
+      throw new Error(`Vault SMTP secret request failed with status ${smtpRes.status}`);
+    }
+
     console.log('Secrets loaded from Vault.');
   }
 }

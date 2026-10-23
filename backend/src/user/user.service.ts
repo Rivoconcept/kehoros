@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { User, UserRole } from './user.entity';
+import { User, UserRole } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -80,9 +80,10 @@ export class UserService {
    * Recherche par email
    */
   async findByEmail(email: string): Promise<User | null> {
-    return this.userRepo.findOne({
-      where: { email },
-    });
+    return this.userRepo
+      .createQueryBuilder('user')
+      .where('LOWER(user.email) = LOWER(:email)', { email: email.trim() })
+      .getOne();
   }
 
   /**
@@ -146,4 +147,3 @@ export class UserService {
     await this.userRepo.remove(user);
   }
 }
-

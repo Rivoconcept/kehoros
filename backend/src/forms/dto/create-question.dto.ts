@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsBoolean,
   IsEnum,
   IsNumber,
@@ -7,9 +8,28 @@ import {
   IsString,
   IsUUID,
   Min,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 import { QuestionType } from '../enums/question-type.enum';
+
+export class CreateQuestionOptionDto {
+  @IsString()
+  label: string;
+
+  @IsString()
+  value: string;
+
+  @IsOptional()
+  @IsBoolean()
+  is_correct?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  position?: number;
+}
 
 export class CreateQuestionDto {
   @IsUUID()
@@ -48,5 +68,10 @@ export class CreateQuestionDto {
   @IsOptional()
   @IsObject()
   settings?: Record<string, any>;
-}
 
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateQuestionOptionDto)
+  options?: CreateQuestionOptionDto[];
+}

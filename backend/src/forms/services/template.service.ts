@@ -46,10 +46,15 @@ export class TemplateService {
 
   async findAll(): Promise<FormTemplate[]> {
     return this.templateRepo.find({
-      order: { created_at: 'DESC' },
       relations: {
         questions: {
           options: true,
+        },
+      },
+      order: {
+        created_at: 'DESC',
+        questions: {
+          position: 'ASC',
         },
       },
     });
@@ -63,6 +68,11 @@ export class TemplateService {
           options: true,
         },
         assignments: true,
+      },
+      order: {
+        questions: {
+          position: 'ASC',
+        },
       },
     });
 

@@ -8,7 +8,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import { Department } from './department.entity';
+import { Department } from '../../user-department/entities/user-department.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -85,4 +85,3 @@ export class User {
   @CreateDateColumn()
   created_at: Date;
 }
-

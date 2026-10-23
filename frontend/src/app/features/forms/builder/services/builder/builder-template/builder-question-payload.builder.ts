@@ -15,7 +15,12 @@ export class BuilderQuestionPayloadBuilder {
       required: question.required ?? false,
       position: question.order ?? 0,
       points: question.score ?? 0,
-      options: question.options ?? [],
+      options: (question.options ?? []).map((option, index) => ({
+        label: option.label,
+        value: option.value,
+        is_correct: false,
+        position: option.order ?? index
+      })),
 
       settings: {
         placeholder: question.placeholder ?? '',

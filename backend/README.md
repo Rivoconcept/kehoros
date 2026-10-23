@@ -31,6 +31,47 @@
 $ npm install
 ```
 
+## Connexion par code e-mail (OTP)
+
+La connexion classique par mot de passe reste disponible. La connexion OTP envoie
+un code à 6 chiffres, valable 10 minutes, à l'adresse d'un compte actif. Après
+5 codes incorrects, le code en cours est invalidé. Une nouvelle demande est
+limitée à une par minute pour la même adresse.
+
+Pour activer l'envoi, créer `secrets/backend/smtp.json` avec les paramètres du
+serveur SMTP :
+
+```json
+{
+  "host": "smtp.example.com",
+  "port": 587,
+  "secure": false,
+  "username": "compte-smtp",
+  "password": "mot-de-passe-smtp",
+  "from": "Kehoros <no-reply@example.com>"
+}
+```
+
+Ce fichier contient un secret : ne pas le versionner. Au démarrage, Vault
+l'importe dans `kehoros/backend/smtp`. Comme le script d'import est copié dans
+l'image Vault, reconstruire Vault puis redémarrer le backend après avoir ajouté
+ou modifié le fichier :
+
+```bash
+docker compose up -d --build vault
+docker compose restart backend
+```
+
+Le port 465 requiert `secure: true`; le port 587 utilise généralement
+`secure: false` avec STARTTLS. Si la configuration manque, la connexion
+classique continue de fonctionner et la demande OTP renvoie une erreur
+explicite.
+
+Les codes sont stockés temporairement en mémoire du backend : ils sont invalidés
+au redémarrage et cette version doit être utilisée avec une seule instance du
+backend. Une mise à l'échelle horizontale nécessite un stockage partagé pour
+les codes et les limites de renvoi.
+
 ## Compile and run the project
 
 ```bash

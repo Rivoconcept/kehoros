@@ -6,7 +6,7 @@ import {
 
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
 import { FormQuestion } from '../entities/form-question.entity';
 import { FormOption } from '../entities/form-option.entity';
@@ -14,7 +14,10 @@ import { FormTemplate } from '../entities/form-template.entity';
 
 import { QuestionType } from '../enums/question-type.enum';
 
-import { CreateQuestionDto } from '../dto/create-question.dto';
+import {
+  CreateQuestionDto,
+  CreateQuestionOptionDto,
+} from '../dto/create-question.dto';
 
 export interface CreateQuestionInput extends CreateQuestionDto {}
 
@@ -26,6 +29,7 @@ export interface UpdateQuestionInput {
   position?: number;
   points?: number;
   settings?: Record<string, any>;
+  options?: CreateQuestionOptionDto[];
 }
 
 export interface CreateOptionInput {
@@ -47,6 +51,8 @@ export class QuestionService {
 
     @InjectRepository(FormTemplate)
     private readonly templateRepo: Repository<FormTemplate>,
+
+    private readonly dataSource: DataSource,
   ) {}
 
   /**
@@ -76,30 +82,26 @@ export class QuestionService {
       );
     }
 
-    const question = this.questionRepo.create({
-      template_id: input.template_id,
+    return this.dataSource.transaction(async (manager) => {
+      const question = manager.create(FormQuestion, {
+        template_id: input.template_id,
+        title: input.title.trim(),
+        description: input.description?.trim() ?? undefined,
+        type: normalizedType,
+        required: input.required ?? false,
+        position: input.position ?? 0,
+        points: input.points ?? 0,
+        settings: input.settings ?? {},
+      });
 
-      title: input.title.trim(),
+      const savedQuestion = await manager.save(FormQuestion, question);
+      await this.saveOptions(manager, savedQuestion.id, input.options);
 
-      description:
-        input.description?.trim() ?? undefined,
-
-      type: normalizedType,
-
-      required:
-        input.required ?? false,
-
-      position:
-        input.position ?? 0,
-
-      points:
-        input.points ?? 0,
-
-      settings:
-        input.settings ?? {},
+      return manager.findOneOrFail(FormQuestion, {
+        where: { id: savedQuestion.id },
+        relations: { options: true },
+      });
     });
-
-    return this.questionRepo.save(question);
   }
 
   /**
@@ -237,12 +239,42 @@ export class QuestionService {
         payload.settings,
     });
 
-    await this.questionRepo.update(
-      id,
-      payload,
-    );
+    return this.dataSource.transaction(async (manager) => {
+      await manager.update(FormQuestion, id, payload);
 
-    return this.findOne(id);
+      if (input.options !== undefined) {
+        await manager.delete(FormOption, { question_id: id });
+        await this.saveOptions(manager, id, input.options);
+      }
+
+      return manager.findOneOrFail(FormQuestion, {
+        where: { id },
+        relations: { options: true },
+      });
+    });
+  }
+
+  private async saveOptions(
+    manager: import('typeorm').EntityManager,
+    questionId: string,
+    options: CreateQuestionOptionDto[] = [],
+  ): Promise<void> {
+    if (options.length === 0) {
+      return;
+    }
+
+    await manager.save(
+      FormOption,
+      options.map((option, index) =>
+        manager.create(FormOption, {
+          question_id: questionId,
+          label: option.label.trim(),
+          value: option.value.trim(),
+          is_correct: option.is_correct ?? false,
+          position: option.position ?? index,
+        }),
+      ),
+    );
   }
 
   /**
@@ -523,4 +555,3 @@ export class QuestionService {
     }
   }
 }
-

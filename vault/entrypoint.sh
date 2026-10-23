@@ -102,6 +102,16 @@ if [ -f /secrets/backend/jwt.json ]; then
     refresh_expires_in="$(jq -r '.refresh_expires_in' /secrets/backend/jwt.json)"
 fi
 
+if [ -f /secrets/backend/smtp.json ]; then
+  vault kv put kehoros/backend/smtp \
+    host="$(jq -r '.host' /secrets/backend/smtp.json)" \
+    port="$(jq -r '.port' /secrets/backend/smtp.json)" \
+    secure="$(jq -r '.secure' /secrets/backend/smtp.json)" \
+    username="$(jq -r '.username' /secrets/backend/smtp.json)" \
+    password="$(jq -r '.password' /secrets/backend/smtp.json)" \
+    from="$(jq -r '.from' /secrets/backend/smtp.json)"
+fi
+
 ##################################
 # AppRole pour le backend (auth sans root token)
 ##################################

@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 import { FormTemplate } from './form-template.entity';
-import { User } from '../../user/user.entity';
+import { User } from '../../user/entities/user.entity';
 
 @Entity('form_assignments')
 export class FormAssignment {

@@ -16,7 +16,11 @@ export class BuilderSortService {
     const questionsCopy = [...currentTemplate.questions];
     moveItemInArray(questionsCopy, previousIndex, currentIndex);
 
-    // Mettre à jour l'état centralisé
-    this.state.updateQuestions(questionsCopy); // Adaptez selon le nom de la méthode dans votre StateService
+    this.state.updateQuestions(
+      questionsCopy.map((question, order) => ({
+        ...question,
+        order
+      }))
+    );
   }
 }
