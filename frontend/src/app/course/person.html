@@ -1,0 +1,48 @@
+<h1>Bonjour, {{ name }} !</h1>
+
+<div>{{ count }}</div>
+
+<button [disabled]="buttonDisabled" (click)="incrementCount()">Count</button>
+
+<!-- console.log event key -->
+<input type="text" (keydown)="logKey($event)">
+
+<div>{{ message }}</div>
+
+<!-- Two way binding -->
+<input type="text" [(ngModel)]="message">
+
+<button (click)="message= ''">Reset</button>
+
+<br>
+<br>
+<!-- Control flow -->
+ @if (a > b) {
+    {{ a }} is better than {{ b }}
+ } @else if (a < b) {
+    {{ a }} is less than {{ b }}
+ } @else {
+    {{ a }} is equal to {{ b }}
+ }
+
+
+<br>
+<br>
+
+@for (item of family; track item.id) {
+    <div>{{item.name}} has {{ item.age }} year old</div>
+}
+
+
+<!-- Concept de signals -->
+
+<div> {{ res() }}</div>
+
+<input type="text" [(ngModel)] ="quantity">
+<input type="text" [(ngModel)] ="price">
+
+<div>{{ total() }}</div>
+
+
+
+

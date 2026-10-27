@@ -27,6 +27,7 @@ export const routes: Routes = [
       import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
   },
 
+
   // Admin + Manager
   {
     path: 'users',
@@ -84,13 +85,22 @@ export const routes: Routes = [
       ),
   },
 
-  // {
-  //   path: 'inventory',
-  //   loadComponent: () =>
-  //     import('./inventory/InventoryComponent').then (
-  //       (m) => m
-  //     ),
-  // },
+  //COURSE
+  {
+    path: 'course/person',
+    loadComponent: () =>
+      import('./course/person').then (
+        (m) => m.Person
+      ),
+  },
+
+  {
+    path: 'course/prompts',
+    loadComponent: () =>
+      import('./course/prompts/prompt-list/prompt-list.component').then (
+        (m) => m.PromptListComponent
+      ),
+  },
 
   { path: '**', redirectTo: '/login' },
 ];
