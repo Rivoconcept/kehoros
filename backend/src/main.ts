@@ -20,6 +20,7 @@ async function bootstrap() {
       'http://frontend.localhost',
       'http://frontend.localhost:4200',
       'http://localhost:4200',
+      'http://localhost:4201',
     ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],

@@ -1,8 +1,12 @@
     <div class="container">
-        <div>
-            {{ prompt().title }} par {{prompt().author.username}}
-            <button>Edit</button>
-            <button (click)="copyToClipBoard()">Copy</button>
+        <div class="card-head">
+            <div>
+                {{ prompt().title }} par {{prompt().author.username}}
+            </div>
+            <div style="gap: 10;">
+                <button type="button" class="btn btn-primary">Edit</button>
+                <button (click)="copyToClipBoard()">Copy</button>
+            </div>
         </div>
         <textarea readonly class="content">{{prompt().content}} </textarea>
         <div>

@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { Prompt } from '../prompt.model';
 import { PromptCardComponent } from '../prompt-card/prompt-card.component';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-prompt-list',
   standalone: true,
-  imports: [PromptCardComponent],
+  imports: [PromptCardComponent, NavbarComponent],
   templateUrl: './prompt-list.component.html',
   styleUrl: './prompt-list.component.scss'
 })
