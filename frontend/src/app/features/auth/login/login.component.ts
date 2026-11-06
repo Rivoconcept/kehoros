@@ -33,29 +33,27 @@ export class LoginComponent {
   email    = '';
   password = '';
   code = '';
+  verificationMethod: 'email' | 'recovery' = 'email';
   rememberMe = false;
+  challengeId = '';
 
   // UI state
   loading      = false;
   error        = '';
+  notice       = '';
+  emailCodeSent = true;
   otpRequested = false;
-  accountNotFound = false;
-  usePassword = false;
   showPassword = false;
 
   constructor(
     private authService: AuthService,
     private activatedRoute: ActivatedRoute,
-  ) {}
+  ) {
+    this.email = this.activatedRoute.snapshot.queryParamMap.get('email') ?? '';
+  }
 
   onSubmit() {
-    if (!this.usePassword) {
-      this.requestEmailCode();
-      return;
-    }
-
     this.error = '';
-    this.accountNotFound = false;
 
     if (!this.email || !this.password) {
       this.error = 'Veuillez remplir tous les champs.';
@@ -68,61 +66,46 @@ export class LoginComponent {
       email:    this.email,
       password: this.password,
     }).subscribe({
-      next: async () => {
+      next: async (response) => {
         this.loading = false;
-
-        const returnUrl = this.activatedRoute.snapshot.queryParamMap.get('returnUrl') ?? undefined;
-        const ok = await this.authService.redirectByRole(returnUrl);
-
-        if (!ok) {
-          this.error = 'Impossible d’accéder à la page demandée.';
-        }
-      },
-      error: (err) => {
-        this.error = this.getErrorMessage(err, 'Email ou mot de passe incorrect.');
-        this.loading = false;
-      },
-    });
-  }
-
-  requestEmailCode() {
-    this.error = '';
-    this.accountNotFound = false;
-    if (!this.email.trim()) {
-      this.error = 'Veuillez saisir votre adresse e-mail.';
-      return;
-    }
-
-    this.loading = true;
-    this.authService.requestEmailCode(this.email.trim()).subscribe({
-      next: (response) => {
-        if (!response.accountExists) {
-          this.accountNotFound = true;
-          this.loading = false;
+        if ('access_token' in response) {
+          const returnUrl = this.activatedRoute.snapshot.queryParamMap.get('returnUrl') ?? undefined;
+          const ok = await this.authService.redirectByRole(returnUrl);
+          if (!ok) {
+            this.error = 'Impossible d’accéder à la page demandée.';
+          }
           return;
         }
+
+        this.challengeId = response.challengeId;
         this.otpRequested = true;
         this.code = '';
-        this.loading = false;
+        this.verificationMethod = 'email';
+        this.emailCodeSent = response.emailCodeSent;
+        this.notice = response.message;
       },
       error: (err) => {
-        this.error = err?.status === 404
-          ? 'Le service de connexion par e-mail n’est pas à jour. Redémarrez le backend, puis réessayez.'
-          : this.getErrorMessage(err, 'Impossible d’envoyer le code. Réessayez plus tard.');
+        this.error = this.getErrorMessage(err, 'E-mail ou mot de passe incorrect.');
         this.loading = false;
       },
     });
   }
 
-  verifyEmailCode() {
+  verifyCode() {
     this.error = '';
-    if (!/^\d{6}$/.test(this.code)) {
-      this.error = 'Veuillez saisir le code à 6 chiffres reçu par e-mail.';
+    if (!this.code.trim()) {
+      this.error = this.verificationMethod === 'email'
+        ? 'Veuillez saisir le code reçu par e-mail.'
+        : 'Veuillez saisir votre code de secours.';
       return;
     }
 
     this.loading = true;
-    this.authService.loginWithEmailCode(this.email.trim(), this.code).subscribe({
+    this.authService.verifyLogin(
+      this.challengeId,
+      this.code.trim(),
+      this.verificationMethod,
+    ).subscribe({
       next: async () => {
         this.loading = false;
         const returnUrl = this.activatedRoute.snapshot.queryParamMap.get('returnUrl') ?? undefined;
@@ -132,7 +115,29 @@ export class LoginComponent {
         }
       },
       error: (err) => {
-        this.error = this.getErrorMessage(err, 'Le code est incorrect ou expiré.');
+        this.error = this.getErrorMessage(err, 'Code incorrect ou expiré.');
+        this.loading = false;
+      },
+    });
+  }
+
+  selectVerificationMethod(method: 'email' | 'recovery') {
+    this.verificationMethod = method;
+    this.code = '';
+    this.error = '';
+  }
+
+  resendCode() {
+    this.error = '';
+    this.loading = true;
+    this.authService.resendLoginCode(this.challengeId).subscribe({
+      next: () => {
+        this.loading = false;
+        this.code = '';
+        this.verificationMethod = 'email';
+      },
+      error: (err) => {
+        this.error = this.getErrorMessage(err, 'Impossible de renvoyer le code.');
         this.loading = false;
       },
     });
@@ -141,13 +146,9 @@ export class LoginComponent {
   changeEmail() {
     this.otpRequested = false;
     this.code = '';
+    this.password = '';
+    this.challengeId = '';
     this.error = '';
-  }
-
-  toggleAuthMode() {
-    this.usePassword = !this.usePassword;
-    this.error = '';
-    this.accountNotFound = false;
   }
 
   private getErrorMessage(err: any, fallback: string): string {

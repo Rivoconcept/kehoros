@@ -13,33 +13,62 @@
           <span>{{ error }}</span>
         </div>
       }
-
-      @if (accountNotFound) {
-        <div class="register-invitation">
-          <span>Aucun compte n'est associé à cette adresse.</span>
-          <a routerLink="/register" [queryParams]="{ email: email }">Créer un compte</a>
+      @if (notice && otpRequested) {
+        <div class="notice" [class.warning]="!emailCodeSent" role="status">
+          <mat-icon>{{ emailCodeSent ? 'mark_email_read' : 'warning_amber' }}</mat-icon>
+          <span>{{ notice }}</span>
         </div>
       }
 
       @if (otpRequested) {
         <div class="otp-step-heading">
           <div class="otp-step-icon"><mat-icon>mark_email_read</mat-icon></div>
-          <h2>Vérifiez votre boîte mail</h2>
-          <p>Nous avons envoyé un code de connexion à <strong>{{ email }}</strong>.</p>
+          <h2>Vérification en deux étapes</h2>
+          <p>Choisissez comment confirmer votre identité.</p>
         </div>
-        <form (ngSubmit)="verifyEmailCode()">
+
+        <div class="verification-options" role="group" aria-label="Méthode de vérification">
+          <button
+            type="button"
+            class="verification-option"
+            [class.selected]="verificationMethod === 'email'"
+            [attr.aria-pressed]="verificationMethod === 'email'"
+            (click)="selectVerificationMethod('email')"
+            [disabled]="loading">
+            <mat-icon>email</mat-icon>
+            <span>
+              <strong>Code reçu par e-mail</strong>
+              <small>{{ email }}</small>
+            </span>
+          </button>
+          <button
+            type="button"
+            class="verification-option"
+            [class.selected]="verificationMethod === 'recovery'"
+            [attr.aria-pressed]="verificationMethod === 'recovery'"
+            (click)="selectVerificationMethod('recovery')"
+            [disabled]="loading">
+            <mat-icon>vpn_key</mat-icon>
+            <span>
+              <strong>Saisir un code de secours</strong>
+              <small>Code remis par votre administrateur</small>
+            </span>
+          </button>
+        </div>
+
+        <form (ngSubmit)="verifyCode()">
           <mat-form-field appearance="outline" class="full">
-            <mat-label>Code reçu par e-mail</mat-label>
+            <mat-label>{{ verificationMethod === 'email' ? 'Code reçu par e-mail' : 'Code de secours' }}</mat-label>
             <input
               matInput
               type="text"
-              inputmode="numeric"
-              autocomplete="one-time-code"
+              [attr.inputmode]="verificationMethod === 'email' ? 'numeric' : 'text'"
+              [autocomplete]="verificationMethod === 'email' ? 'one-time-code' : 'off'"
               [(ngModel)]="code"
               name="code"
-              maxlength="6"
-              pattern="[0-9]{6}"
-              placeholder="000000"
+              [maxlength]="verificationMethod === 'email' ? 6 : 18"
+              [placeholder]="verificationMethod === 'email' ? '000000' : 'Code fourni par l’administrateur'"
+              [pattern]="verificationMethod === 'email' ? '[0-9]{6}' : '[a-fA-F0-9]{18}'"
               required
             />
           </mat-form-field>
@@ -53,12 +82,14 @@
           </button>
         </form>
         <div class="otp-actions">
-          <button type="button" class="text-button" (click)="requestEmailCode()" [disabled]="loading">
-            Renvoyer le code
-          </button>
-          <span aria-hidden="true">·</span>
+          @if (verificationMethod === 'email') {
+            <button type="button" class="text-button" (click)="resendCode()" [disabled]="loading">
+              Renvoyer le code
+            </button>
+            <span aria-hidden="true">·</span>
+          }
           <button type="button" class="text-button" (click)="changeEmail()" [disabled]="loading">
-            Modifier l'adresse
+            Modifier les identifiants
           </button>
         </div>
       } @else {
@@ -77,44 +108,38 @@
             <mat-icon matSuffix>email</mat-icon>
           </mat-form-field>
 
-          @if (usePassword) {
-            <mat-form-field appearance="outline" class="full">
-              <mat-label>Mot de passe</mat-label>
-              <input
-                matInput
-                [type]="showPassword ? 'text' : 'password'"
-                [(ngModel)]="password"
-                name="password"
-                autocomplete="current-password"
-                required
-              />
-              <button mat-icon-button matSuffix type="button" (click)="showPassword = !showPassword">
-                <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-              </button>
-            </mat-form-field>
+          <mat-form-field appearance="outline" class="full">
+            <mat-label>Mot de passe</mat-label>
+            <input
+              matInput
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="password"
+              name="password"
+              autocomplete="current-password"
+              required
+            />
+            <button mat-icon-button matSuffix type="button" (click)="showPassword = !showPassword">
+              <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-form-field>
 
-            <div class="options-row">
-              <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe">Se souvenir de moi</mat-checkbox>
-            </div>
-          }
+          <div class="options-row">
+            <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe">Se souvenir de moi</mat-checkbox>
+          </div>
 
           <a class="forgot-link" routerLink="/forgot-password">Mot de passe oublié ?</a>
 
           <button mat-raised-button color="primary" class="submit" [disabled]="loading">
             @if (!loading) {
               <ng-container>
-                <mat-icon>{{ usePassword ? 'login' : 'mail' }}</mat-icon>
+                <mat-icon>login</mat-icon>
                 Se connecter
               </ng-container>
             } @else {
-              {{ usePassword ? 'Connexion...' : 'Envoi du code...' }}
+              Vérification des identifiants...
             }
           </button>
         </form>
-
-        <button type="button" class="text-button auth-mode-toggle" (click)="toggleAuthMode()" [disabled]="loading">
-          {{ usePassword ? 'Se connecter avec un code e-mail' : 'Utiliser mon mot de passe' }}
-        </button>
       }
     </mat-card-content>
 

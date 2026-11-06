@@ -1,10 +1,43 @@
 <div class="page">
 
+  @if (recoveryCodeRequestError) {
+    <div class="recovery-request-error" role="alert">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ recoveryCodeRequestError }}</span>
+      <button mat-icon-button aria-label="Fermer le message" (click)="recoveryCodeRequestError = ''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  }
+  @if (twoFactorError) {
+    <div class="recovery-request-error" role="alert">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ twoFactorError }}</span>
+      <button mat-icon-button aria-label="Fermer le message" (click)="twoFactorError = ''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  }
+
   <div class="page-header">
     <div>
       <h1 class="page-title">Utilisateurs</h1>
       <p class="page-subtitle">{{ users.length }} collaborateur(s) enregistré(s)</p>
     </div>
+    <button
+      mat-raised-button
+      [color]="allTwoFactorEnabled ? 'warn' : 'primary'"
+      [disabled]="loading || twoFactorBulkLoading || users.length === 0"
+      (click)="toggleAllTwoFactor()">
+      <mat-icon>{{ allTwoFactorEnabled ? 'no_encryption' : 'enhanced_encryption' }}</mat-icon>
+      @if (twoFactorBulkLoading) {
+        Mise à jour...
+      } @else if (allTwoFactorEnabled) {
+        Désactiver la 2FA pour tous
+      } @else {
+        Activer la 2FA pour tous
+      }
+    </button>
   </div>
 
   <mat-card class="table-card">
@@ -86,6 +119,28 @@
             <div class="actions">
               <button
                 mat-icon-button
+                matTooltip="Générer un code de secours"
+                (click)="generateRecoveryCode(user)">
+                <mat-icon>vpn_key</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                matTooltip="Modifier le mot de passe"
+                (click)="openPasswordDialog(user)">
+                <mat-icon>lock_reset</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                [class.two-factor-enabled]="user.two_factor_enabled"
+                [class.two-factor-disabled]="!user.two_factor_enabled"
+                [matTooltip]="user.two_factor_enabled ? 'Désactiver la double authentification' : 'Activer la double authentification'"
+                [attr.aria-label]="user.two_factor_enabled ? 'Désactiver la double authentification de ' + user.first_name : 'Activer la double authentification de ' + user.first_name"
+                [disabled]="twoFactorUpdatingIds.has(user.id) || twoFactorBulkLoading"
+                (click)="toggleUserTwoFactor(user)">
+                <mat-icon>{{ user.two_factor_enabled ? 'verified_user' : 'gpp_bad' }}</mat-icon>
+              </button>
+              <button
+                mat-icon-button
                 [class.toggle-active]="user.is_active"
                 [class.toggle-inactive]="!user.is_active"
                 [matTooltip]="user.is_active ? 'Désactiver' : 'Activer'"
@@ -110,5 +165,141 @@
     }
 
   </mat-card>
+
+  @if (recoveryCode) {
+    <div class="recovery-dialog-backdrop">
+      <section
+        class="recovery-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="recovery-dialog-title"
+        aria-describedby="recovery-dialog-description">
+        <div class="recovery-dialog-icon"><mat-icon>vpn_key</mat-icon></div>
+        <h2 id="recovery-dialog-title">Code de secours généré</h2>
+        <p id="recovery-dialog-description">
+          Transmettez ce code à <strong>{{ recoveryCodeUser }}</strong> de manière sécurisée.
+          Il ne sera plus affiché et ne peut être utilisé qu’une seule fois.
+        </p>
+
+        <div class="recovery-code-field">
+          <code>{{ recoveryCode }}</code>
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            (click)="copyRecoveryCode()">
+            <mat-icon>{{ recoveryCodeCopied ? 'check' : 'content_copy' }}</mat-icon>
+            {{ recoveryCodeCopied ? 'Copié' : 'Copier le code' }}
+          </button>
+        </div>
+
+        @if (recoveryCodeError) {
+          <p class="recovery-copy-error" role="alert">{{ recoveryCodeError }}</p>
+        }
+
+        <button mat-button type="button" class="recovery-close" (click)="closeRecoveryCode()">
+          Fermer
+        </button>
+      </section>
+    </div>
+  }
+
+  @if (passwordUserId) {
+    <div class="recovery-dialog-backdrop">
+      <section
+        class="recovery-dialog password-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="password-dialog-title">
+        <div class="recovery-dialog-icon"><mat-icon>lock_reset</mat-icon></div>
+        <h2 id="password-dialog-title">Modifier le mot de passe</h2>
+        <p>Définissez un nouveau mot de passe pour <strong>{{ passwordUserName }}</strong>.</p>
+
+        @if (passwordError) {
+          <div class="password-feedback error" role="alert">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ passwordError }}</span>
+          </div>
+        }
+        @if (passwordSuccess) {
+          <div class="password-feedback success" role="status">
+            <mat-icon>check_circle</mat-icon>
+            <span>{{ passwordSuccess }}</span>
+          </div>
+        }
+
+        @if (!passwordSuccess) {
+          <form (ngSubmit)="changeUserPassword()">
+            <label class="password-field">
+              <span>Nouveau mot de passe</span>
+              <span class="password-input">
+                <input
+                  [type]="showNewPassword ? 'text' : 'password'"
+                  [(ngModel)]="newPassword"
+                  name="newPassword"
+                  autocomplete="new-password"
+                  minlength="6"
+                  maxlength="128"
+                  required
+                />
+                <button
+                  mat-icon-button
+                  type="button"
+                  [attr.aria-label]="showNewPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+                  (click)="showNewPassword = !showNewPassword">
+                  <mat-icon>{{ showNewPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </span>
+            </label>
+
+            <label class="password-field">
+              <span>Confirmer le nouveau mot de passe</span>
+              <span class="password-input">
+                <input
+                  [type]="showConfirmPassword ? 'text' : 'password'"
+                  [(ngModel)]="confirmPassword"
+                  name="confirmPassword"
+                  autocomplete="new-password"
+                  minlength="6"
+                  maxlength="128"
+                  required
+                />
+                <button
+                  mat-icon-button
+                  type="button"
+                  [attr.aria-label]="showConfirmPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+                  (click)="showConfirmPassword = !showConfirmPassword">
+                  <mat-icon>{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </span>
+            </label>
+
+            <p class="password-hint">6 à 128 caractères</p>
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              class="password-submit"
+              [disabled]="passwordLoading">
+              @if (passwordLoading) {
+                Modification...
+              } @else {
+                <ng-container><mat-icon>save</mat-icon>Enregistrer le mot de passe</ng-container>
+              }
+            </button>
+          </form>
+        }
+
+        <button
+          mat-button
+          type="button"
+          class="recovery-close"
+          [disabled]="passwordLoading"
+          (click)="closePasswordDialog()">
+          {{ passwordSuccess ? 'Fermer' : 'Annuler' }}
+        </button>
+      </section>
+    </div>
+  }
 
 </div>

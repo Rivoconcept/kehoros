@@ -24,6 +24,14 @@ export interface AuthResponse {
   access_token: string;
 }
 
+export interface LoginChallengeResponse {
+  challengeId: string;
+  emailCodeSent: boolean;
+  message: string;
+}
+
+export type LoginResponse = AuthResponse | LoginChallengeResponse;
+
 export interface TokenPayload {
   sub: string;
   email: string;
@@ -41,21 +49,26 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
   login(dto: LoginDto) {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/login`, dto).pipe(
+    return this.http.post<LoginResponse>(`${this.baseUrl}/auth/login`, dto).pipe(
+      tap(res => {
+        if ('access_token' in res) this.storeToken(res);
+      }),
+    );
+  }
+
+  verifyLogin(challengeId: string, code: string, method: 'email' | 'recovery') {
+    return this.http.post<AuthResponse>(
+      `${this.baseUrl}/auth/login/verify`,
+      { challengeId, code, method },
+    ).pipe(
       tap(res => this.storeToken(res))
     );
   }
 
-  requestEmailCode(email: string) {
-    return this.http.post<{ accountExists: boolean; message?: string }>(
-      `${this.baseUrl}/auth/email-code/request`,
-      { email },
-    );
-  }
-
-  loginWithEmailCode(email: string, code: string) {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/email-code/verify`, { email, code }).pipe(
-      tap(res => this.storeToken(res))
+  resendLoginCode(challengeId: string) {
+    return this.http.post<{ message: string }>(
+      `${this.baseUrl}/auth/login/resend-code`,
+      { challengeId },
     );
   }
 
@@ -74,9 +87,7 @@ export class AuthService {
   }
 
   register(dto: RegisterDto) {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/register`, dto).pipe(
-      tap(res => this.storeToken(res))
-    );
+    return this.http.post<{ message: string }>(`${this.baseUrl}/auth/register`, dto);
   }
 
   logout() {

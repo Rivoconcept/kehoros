@@ -189,7 +189,10 @@ export class RegisterComponent implements OnInit {
       manager_id:  this.manager_id || undefined,
       department_id: this.department_id || undefined,
     }).subscribe({
-      next: () => this.authService.redirectByRole(),
+      next: () => {
+        this.loading = false;
+        this.router.navigate(['/login'], { queryParams: { email: this.email } });
+      },
       error: (err) => {
         this.error   = err?.error?.message ?? err?.message ?? 'Une erreur est survenue.';
         this.loading = false;

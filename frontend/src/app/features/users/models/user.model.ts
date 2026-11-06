@@ -13,6 +13,8 @@ export interface User {
 
   is_active: boolean;
 
+  two_factor_enabled: boolean;
+
   created_at: string;
 
   manager?: {

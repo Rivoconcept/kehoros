@@ -28,6 +28,12 @@ export class User {
   @Column()
   password_hash: string;
 
+  @Column({ type: 'varchar', nullable: true, select: false })
+  recovery_code_hash?: string | null;
+
+  @Column({ type: 'boolean', default: true })
+  two_factor_enabled: boolean;
+
   @Column()
   first_name: string;
 

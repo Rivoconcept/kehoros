@@ -16,7 +16,7 @@ export class CollaboratorController {
   @Get()
   @Roles(UserRole.MANAGER, UserRole.ADMIN)
   async findAll(): Promise<Collaborators[]> {
-    return await this.collaboratorService.getCollab();
+    return await this.collaboratorService.findAll();
   }
 
   @Get(':matricule')

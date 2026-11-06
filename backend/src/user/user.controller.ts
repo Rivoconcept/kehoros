@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 
@@ -17,6 +18,8 @@ import { UserService } from './user.service';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangeUserPasswordDto } from './dto/change-user-password.dto';
+import { UpdateTwoFactorDto } from './dto/update-two-factor.dto';
 
 @Controller('users')
 export class UserController {
@@ -47,6 +50,43 @@ export class UserController {
     return this.userService.updateUser(id, dto);
   }
 
+  @Post(':id/recovery-code')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  async generateRecoveryCode(@Param('id') id: string) {
+    return { code: await this.userService.generateRecoveryCode(id) };
+  }
+
+  @Patch(':id/password')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  async changePassword(
+    @Param('id') id: string,
+    @Body() dto: ChangeUserPasswordDto,
+  ) {
+    await this.userService.setPassword(id, dto.password);
+    return { message: 'Mot de passe modifié avec succès.' };
+  }
+
+  @Patch('two-factor')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  async updateAllTwoFactor(@Body() dto: UpdateTwoFactorDto) {
+    await this.userService.setTwoFactorEnabledForAll(dto.enabled);
+    return { enabled: dto.enabled };
+  }
+
+  @Patch(':id/two-factor')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  async updateUserTwoFactor(
+    @Param('id') id: string,
+    @Body() dto: UpdateTwoFactorDto,
+  ) {
+    await this.userService.setTwoFactorEnabled(id, dto.enabled);
+    return { enabled: dto.enabled };
+  }
+
   @Patch(':id/role')
   async updateRole(
     @Param('id') id: string,
@@ -74,4 +114,3 @@ export class UserController {
     };
   }
 }
-

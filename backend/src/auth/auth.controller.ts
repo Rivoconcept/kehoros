@@ -3,7 +3,8 @@ import { AuthService } from './auth.service';
 import { LoginReq } from './requests/login.req';
 import { RegisterReq } from './requests/register.req';
 import { EmailCodeRequest } from './requests/email-code.req';
-import { VerifyEmailCodeRequest } from './requests/verify-email-code.req';
+import { LoginVerificationRequest } from './requests/login-verification.req';
+import { LoginChallengeRequest } from './requests/login-challenge.req';
 import { ResetPasswordRequest } from './requests/reset-password.req';
 
 @Controller('auth')
@@ -20,14 +21,14 @@ export class AuthController {
     return this.authService.login(req);
   }
 
-  @Post('email-code/request')
-  requestEmailCode(@Body() req: EmailCodeRequest) {
-    return this.authService.requestEmailCode(req.email);
+  @Post('login/verify')
+  verifyLogin(@Body() req: LoginVerificationRequest) {
+    return this.authService.verifyLogin(req.challengeId, req.code, req.method);
   }
 
-  @Post('email-code/verify')
-  verifyEmailCode(@Body() req: VerifyEmailCodeRequest) {
-    return this.authService.verifyEmailCode(req.email, req.code);
+  @Post('login/resend-code')
+  resendLoginCode(@Body() req: LoginChallengeRequest) {
+    return this.authService.resendLoginCode(req.challengeId);
   }
 
   @Post('password-reset/request')

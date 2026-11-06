@@ -31,12 +31,16 @@
 $ npm install
 ```
 
-## Connexion par code e-mail (OTP)
+## Authentification en deux étapes
 
-La connexion classique par mot de passe reste disponible. La connexion OTP envoie
-un code à 6 chiffres, valable 10 minutes, à l'adresse d'un compte actif. Après
-5 codes incorrects, le code en cours est invalidé. Une nouvelle demande est
-limitée à une par minute pour la même adresse.
+Par défaut, tous les comptes, y compris les administrateurs, doivent saisir
+leur mot de passe puis un code à 6 chiffres envoyé par e-mail ou leur code de
+secours. Un administrateur peut activer ou désactiver cette exigence par
+utilisateur ou pour tous les comptes depuis l'écran **Utilisateurs**. Quand la
+double authentification est désactivée pour un compte, le mot de passe seul
+suffit à ouvrir une session. Le code e-mail expire après 10 minutes, est
+invalidé après 5 tentatives et son renvoi est limité à une fois par minute.
+Les anciennes routes de connexion par code seul ne sont plus disponibles.
 
 Pour activer l'envoi, créer `secrets/backend/smtp.json` avec les paramètres du
 serveur SMTP :
@@ -67,10 +71,29 @@ Le port 465 requiert `secure: true`; le port 587 utilise généralement
 classique continue de fonctionner et la demande OTP renvoie une erreur
 explicite.
 
-Les codes sont stockés temporairement en mémoire du backend : ils sont invalidés
-au redémarrage et cette version doit être utilisée avec une seule instance du
-backend. Une mise à l'échelle horizontale nécessite un stockage partagé pour
-les codes et les limites de renvoi.
+Les codes de validation sont stockés temporairement en mémoire du backend :
+ils sont invalidés au redémarrage et cette version doit être utilisée avec une
+seule instance du backend. Une mise à l'échelle horizontale nécessite un
+stockage partagé pour les challenges et les limites de renvoi.
+
+Sur l'écran de vérification, l'utilisateur choisit entre le code envoyé par
+e-mail et **Saisir un code de secours**. Un administrateur peut générer ce code
+depuis l'écran **Utilisateurs** (icône de clé). Il est affiché une seule fois,
+doit être transmis à l'utilisateur de manière sécurisée et ne fonctionne qu'une
+fois. Le code précédent est invalidé à chaque génération. Seul son hash est
+conservé en base.
+
+Depuis cette liste, l'administrateur peut aussi définir un nouveau mot de passe
+pour un utilisateur avec le bouton de cadenas. L'API `PATCH /users/:id/password`
+reçoit `{ "password": "..." }`. Le mot de passe doit contenir 6 à 128 caractères
+et est enregistré sous forme de hash.
+
+En production, ajouter la colonne avant de déployer le backend :
+
+```sql
+ALTER TABLE users ADD COLUMN IF NOT EXISTS recovery_code_hash varchar;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS two_factor_enabled boolean NOT NULL DEFAULT true;
+```
 
 ## Réinitialisation du mot de passe
 

@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import { createHmac, randomInt, timingSafeEqual } from 'node:crypto';
+import { createHmac, randomInt, randomUUID, timingSafeEqual } from 'node:crypto';
 import { createTransport } from 'nodemailer';
 import { UserService } from '../user/user.service';
 
@@ -21,12 +21,15 @@ import { User } from '../user/entities/user.entity';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
-  private readonly otpStorage = new Map<string, {
+  private readonly loginChallenges = new Map<string, {
+    userId: string;
+    email: string;
     codeHash: string;
     expiresAt: number;
     attempts: number;
     sentAt: number;
   }>();
+  private readonly loginCodeLastSent = new Map<string, number>();
   private readonly passwordResetOtpStorage = new Map<string, {
     codeHash: string;
     expiresAt: number;
@@ -45,7 +48,7 @@ export class AuthService {
     if (existing) throw new ConflictException('Email already used');
 
     const password_hash = await bcrypt.hash(dto.password, 10);
-    const user = await this.userService.create({
+    await this.userService.create({
       email,
       password_hash,
       first_name: dto.first_name,
@@ -54,41 +57,25 @@ export class AuthService {
       department_id: dto.department_id,
     });
     
-    return this.signToken(user);
+    return { message: 'Compte créé. Connectez-vous pour vérifier votre adresse e-mail.' };
   }
 
   async login(dto: LoginReq) {
-    const user = await this.userService.findByEmail(dto.email.trim().toLowerCase());
+    const email = dto.email.trim().toLowerCase();
+    const user = await this.userService.findByEmail(email);
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
-    console.log('User found, comparing password...');
-    
-    try {
-      const valid = await bcrypt.compare(dto.password, user.password_hash);
-      console.log('Password valid:', valid);
-      if (!valid) throw new UnauthorizedException('Invalid credentials');
-    } catch (err) {
-      console.error('bcrypt error:', err);
-      throw err;
-    }
-
+    const valid = await bcrypt.compare(dto.password, user.password_hash);
+    if (!valid) throw new UnauthorizedException('Invalid credentials');
     if (!user.is_active) throw new UnauthorizedException('Account disabled');
 
-    return this.signToken(user);
-  }
-
-  async requestEmailCode(rawEmail: string) {
-    const email = rawEmail.trim().toLowerCase();
-    const user = await this.userService.findByEmail(email);
-    if (!user) {
-      return { accountExists: false };
-    }
-    if (!user.is_active) {
-      throw new UnauthorizedException('Ce compte est désactivé. Contactez un administrateur.');
+    if (!user.two_factor_enabled) {
+      return this.signToken(user);
     }
 
-    const previous = this.otpStorage.get(email);
-    if (previous && Date.now() - previous.sentAt < 60_000) {
+    this.clearExpiredLoginChallenges();
+    const lastSentAt = this.loginCodeLastSent.get(email);
+    if (lastSentAt && Date.now() - lastSentAt < 60_000) {
       throw new HttpException(
         'Veuillez attendre une minute avant de demander un nouveau code.',
         HttpStatus.TOO_MANY_REQUESTS,
@@ -96,53 +83,109 @@ export class AuthService {
     }
 
     const code = randomInt(100_000, 1_000_000).toString();
-    const codeHash = this.hashOtp(email, code);
-    await this.sendEmailCode(
+    const challengeId = randomUUID();
+    const sentAt = Date.now();
+    this.loginChallenges.set(challengeId, {
+      userId: user.id,
       email,
+      codeHash: this.hashOtp(email, code),
+      expiresAt: sentAt + 10 * 60_000,
+      attempts: 0,
+      sentAt,
+    });
+    this.loginCodeLastSent.set(email, sentAt);
+
+    try {
+      await this.sendEmailCode(
+        email,
+        code,
+        'Votre code de connexion Kehoros',
+        'Votre code de connexion',
+        'Failed to send email login code',
+      );
+    } catch (error) {
+      if (error instanceof ServiceUnavailableException) {
+        return {
+          challengeId,
+          emailCodeSent: false,
+          message: 'Le code e-mail n’a pas pu être envoyé. Utilisez votre code de secours.',
+        };
+      }
+      this.loginChallenges.delete(challengeId);
+      this.loginCodeLastSent.delete(email);
+      throw error;
+    }
+
+    return {
+      challengeId,
+      emailCodeSent: true,
+      message: 'Un code de vérification a été envoyé par e-mail.',
+    };
+  }
+
+  async resendLoginCode(challengeId: string) {
+    const challenge = this.loginChallenges.get(challengeId);
+    if (!challenge || Date.now() > challenge.expiresAt) {
+      this.loginChallenges.delete(challengeId);
+      throw new BadRequestException('La demande de connexion a expiré. Recommencez.');
+    }
+
+    if (Date.now() - challenge.sentAt < 60_000) {
+      throw new HttpException(
+        'Veuillez attendre une minute avant de demander un nouveau code.',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+
+    const code = randomInt(100_000, 1_000_000).toString();
+    const sentAt = Date.now();
+    challenge.sentAt = sentAt;
+    this.loginCodeLastSent.set(challenge.email, challenge.sentAt);
+    await this.sendEmailCode(
+      challenge.email,
       code,
       'Votre code de connexion Kehoros',
       'Votre code de connexion',
-      'Failed to send email login code',
+      'Failed to resend email login code',
     );
+    challenge.codeHash = this.hashOtp(challenge.email, code);
 
-    this.otpStorage.set(email, {
-      codeHash,
-      expiresAt: Date.now() + 10 * 60_000,
-      attempts: 0,
-      sentAt: Date.now(),
-    });
-
-    return { accountExists: true, message: 'Code de vérification envoyé par e-mail.' };
+    return { message: 'Un nouveau code de vérification a été envoyé.' };
   }
 
-  async verifyEmailCode(rawEmail: string, code: string) {
-    const email = rawEmail.trim().toLowerCase();
-    const record = this.otpStorage.get(email);
-
-    if (!record) {
-      throw new BadRequestException('Aucun code valide pour cet e-mail. Demandez un nouveau code.');
+  async verifyLogin(challengeId: string, code: string, method: 'email' | 'recovery') {
+    const challenge = this.loginChallenges.get(challengeId);
+    if (!challenge) {
+      throw new BadRequestException('La demande de connexion est introuvable. Recommencez.');
     }
 
-    if (Date.now() > record.expiresAt) {
-      this.otpStorage.delete(email);
-      throw new BadRequestException('Le code a expiré. Demandez un nouveau code.');
+    if (Date.now() > challenge.expiresAt) {
+      this.loginChallenges.delete(challengeId);
+      throw new BadRequestException('Le code a expiré. Recommencez la connexion.');
     }
 
-    const providedHash = Buffer.from(this.hashOtp(email, code), 'hex');
-    const expectedHash = Buffer.from(record.codeHash, 'hex');
-    if (!timingSafeEqual(providedHash, expectedHash)) {
-      record.attempts += 1;
-      if (record.attempts >= 5) {
-        this.otpStorage.delete(email);
+    let validCode = false;
+    if (method === 'email' && /^\d{6}$/.test(code)) {
+      const providedHash = Buffer.from(this.hashOtp(challenge.email, code), 'hex');
+      const expectedHash = Buffer.from(challenge.codeHash, 'hex');
+      validCode = timingSafeEqual(providedHash, expectedHash);
+    } else if (method === 'recovery') {
+      validCode = await this.userService.consumeRecoveryCode(challenge.userId, code);
+    }
+
+    if (!validCode) {
+      challenge.attempts += 1;
+      if (challenge.attempts >= 5) {
+        this.loginChallenges.delete(challengeId);
+        throw new UnauthorizedException('Trop de tentatives. Recommencez la connexion.');
       }
       throw new UnauthorizedException('Code de validation incorrect.');
     }
 
-    this.otpStorage.delete(email);
-
-    const user = await this.userService.findByEmail(email);
-    if (!user || !user.is_active) {
-      throw new UnauthorizedException('Ce compte est introuvable ou désactivé.');
+    this.loginChallenges.delete(challengeId);
+    const user = await this.userService.findByEmail(challenge.email);
+    if (!user || !user.is_active || user.id !== challenge.userId) {
+      throw new UnauthorizedException('Le compte est introuvable ou désactivé.');
     }
 
     return this.signToken(user);
@@ -251,6 +294,20 @@ export class AuthService {
     } catch (error) {
       this.logger.error(`${errorLabel}: ${error instanceof Error ? error.message : String(error)}`);
       throw new ServiceUnavailableException('Impossible d’envoyer l’e-mail de vérification. Réessayez plus tard.');
+    }
+  }
+
+  private clearExpiredLoginChallenges(): void {
+    const now = Date.now();
+    for (const [challengeId, challenge] of this.loginChallenges) {
+      if (challenge.expiresAt <= now) {
+        this.loginChallenges.delete(challengeId);
+      }
+    }
+    for (const [email, sentAt] of this.loginCodeLastSent) {
+      if (now - sentAt >= 60_000) {
+        this.loginCodeLastSent.delete(email);
+      }
     }
   }
 

@@ -5,6 +5,8 @@ import {
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcryptjs';
+import { randomBytes } from 'node:crypto';
 
 import { User, UserRole } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -41,6 +43,7 @@ export class UserService {
         department_id: true,
         role: true,
         is_active: true,
+        two_factor_enabled: true,
         created_at: true,
       },
     });
@@ -109,6 +112,55 @@ export class UserService {
 
   async updatePassword(id: string, password_hash: string): Promise<void> {
     await this.userRepo.update(id, { password_hash });
+  }
+
+  async setPassword(id: string, password: string): Promise<void> {
+    await this.findOne(id);
+    await this.updatePassword(id, await bcrypt.hash(password, 10));
+  }
+
+  async setTwoFactorEnabled(id: string, enabled: boolean): Promise<void> {
+    await this.findOne(id);
+    await this.userRepo.update(id, { two_factor_enabled: enabled });
+  }
+
+  async setTwoFactorEnabledForAll(enabled: boolean): Promise<void> {
+    await this.userRepo
+      .createQueryBuilder()
+      .update(User)
+      .set({ two_factor_enabled: enabled })
+      .execute();
+  }
+
+  async generateRecoveryCode(id: string): Promise<string> {
+    await this.findOne(id);
+    const code = randomBytes(9).toString('hex');
+    await this.updateRecoveryCodeHash(id, await bcrypt.hash(code, 10));
+    return code;
+  }
+
+  async updateRecoveryCodeHash(id: string, recovery_code_hash: string): Promise<void> {
+    await this.userRepo.update(id, { recovery_code_hash });
+  }
+
+  async consumeRecoveryCode(id: string, code: string): Promise<boolean> {
+    const user = await this.userRepo
+      .createQueryBuilder('user')
+      .addSelect('user.recovery_code_hash')
+      .where('user.id = :id', { id })
+      .getOne();
+    const recoveryCodeHash = user?.recovery_code_hash;
+    if (!recoveryCodeHash || !(await bcrypt.compare(code, recoveryCodeHash))) {
+      return false;
+    }
+
+    const result = await this.userRepo
+      .createQueryBuilder()
+      .update(User)
+      .set({ recovery_code_hash: null })
+      .where('id = :id AND recovery_code_hash = :recoveryCodeHash', { id, recoveryCodeHash })
+      .execute();
+    return result.affected === 1;
   }
 
   /**
