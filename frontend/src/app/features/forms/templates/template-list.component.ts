@@ -1,13 +1,15 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { MenuItem } from 'primeng/api';
+import { Menu, MenuModule } from 'primeng/menu';
+import { ButtonDirective } from 'primeng/button';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -44,34 +46,38 @@ export interface FormAssignmentGroup {
 }
 
 @Component({
-  selector: 'app-template-list',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule,
-    MatMenuModule,
-    MatChipsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatTabsModule,
-    MatSnackBarModule,
-    MatTooltipModule,
-    MatDialogModule,
-    MatTableModule,
-  ],
-  templateUrl: './template-list.component.html',
-  styleUrl: './template-list.component.scss',
+    selector: 'app-template-list',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCardModule,
+        MenuModule,
+        ButtonDirective,
+        MatChipsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatTabsModule,
+        MatSnackBarModule,
+        MatTooltipModule,
+        MatDialogModule,
+        MatTableModule,
+    ],
+    templateUrl: './template-list.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './template-list.component.scss'
 })
 export class TemplateListComponent implements OnInit {
+  @ViewChild('templateActionMenu') private templateActionMenu!: Menu;
+
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
   private authService = inject(AuthService);
 
   search = '';
   templates: TemplateCard[] = [];
+  templateMenuItems: MenuItem[] = [];
   activeTab: 'active' | 'archived' | 'assigned' = 'active';
 
   // Table Master
@@ -239,6 +245,41 @@ export class TemplateListComponent implements OnInit {
 
   edit(template: TemplateCard): void {
     this.router.navigate(['/forms/builder', template.id]);
+  }
+
+  openTemplateMenu(event: Event, template: TemplateCard): void {
+    this.templateMenuItems = [
+      {
+        label: 'Edit',
+        icon: 'pi pi-pencil',
+        disabled: template.status === 'archived',
+        command: () => this.edit(template),
+      },
+      {
+        label: 'Duplicate',
+        icon: 'pi pi-copy',
+        command: () => this.duplicate(template),
+      },
+      ...(template.status === 'archived'
+        ? [{
+            label: 'Restore',
+            icon: 'pi pi-replay',
+            command: () => this.restore(template),
+          }]
+        : [{
+            label: 'Archive',
+            icon: 'pi pi-folder',
+            command: () => this.archive(template),
+          }]),
+      { separator: true },
+      {
+        label: 'Delete',
+        icon: 'pi pi-trash',
+        styleClass: 'text-red-500',
+        command: () => this.delete(template),
+      },
+    ];
+    this.templateActionMenu.toggle(event);
   }
 
   assign(template: TemplateCard): void {

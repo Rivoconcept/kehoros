@@ -1,14 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Prompt } from '../prompt.model';
 import { PromptCardComponent } from '../prompt-card/prompt-card.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
-  selector: 'app-prompt-list',
-  standalone: true,
-  imports: [PromptCardComponent, NavbarComponent],
-  templateUrl: './prompt-list.component.html',
-  styleUrl: './prompt-list.component.scss'
+    selector: 'app-prompt-list',
+    imports: [PromptCardComponent, NavbarComponent],
+    templateUrl: './prompt-list.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './prompt-list.component.scss'
 })
 export class PromptListComponent {
 

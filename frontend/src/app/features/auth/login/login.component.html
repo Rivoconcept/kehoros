@@ -95,9 +95,10 @@
 
             <div class="options-row">
               <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe">Se souvenir de moi</mat-checkbox>
-              <a class="forgot-link" routerLink="/forgot-password">Mot de passe oublié ?</a>
             </div>
           }
+
+          <a class="forgot-link" routerLink="/forgot-password">Mot de passe oublié ?</a>
 
           <button mat-raised-button color="primary" class="submit" [disabled]="loading">
             @if (!loading) {

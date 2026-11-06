@@ -178,9 +178,11 @@ mat-card-content {
 }
 
 .forgot-link {
+  display: block;
   font-size: 0.8125rem;
   color: #4299e1;
   text-decoration: none;
+  margin: 0 0 0.75rem;
 
   &:hover { text-decoration: underline; }
 }

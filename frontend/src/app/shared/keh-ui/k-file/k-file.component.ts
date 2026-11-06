@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -19,23 +20,14 @@ import {
 
 
 @Component({
-
-  selector:'app-k-file',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule
-
-  ],
-
-  templateUrl:'./k-file.component.html',
-
-  styleUrl:'./k-file.component.scss'
-
+    selector: 'app-k-file',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule
+    ],
+    templateUrl: './k-file.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-file.component.scss'
 })
 export class KFileComponent {
 

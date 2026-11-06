@@ -5,7 +5,8 @@ import {
   EventEmitter,
   OnInit,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -23,19 +24,19 @@ import { Question } from 'src/app/features/forms/models/question.model';
 import { BuilderService } from '../../../services/builder.service';
 
 @Component({
-  selector: 'app-question-preview',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatIconModule,
-    MatInputModule,
-    MatButtonModule,
-    PreviewRendererComponent
-  ],
-  templateUrl: './question-preview.component.html',
-  styleUrl: './question-preview.component.scss'
+    selector: 'app-question-preview',
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        MatInputModule,
+        MatButtonModule,
+        PreviewRendererComponent
+    ],
+    templateUrl: './question-preview.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './question-preview.component.scss'
 })
 export class QuestionPreviewComponent implements OnInit, OnChanges {
   @Input() template?: Template;

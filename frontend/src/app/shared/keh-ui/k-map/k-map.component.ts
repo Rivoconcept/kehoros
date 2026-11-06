@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -14,21 +15,13 @@ import {
 
 
 @Component({
-
-  selector:'app-k-map',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule
-
-  ],
-
-  templateUrl:'./k-map.component.html',
-
-  styleUrl:'./k-map.component.scss'
-
+    selector: 'app-k-map',
+    imports: [
+        CommonModule
+    ],
+    templateUrl: './k-map.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-map.component.scss'
 })
 export class KMapComponent {
 

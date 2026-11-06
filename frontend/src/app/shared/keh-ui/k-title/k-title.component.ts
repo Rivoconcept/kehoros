@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -14,21 +15,13 @@ import {
 
 
 @Component({
-
-  selector:'app-k-title',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule
-
-  ],
-
-  templateUrl:'./k-title.component.html',
-
-  styleUrl:'./k-title.component.scss'
-
+    selector: 'app-k-title',
+    imports: [
+        CommonModule
+    ],
+    templateUrl: './k-title.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-title.component.scss'
 })
 export class KTitleComponent {
 

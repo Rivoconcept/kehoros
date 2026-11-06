@@ -2,7 +2,8 @@ import {
   Component,
   EventEmitter,
   Input,
-  Output
+  Output,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -16,27 +17,16 @@ import { PreviewRendererComponent } from '../../preview/preview-renderer/preview
 
 
 @Component({
-
-  selector:'app-question-card',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    MatIconModule,
-
-    MatButtonModule,
-
-    PreviewRendererComponent
-
-  ],
-
-  templateUrl:'./question-card.component.html',
-
-  styleUrl:'./question-card.component.scss'
-
+    selector: 'app-question-card',
+    imports: [
+        CommonModule,
+        MatIconModule,
+        MatButtonModule,
+        PreviewRendererComponent
+    ],
+    templateUrl: './question-card.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './question-card.component.scss'
 })
 export class QuestionCardComponent {
 

@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -18,21 +19,13 @@ import {
 
 
 @Component({
-
-  selector:'app-k-divider',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule
-
-  ],
-
-  templateUrl:'./k-divider.component.html',
-
-  styleUrl:'./k-divider.component.scss'
-
+    selector: 'app-k-divider',
+    imports: [
+        CommonModule
+    ],
+    templateUrl: './k-divider.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-divider.component.scss'
 })
 export class KDividerComponent {
 

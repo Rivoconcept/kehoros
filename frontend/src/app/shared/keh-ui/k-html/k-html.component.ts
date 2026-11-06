@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -14,21 +15,13 @@ import {
 
 
 @Component({
-
-  selector:'app-k-html',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule
-
-  ],
-
-  templateUrl:'./k-html.component.html',
-
-  styleUrl:'./k-html.component.scss'
-
+    selector: 'app-k-html',
+    imports: [
+        CommonModule
+    ],
+    templateUrl: './k-html.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-html.component.scss'
 })
 export class KHtmlComponent {
 

@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -27,27 +28,16 @@ import {
 
 
 @Component({
-
-  selector:'app-k-email',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatFormFieldModule,
-
-    MatInputModule
-
-  ],
-
-  templateUrl:'./k-email.component.html',
-
-  styleUrl:'./k-email.component.scss'
-
+    selector: 'app-k-email',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule
+    ],
+    templateUrl: './k-email.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-email.component.scss'
 })
 export class KEmailComponent {
 

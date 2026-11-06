@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -31,29 +32,17 @@ import {
 
 
 @Component({
-
-  selector:'app-k-textarea',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatFormFieldModule,
-
-    MatInputModule,
-
-    FieldContainerComponent
-
-  ],
-
-  templateUrl:'./k-textarea.component.html',
-
-  styleUrl:'./k-textarea.component.scss'
-
+    selector: 'app-k-textarea',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        FieldContainerComponent
+    ],
+    templateUrl: './k-textarea.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-textarea.component.scss'
 })
 export class KTextareaComponent {
 

@@ -16,7 +16,7 @@
 
         [multiple]="Question.multipleFiles"
 
-        [accept]="Question.acceptedFileTypes?.join(',')"
+        [accept]="$safeNavigationMigration(Question.acceptedFileTypes?.join(','))"
 
         [disabled]="Question.readOnly"
 

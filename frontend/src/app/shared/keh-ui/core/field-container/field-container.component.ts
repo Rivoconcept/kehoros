@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -22,23 +23,14 @@ import {
 
 
 @Component({
-
-  selector:'app-field-container',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    FieldErrorsComponent
-
-  ],
-
-  templateUrl:'./field-container.component.html',
-
-  styleUrl:'./field-container.component.scss'
-
+    selector: 'app-field-container',
+    imports: [
+        CommonModule,
+        FieldErrorsComponent
+    ],
+    templateUrl: './field-container.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './field-container.component.scss'
 })
 export class FieldContainerComponent {
 

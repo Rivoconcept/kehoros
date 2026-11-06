@@ -1,6 +1,7 @@
 import {
   Component,
-  OnInit
+  OnInit,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -32,29 +33,17 @@ import {
 
 
 @Component({
-
-  selector:'app-k-address',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatInputModule,
-
-    MatFormFieldModule,
-
-    FieldErrorsComponent
-
-  ],
-
-  templateUrl:'./k-address.component.html',
-
-  styleUrl:'./k-address.component.scss'
-
+    selector: 'app-k-address',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatFormFieldModule,
+        FieldErrorsComponent
+    ],
+    templateUrl: './k-address.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-address.component.scss'
 })
 export class KAddressComponent 
 extends BaseFieldComponent

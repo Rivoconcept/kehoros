@@ -59,6 +59,20 @@ export class AuthService {
     );
   }
 
+  requestPasswordReset(email: string) {
+    return this.http.post<{ message: string }>(
+      `${this.baseUrl}/auth/password-reset/request`,
+      { email },
+    );
+  }
+
+  resetPassword(email: string, code: string, newPassword: string) {
+    return this.http.post<{ message: string }>(
+      `${this.baseUrl}/auth/password-reset/confirm`,
+      { email, code, newPassword },
+    );
+  }
+
   register(dto: RegisterDto) {
     return this.http.post<AuthResponse>(`${this.baseUrl}/auth/register`, dto).pipe(
       tap(res => this.storeToken(res))

@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -27,27 +28,16 @@ import {
 
 
 @Component({
-
-  selector:'app-k-number',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatFormFieldModule,
-
-    MatInputModule
-
-  ],
-
-  templateUrl:'./k-number.component.html',
-
-  styleUrl:'./k-number.component.scss'
-
+    selector: 'app-k-number',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule
+    ],
+    templateUrl: './k-number.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-number.component.scss'
 })
 export class KNumberComponent {
 

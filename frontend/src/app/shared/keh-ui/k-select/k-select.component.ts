@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -32,29 +33,17 @@ import {
 
 
 @Component({
-
-  selector:'app-k-select',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatFormFieldModule,
-
-    MatSelectModule,
-
-    FieldContainerComponent
-
-  ],
-
-  templateUrl:'./k-select.component.html',
-
-  styleUrl:'./k-select.component.scss'
-
+    selector: 'app-k-select',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        FieldContainerComponent
+    ],
+    templateUrl: './k-select.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-select.component.scss'
 })
 export class KSelectComponent {
 

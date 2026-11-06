@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -16,20 +16,20 @@ interface MenuItem {
 }
 
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule,
-    MatSidenavModule,
-    MatListModule,
-  ],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss',
+    selector: 'app-dashboard',
+    imports: [
+        CommonModule,
+        RouterLink,
+        MatToolbarModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCardModule,
+        MatSidenavModule,
+        MatListModule,
+    ],
+    templateUrl: './dashboard.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
   menuItems: MenuItem[] = [

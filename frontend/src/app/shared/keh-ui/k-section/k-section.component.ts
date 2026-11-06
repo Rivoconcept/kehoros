@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -14,21 +15,13 @@ import {
 
 
 @Component({
-
-  selector:'app-k-section',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule
-
-  ],
-
-  templateUrl:'./k-section.component.html',
-
-  styleUrl:'./k-section.component.scss'
-
+    selector: 'app-k-section',
+    imports: [
+        CommonModule
+    ],
+    templateUrl: './k-section.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-section.component.scss'
 })
 export class KSectionComponent {
 

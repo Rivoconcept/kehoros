@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -23,25 +24,15 @@ import {
 
 
 @Component({
-
-  selector:'app-k-rating',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    FieldContainerComponent
-
-  ],
-
-  templateUrl:'./k-rating.component.html',
-
-  styleUrl:'./k-rating.component.scss'
-
+    selector: 'app-k-rating',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FieldContainerComponent
+    ],
+    templateUrl: './k-rating.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-rating.component.scss'
 })
 export class KRatingComponent {
 

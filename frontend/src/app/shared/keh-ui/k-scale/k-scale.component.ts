@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -27,27 +28,16 @@ import {
 
 
 @Component({
-
-  selector:'app-k-scale',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatSliderModule,
-
-    FieldContainerComponent
-
-  ],
-
-  templateUrl:'./k-scale.component.html',
-
-  styleUrl:'./k-scale.component.scss'
-
+    selector: 'app-k-scale',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatSliderModule,
+        FieldContainerComponent
+    ],
+    templateUrl: './k-scale.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-scale.component.scss'
 })
 export class KScaleComponent {
 

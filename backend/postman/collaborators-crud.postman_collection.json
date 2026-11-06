@@ -1,0 +1,349 @@
+{
+  "info": {
+    "_postman_id": "ec372573-d188-4cc7-9c55-012346744452",
+    "name": "Kehoros - CRUD Collaborators",
+    "description": "Teste les droits manager et admin sur le CRUD /collaborators. Renseigner les variables de connexion avant l'execution.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "managerLoginEmail", "value": "" },
+    { "key": "managerLoginPassword", "value": "", "type": "secret" },
+    { "key": "managerToken", "value": "", "type": "secret" },
+    { "key": "managerTestMatricule", "value": "" },
+    { "key": "managerTestEmail", "value": "" },
+    { "key": "adminLoginEmail", "value": "" },
+    { "key": "adminLoginPassword", "value": "", "type": "secret" },
+    { "key": "adminToken", "value": "", "type": "secret" },
+    { "key": "adminTestMatricule", "value": "" },
+    { "key": "adminTestEmail", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Manager",
+      "item": [
+        {
+          "name": "1 - Connexion manager",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Connexion reussie', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "const result = pm.response.json();",
+                  "pm.test('Le compte est manager', function () { pm.expect(result.user.role).to.eql('manager'); });",
+                  "pm.collectionVariables.set('managerToken', result.access_token);",
+                  "const id = pm.variables.replaceIn('{{$guid}}').replace(/-/g, '');",
+                  "pm.collectionVariables.set('managerTestMatricule', 'PM-M-' + id.slice(0, 10));",
+                  "pm.collectionVariables.set('managerTestEmail', 'pm-manager-' + id + '@example.test');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{managerLoginEmail}}\",\n  \"password\": \"{{managerLoginPassword}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "2 - Lister les collaborateurs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Manager peut lister (200)', function () { pm.response.to.have.status(200); });",
+                  "pm.test('La reponse est une liste', function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{managerToken}}", "type": "string" }]
+            },
+            "url": "{{baseUrl}}/collaborators"
+          }
+        },
+        {
+          "name": "3 - Creer un collaborateur",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Creation reussie (201)', function () { pm.response.to.have.status(201); });",
+                  "const result = pm.response.json();",
+                  "pm.test('Les champs du collaborateur sont enregistres', function () { pm.expect(result.matricule).to.eql(pm.collectionVariables.get('managerTestMatricule')); pm.expect(result.email).to.eql(pm.collectionVariables.get('managerTestEmail')); pm.expect(result.noticed).to.eql('Test Postman manager'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{managerToken}}", "type": "string" }]
+            },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matricule\": \"{{managerTestMatricule}}\",\n  \"nom\": \"TEST POSTMAN MANAGER\",\n  \"prenoms\": \"Test\",\n  \"email\": \"{{managerTestEmail}}\",\n  \"fonction\": \"TEST\",\n  \"niveau\": \"\",\n  \"pole\": \"TEST\",\n  \"departement\": \"TEST\",\n  \"manager\": \"TEST\",\n  \"supervisor\": \"TEST\",\n  \"pays\": \"Madagascar\",\n  \"equipeFr\": \"KEOBIZ\",\n  \"verticale\": \"TEST\",\n  \"accesDrive\": true,\n  \"abilityDelegation\": true,\n  \"delegatedMail\": \"test@example.test\",\n  \"noticed\": \"Test Postman manager\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/collaborators"
+          }
+        },
+        {
+          "name": "4 - Lire le collaborateur cree",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Lecture reussie (200)', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Le bon matricule est retourne', function () { pm.expect(pm.response.json().matricule).to.eql(pm.collectionVariables.get('managerTestMatricule')); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{managerToken}}", "type": "string" }]
+            },
+            "url": "{{baseUrl}}/collaborators/{{managerTestMatricule}}"
+          }
+        },
+        {
+          "name": "5 - Modifier le collaborateur",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Modification reussie (200)', function () { pm.response.to.have.status(200); });",
+                  "pm.test('La modification est appliquee', function () { pm.expect(pm.response.json().fonction).to.eql('TEST MODIFIE MANAGER'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{managerToken}}", "type": "string" }]
+            },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fonction\": \"TEST MODIFIE MANAGER\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/collaborators/{{managerTestMatricule}}"
+          }
+        },
+        {
+          "name": "6 - Supprimer le collaborateur de test",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Suppression reussie (200)', function () { pm.response.to.have.status(200); });",
+                  "pm.test('La ligne supprimee est retournee', function () { pm.expect(pm.response.json().matricule).to.eql(pm.collectionVariables.get('managerTestMatricule')); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{managerToken}}", "type": "string" }]
+            },
+            "url": "{{baseUrl}}/collaborators/{{managerTestMatricule}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Administrateur",
+      "item": [
+        {
+          "name": "1 - Connexion administrateur",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Connexion reussie', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+                  "const result = pm.response.json();",
+                  "pm.test('Le compte est administrateur', function () { pm.expect(result.user.role).to.eql('admin'); });",
+                  "pm.collectionVariables.set('adminToken', result.access_token);",
+                  "const id = pm.variables.replaceIn('{{$guid}}').replace(/-/g, '');",
+                  "pm.collectionVariables.set('adminTestMatricule', 'PM-A-' + id.slice(0, 10));",
+                  "pm.collectionVariables.set('adminTestEmail', 'pm-admin-' + id + '@example.test');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminLoginEmail}}\",\n  \"password\": \"{{adminLoginPassword}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "2 - Lister les collaborateurs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Admin peut lister (200)', function () { pm.response.to.have.status(200); });",
+                  "pm.test('La reponse est une liste', function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "url": "{{baseUrl}}/collaborators"
+          }
+        },
+        {
+          "name": "3 - Creer un collaborateur",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Creation reussie (201)', function () { pm.response.to.have.status(201); });",
+                  "const result = pm.response.json();",
+                  "pm.test('Les champs du collaborateur sont enregistres', function () { pm.expect(result.matricule).to.eql(pm.collectionVariables.get('adminTestMatricule')); pm.expect(result.email).to.eql(pm.collectionVariables.get('adminTestEmail')); pm.expect(result.noticed).to.eql('Test Postman admin'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matricule\": \"{{adminTestMatricule}}\",\n  \"nom\": \"TEST POSTMAN ADMIN\",\n  \"prenoms\": \"Test\",\n  \"email\": \"{{adminTestEmail}}\",\n  \"fonction\": \"TEST\",\n  \"niveau\": \"\",\n  \"pole\": \"TEST\",\n  \"departement\": \"TEST\",\n  \"manager\": \"TEST\",\n  \"supervisor\": \"TEST\",\n  \"pays\": \"Madagascar\",\n  \"equipeFr\": \"KEOBIZ\",\n  \"verticale\": \"TEST\",\n  \"accesDrive\": true,\n  \"abilityDelegation\": true,\n  \"delegatedMail\": \"test@example.test\",\n  \"noticed\": \"Test Postman admin\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/collaborators"
+          }
+        },
+        {
+          "name": "4 - Lire le collaborateur cree",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Lecture reussie (200)', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Le bon matricule est retourne', function () { pm.expect(pm.response.json().matricule).to.eql(pm.collectionVariables.get('adminTestMatricule')); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "url": "{{baseUrl}}/collaborators/{{adminTestMatricule}}"
+          }
+        },
+        {
+          "name": "5 - Modifier le collaborateur",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Modification reussie (200)', function () { pm.response.to.have.status(200); });",
+                  "pm.test('La modification est appliquee', function () { pm.expect(pm.response.json().fonction).to.eql('TEST MODIFIE ADMIN'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fonction\": \"TEST MODIFIE ADMIN\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/collaborators/{{adminTestMatricule}}"
+          }
+        },
+        {
+          "name": "6 - Supprimer le collaborateur de test",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Suppression reussie (200)', function () { pm.response.to.have.status(200); });",
+                  "pm.test('La ligne supprimee est retournee', function () { pm.expect(pm.response.json().matricule).to.eql(pm.collectionVariables.get('adminTestMatricule')); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "url": "{{baseUrl}}/collaborators/{{adminTestMatricule}}"
+          }
+        }
+      ]
+    }
+  ]
+}

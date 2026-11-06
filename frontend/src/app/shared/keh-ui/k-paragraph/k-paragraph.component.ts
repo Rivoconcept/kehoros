@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -14,21 +15,13 @@ import {
 
 
 @Component({
-
-  selector:'app-k-paragraph',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule
-
-  ],
-
-  templateUrl:'./k-paragraph.component.html',
-
-  styleUrl:'./k-paragraph.component.scss'
-
+    selector: 'app-k-paragraph',
+    imports: [
+        CommonModule
+    ],
+    templateUrl: './k-paragraph.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-paragraph.component.scss'
 })
 export class KParagraphComponent {
 

@@ -1,5 +1,8 @@
-// @use "bootstrap/scss/bootstrap";
 @use './theme';
+@import "bootstrap/scss/bootstrap";
+@import "primeflex/primeflex.css";
+@import "primeicons/primeicons.css";
+
 
 :root {
   --primary: #27EBF5;
@@ -89,5 +92,4 @@ mat-icon {
 
   font-weight: 600;
 }
-
 

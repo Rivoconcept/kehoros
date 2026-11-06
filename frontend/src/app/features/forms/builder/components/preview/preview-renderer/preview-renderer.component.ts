@@ -3,7 +3,8 @@ import {
   Input,
   OnInit,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  ChangeDetectionStrategy
 } from "@angular/core";
 
 import { CommonModule } from "@angular/common";
@@ -62,65 +63,55 @@ import { KQrComponent } from "src/app/shared/keh-ui/k-qr/k-qr.component";
 import { KBarcodeComponent } from "src/app/shared/keh-ui/k-barcode/k-barcode.component";
 
 @Component({
-  selector: "app-preview-renderer",
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-
-    MatInputModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatRadioModule,
-    MatCheckboxModule,
-    MatSlideToggleModule,
-    MatSliderModule,
-
-    KPhoneComponent,
-    KAddressComponent,
-    KLocationComponent,
-    KMapComponent,
-    KPasswordComponent,
-    KUrlComponent,
-    KColorComponent,
-    KRangeComponent,
-    KHiddenComponent,
-    KDividerComponent,
-    KHtmlComponent,
-    KLabelComponent,
-
-    KEmailComponent,
-
-    KTitleComponent,
-    KSectionComponent,
-    KParagraphComponent,
-
-    KTextComponent,
-    KTextareaComponent,
-    KNumberComponent,
-
-    KDateComponent,
-    KTimeComponent,
-    KDatetimeComponent,
-
-    KSelectComponent,
-    KRadioComponent,
-    KCheckboxComponent,
-    KSwitchComponent,
-
-    KFileComponent,
-    KImageComponent,
-    KSignatureComponent,
-
-    KRatingComponent,
-    KScaleComponent,
-
-    KQrComponent,
-    KBarcodeComponent
-  ],
-  templateUrl: "./preview-renderer.component.html",
-  styleUrl: "./preview-renderer.component.scss"
+    selector: "app-preview-renderer",
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatRadioModule,
+        MatCheckboxModule,
+        MatSlideToggleModule,
+        MatSliderModule,
+        KPhoneComponent,
+        KAddressComponent,
+        KLocationComponent,
+        KMapComponent,
+        KPasswordComponent,
+        KUrlComponent,
+        KColorComponent,
+        KRangeComponent,
+        KHiddenComponent,
+        KDividerComponent,
+        KHtmlComponent,
+        KLabelComponent,
+        KEmailComponent,
+        KTitleComponent,
+        KSectionComponent,
+        KParagraphComponent,
+        KTextComponent,
+        KTextareaComponent,
+        KNumberComponent,
+        KDateComponent,
+        KTimeComponent,
+        KDatetimeComponent,
+        KSelectComponent,
+        KRadioComponent,
+        KCheckboxComponent,
+        KSwitchComponent,
+        KFileComponent,
+        KImageComponent,
+        KSignatureComponent,
+        KRatingComponent,
+        KScaleComponent,
+        KQrComponent,
+        KBarcodeComponent
+    ],
+    templateUrl: "./preview-renderer.component.html",
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: "./preview-renderer.component.scss"
 })
 export class PreviewRendererComponent implements OnInit, OnChanges {
 

@@ -1,7 +1,8 @@
 import {
   Component,
   Input,
-  OnInit
+  OnInit,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -25,25 +26,15 @@ import {
 
 
 @Component({
-
-  selector:'app-k-checkbox',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatCheckboxModule
-
-  ],
-
-  templateUrl:'./k-checkbox.component.html',
-
-  styleUrl:'./k-checkbox.component.scss'
-
+    selector: 'app-k-checkbox',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatCheckboxModule
+    ],
+    templateUrl: './k-checkbox.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-checkbox.component.scss'
 })
 export class KCheckboxComponent implements OnInit {
 

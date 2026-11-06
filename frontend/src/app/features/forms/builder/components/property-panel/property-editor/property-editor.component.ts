@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,37 +22,21 @@ import { BuilderService } from '../../../services/builder.service';
 
 
 @Component({
-
-  selector:'app-property-editor',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    FormsModule,
-
-    MatFormFieldModule,
-
-    MatInputModule,
-
-    MatSelectModule,
-
-    MatSlideToggleModule,
-
-    MatIconModule,
-
-    MatButtonModule,
-
-    OptionEditorComponent
-
-  ],
-
-  templateUrl:'./property-editor.component.html',
-
-  styleUrl:'./property-editor.component.scss'
-
+    selector: 'app-property-editor',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatSlideToggleModule,
+        MatIconModule,
+        MatButtonModule,
+        OptionEditorComponent
+    ],
+    templateUrl: './property-editor.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './property-editor.component.scss'
 })
 export class PropertyEditorComponent {
 

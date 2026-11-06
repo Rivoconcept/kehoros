@@ -1,7 +1,8 @@
 import {
   Component,
   Input,
-  OnInit
+  OnInit,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -30,29 +31,17 @@ import {
 
 
 @Component({
-
-  selector:'app-k-phone',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatFormFieldModule,
-
-    MatInputModule,
-
-    MatSelectModule
-
-  ],
-
-  templateUrl:'./k-phone.component.html',
-
-  styleUrl:'./k-phone.component.scss'
-
+    selector: 'app-k-phone',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule
+    ],
+    templateUrl: './k-phone.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-phone.component.scss'
 })
 export class KPhoneComponent implements OnInit {
 

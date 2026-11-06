@@ -2,7 +2,8 @@ import {
   Component,
   EventEmitter,
   Input,
-  Output
+  Output,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -18,31 +19,18 @@ import { QuestionOption } from '../../../../models/question-option.model';
 
 
 @Component({
-
-  selector: 'app-option-editor',
-
-  standalone: true,
-
-  imports: [
-
-    CommonModule,
-
-    FormsModule,
-
-    MatFormFieldModule,
-
-    MatInputModule,
-
-    MatIconModule,
-
-    MatButtonModule
-
-  ],
-
-  templateUrl: './option-editor.component.html',
-
-  styleUrl: './option-editor.component.scss'
-
+    selector: 'app-option-editor',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatButtonModule
+    ],
+    templateUrl: './option-editor.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './option-editor.component.scss'
 })
 export class OptionEditorComponent {
 

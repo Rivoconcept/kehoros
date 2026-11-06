@@ -85,7 +85,10 @@ export class TemplateService {
 
   async update(
     id: string,
-    input: Partial<CreateTemplateDto> & { status?: FormStatus; created_by?: string },
+    input: Partial<CreateTemplateDto> & {
+      status?: FormStatus;
+      created_by?: string;
+    },
   ): Promise<FormTemplate> {
     const existing = await this.templateRepo.findOne({ where: { id } });
 
@@ -122,7 +125,9 @@ export class TemplateService {
     }
 
     if (!template.title?.trim() || !template.category?.trim()) {
-      throw new BadRequestException('Title and category are required before publishing');
+      throw new BadRequestException(
+        'Title and category are required before publishing',
+      );
     }
 
     await this.templateRepo.update(id, { status: FormStatus.PUBLISHED });
@@ -144,7 +149,10 @@ export class TemplateService {
 
   async duplicate(
     id: string,
-    overrides?: Partial<CreateTemplateDto> & { created_by?: string; title?: string },
+    overrides?: Partial<CreateTemplateDto> & {
+      created_by?: string;
+      title?: string;
+    },
   ): Promise<FormTemplate> {
     return this.dataSource.transaction(async (manager) => {
       // 1. Récupérer le template source avec toutes ses relations
@@ -223,7 +231,9 @@ export class TemplateService {
       });
 
       if (!result) {
-        throw new NotFoundException(`Duplicated template with id ${savedTemplate.id} not found`);
+        throw new NotFoundException(
+          `Duplicated template with id ${savedTemplate.id} not found`,
+        );
       }
 
       return result;
@@ -262,7 +272,10 @@ export class TemplateService {
   }
 
   private validateTemplatePayload(
-    payload: Partial<CreateTemplateDto> & { status?: FormStatus; created_by?: string },
+    payload: Partial<CreateTemplateDto> & {
+      status?: FormStatus;
+      created_by?: string;
+    },
     operation: 'create' | 'update',
   ): void {
     if (!payload.title && operation === 'create') {
@@ -270,7 +283,9 @@ export class TemplateService {
     }
 
     if (payload.title !== undefined && payload.title.trim().length < 3) {
-      throw new BadRequestException('Template title must contain at least 3 characters');
+      throw new BadRequestException(
+        'Template title must contain at least 3 characters',
+      );
     }
 
     if (!payload.category && operation === 'create') {
@@ -278,24 +293,36 @@ export class TemplateService {
     }
 
     if (payload.category !== undefined && payload.category.trim().length < 2) {
-      throw new BadRequestException('Template category must contain at least 2 characters');
+      throw new BadRequestException(
+        'Template category must contain at least 2 characters',
+      );
     }
 
     if (
       payload.duration_minutes !== undefined &&
-      (!Number.isInteger(payload.duration_minutes) || payload.duration_minutes < 0)
+      (!Number.isInteger(payload.duration_minutes) ||
+        payload.duration_minutes < 0)
     ) {
-      throw new BadRequestException('duration_minutes must be a positive integer');
+      throw new BadRequestException(
+        'duration_minutes must be a positive integer',
+      );
     }
 
     if (
       payload.pass_score !== undefined &&
-      (!Number.isInteger(payload.pass_score) || payload.pass_score < 0 || payload.pass_score > 100)
+      (!Number.isInteger(payload.pass_score) ||
+        payload.pass_score < 0 ||
+        payload.pass_score > 100)
     ) {
-      throw new BadRequestException('pass_score must be an integer between 0 and 100');
+      throw new BadRequestException(
+        'pass_score must be an integer between 0 and 100',
+      );
     }
 
-    if (payload.status !== undefined && !Object.values(FormStatus).includes(payload.status)) {
+    if (
+      payload.status !== undefined &&
+      !Object.values(FormStatus).includes(payload.status)
+    ) {
       throw new BadRequestException('Invalid form status');
     }
   }

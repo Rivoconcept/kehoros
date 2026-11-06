@@ -2,7 +2,8 @@ import {
   Component,
   Input,
   Output,
-  EventEmitter
+  EventEmitter,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -14,15 +15,15 @@ import { Question } from '../../../../models/question.model';
 
 
 @Component({
-  selector: 'app-title-card',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatIconModule,
-    MatButtonModule
-  ],
-  templateUrl: './title-card.component.html',
-  styleUrl: './title-card.component.scss'
+    selector: 'app-title-card',
+    imports: [
+        CommonModule,
+        MatIconModule,
+        MatButtonModule
+    ],
+    templateUrl: './title-card.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './title-card.component.scss'
 })
 export class TitleCardComponent {
 

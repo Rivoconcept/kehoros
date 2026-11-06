@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -13,21 +14,13 @@ import {
 
 
 @Component({
-
-  selector:'app-k-qr',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule
-
-  ],
-
-  templateUrl:'./k-qr.component.html',
-
-  styleUrl:'./k-qr.component.scss'
-
+    selector: 'app-k-qr',
+    imports: [
+        CommonModule
+    ],
+    templateUrl: './k-qr.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-qr.component.scss'
 })
 export class KQrComponent {
 

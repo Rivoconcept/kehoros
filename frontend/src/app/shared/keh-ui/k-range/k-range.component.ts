@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -27,27 +28,16 @@ import {
 
 
 @Component({
-
-  selector:'app-k-range',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatSliderModule,
-
-    FieldContainerComponent
-
-  ],
-
-  templateUrl:'./k-range.component.html',
-
-  styleUrl:'./k-range.component.scss'
-
+    selector: 'app-k-range',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatSliderModule,
+        FieldContainerComponent
+    ],
+    templateUrl: './k-range.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-range.component.scss'
 })
 export class KRangeComponent {
 

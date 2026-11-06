@@ -2,7 +2,8 @@ import {
   Component,
   EventEmitter,
   Output,
-  HostListener
+  HostListener,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -15,26 +16,15 @@ import { QuestionType } from '../../../models/question-type.enum';
 
 
 @Component({
-
-  selector: 'app-question-palette',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    MatIconModule,
-
-    MatTooltipModule,
-    
-
-  ],
-
-  templateUrl:'./question-palette.component.html',
-
-  styleUrl:'./question-palette.component.scss'
-
+    selector: 'app-question-palette',
+    imports: [
+        CommonModule,
+        MatIconModule,
+        MatTooltipModule,
+    ],
+    templateUrl: './question-palette.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './question-palette.component.scss'
 })
 export class QuestionPaletteComponent {
 

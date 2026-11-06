@@ -107,6 +107,10 @@ export class UserService {
     return this.findOne(id);
   }
 
+  async updatePassword(id: string, password_hash: string): Promise<void> {
+    await this.userRepo.update(id, { password_hash });
+  }
+
   /**
    * Modification du rôle
    */

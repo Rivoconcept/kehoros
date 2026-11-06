@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,17 +27,17 @@ interface AssignmentResult {
 }
 
 @Component({
-  selector: 'app-form-results',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule,
-  ],
-  templateUrl: './form-results.component.html',
-  styleUrl: './form-results.component.scss',
+    selector: 'app-form-results',
+    imports: [
+        CommonModule,
+        MatButtonModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
+        MatSnackBarModule,
+    ],
+    templateUrl: './form-results.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './form-results.component.scss'
 })
 export class FormResultsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

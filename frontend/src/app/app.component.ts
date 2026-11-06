@@ -1,15 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [CommonModule, RouterOutlet],
-  template: `
+    selector: 'app-root',
+    imports: [CommonModule, RouterOutlet],
+    template: `
     <router-outlet></router-outlet>
   `,
-  styles: []
+    changeDetection: ChangeDetectionStrategy.Default,
+    styles: []
 })
 export class AppComponent {
   title = 'Kehoros-frontend';

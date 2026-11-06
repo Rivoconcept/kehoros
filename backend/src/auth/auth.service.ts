@@ -27,6 +27,12 @@ export class AuthService {
     attempts: number;
     sentAt: number;
   }>();
+  private readonly passwordResetOtpStorage = new Map<string, {
+    codeHash: string;
+    expiresAt: number;
+    attempts: number;
+    sentAt: number;
+  }>();
 
   constructor(
     private readonly userService: UserService,
@@ -89,35 +95,15 @@ export class AuthService {
       );
     }
 
-    const host = process.env.SMTP_HOST;
-    const port = Number(process.env.SMTP_PORT);
-    const username = process.env.SMTP_USER;
-    const password = process.env.SMTP_PASSWORD;
-    const from = process.env.SMTP_FROM || username;
-    if (!host || !Number.isInteger(port) || !username || !password || !from) {
-      throw new ServiceUnavailableException('Le service d’envoi d’e-mails n’est pas configuré.');
-    }
-
     const code = randomInt(100_000, 1_000_000).toString();
     const codeHash = this.hashOtp(email, code);
-    try {
-      const transporter = createTransport({
-        host,
-        port,
-        secure: process.env.SMTP_SECURE === 'true' || port === 465,
-        auth: { user: username, pass: password },
-      });
-      await transporter.sendMail({
-        from,
-        to: email,
-        subject: 'Votre code de connexion Kehoros',
-        text: `Votre code de connexion est ${code}. Il expire dans 10 minutes.`,
-        html: `<p>Votre code de connexion Kehoros est :</p><p style="font-size:24px;font-weight:bold;letter-spacing:4px">${code}</p><p>Il expire dans 10 minutes. Si vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail.</p>`,
-      });
-    } catch (error) {
-      this.logger.error(`Failed to send email login code: ${error instanceof Error ? error.message : String(error)}`);
-      throw new ServiceUnavailableException('Impossible d’envoyer l’e-mail de vérification. Réessayez plus tard.');
-    }
+    await this.sendEmailCode(
+      email,
+      code,
+      'Votre code de connexion Kehoros',
+      'Votre code de connexion',
+      'Failed to send email login code',
+    );
 
     this.otpStorage.set(email, {
       codeHash,
@@ -160,6 +146,112 @@ export class AuthService {
     }
 
     return this.signToken(user);
+  }
+
+  async requestPasswordReset(rawEmail: string) {
+    const email = rawEmail.trim().toLowerCase();
+    const user = await this.userService.findByEmail(email);
+    if (!user || !user.is_active) {
+      return { message: 'Si un compte actif est associé à cette adresse, un code sera envoyé.' };
+    }
+
+    const previous = this.passwordResetOtpStorage.get(email);
+    if (previous && Date.now() - previous.sentAt < 60_000) {
+      throw new HttpException(
+        'Veuillez attendre une minute avant de demander un nouveau code.',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    }
+
+    const code = randomInt(100_000, 1_000_000).toString();
+    const codeHash = this.hashOtp(email, code);
+    await this.sendEmailCode(
+      email,
+      code,
+      'Réinitialisation de votre mot de passe Kehoros',
+      'Votre code de réinitialisation',
+      'Failed to send password reset code',
+    );
+
+    this.passwordResetOtpStorage.set(email, {
+      codeHash,
+      expiresAt: Date.now() + 10 * 60_000,
+      attempts: 0,
+      sentAt: Date.now(),
+    });
+
+    return { message: 'Si un compte actif est associé à cette adresse, un code sera envoyé.' };
+  }
+
+  async resetPassword(rawEmail: string, code: string, newPassword: string) {
+    const email = rawEmail.trim().toLowerCase();
+    const record = this.passwordResetOtpStorage.get(email);
+
+    if (!record) {
+      throw new BadRequestException('Aucun code valide pour cet e-mail. Demandez un nouveau code.');
+    }
+
+    if (Date.now() > record.expiresAt) {
+      this.passwordResetOtpStorage.delete(email);
+      throw new BadRequestException('Le code a expiré. Demandez un nouveau code.');
+    }
+
+    const providedHash = Buffer.from(this.hashOtp(email, code), 'hex');
+    const expectedHash = Buffer.from(record.codeHash, 'hex');
+    if (!timingSafeEqual(providedHash, expectedHash)) {
+      record.attempts += 1;
+      if (record.attempts >= 5) {
+        this.passwordResetOtpStorage.delete(email);
+      }
+      throw new UnauthorizedException('Code de validation incorrect.');
+    }
+
+    const user = await this.userService.findByEmail(email);
+    if (!user || !user.is_active) {
+      this.passwordResetOtpStorage.delete(email);
+      throw new UnauthorizedException('Code de validation incorrect.');
+    }
+
+    await this.userService.updatePassword(user.id, await bcrypt.hash(newPassword, 10));
+    this.passwordResetOtpStorage.delete(email);
+
+    return { message: 'Votre mot de passe a été modifié.' };
+  }
+
+  private async sendEmailCode(
+    email: string,
+    code: string,
+    subject: string,
+    codeLabel: string,
+    errorLabel: string,
+  ): Promise<void> {
+    const host = process.env.SMTP_HOST;
+    const port = Number(process.env.SMTP_PORT);
+    const username = process.env.SMTP_USER;
+    const password = process.env.SMTP_PASSWORD;
+    const from = process.env.SMTP_FROM || username;
+    if (!host || !Number.isInteger(port) || !username || !password || !from) {
+      throw new ServiceUnavailableException('Le service d’envoi d’e-mails n’est pas configuré.');
+    }
+
+    try {
+      const transporter = createTransport({
+        host,
+        port,
+        secure: process.env.SMTP_SECURE === 'true' || port === 465,
+        auth: { user: username, pass: password },
+      });
+      await transporter.sendMail({
+        from,
+        to: email,
+        subject,
+        text: `${codeLabel} est ${code}. Il expire dans 10 minutes.`,
+        html: `<p>${codeLabel} Kehoros est :</p><p style="font-size:24px;font-weight:bold;letter-spacing:4px">${code}</p><p>Il expire dans 10 minutes. Si vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail.</p>`,
+      });
+    } catch (error) {
+      this.logger.error(`${errorLabel}: ${error instanceof Error ? error.message : String(error)}`);
+      throw new ServiceUnavailableException('Impossible d’envoyer l’e-mail de vérification. Réessayez plus tard.');
+    }
   }
 
   private hashOtp(email: string, code: string): string {

@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -29,29 +30,17 @@ import { FieldContainerComponent } from '../core/field-container/field-container
 
 
 @Component({
-
-  selector:'app-k-time',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatFormFieldModule,
-
-    MatInputModule,
-
-    FieldContainerComponent
-
-  ],
-
-  templateUrl:'./k-time.component.html',
-
-  styleUrl:'./k-time.component.scss'
-
+    selector: 'app-k-time',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        FieldContainerComponent
+    ],
+    templateUrl: './k-time.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-time.component.scss'
 })
 export class KTimeComponent {
 

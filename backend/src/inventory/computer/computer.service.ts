@@ -41,6 +41,7 @@ export class ComputerService {
         this.computersRepo.merge(existingComputer, updateComputerDto);
         return await this.computersRepo.save(existingComputer);
     }
+    
 
     // Supprimer un ordinateur par son label
     async removeComputer(label: string): Promise<Computers> {

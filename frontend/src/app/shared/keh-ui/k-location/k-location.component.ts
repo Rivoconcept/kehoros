@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -31,29 +32,17 @@ import {
 
 
 @Component({
-
-  selector:'app-k-location',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatInputModule,
-
-    MatFormFieldModule,
-
-    MatButtonModule
-
-  ],
-
-  templateUrl:'./k-location.component.html',
-
-  styleUrl:'./k-location.component.scss'
-
+    selector: 'app-k-location',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatButtonModule
+    ],
+    templateUrl: './k-location.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-location.component.scss'
 })
 export class KLocationComponent {
 

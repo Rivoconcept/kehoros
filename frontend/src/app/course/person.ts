@@ -1,14 +1,14 @@
 
 
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { timeout } from 'rxjs';
 
 @Component({
-  selector: 'app-person',
-  standalone: true,
-  templateUrl: './person.html',
-  imports: [FormsModule]
+    selector: 'app-person',
+    templateUrl: './person.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    imports: [FormsModule]
 })
 export class Person {
   name = 'Robert';

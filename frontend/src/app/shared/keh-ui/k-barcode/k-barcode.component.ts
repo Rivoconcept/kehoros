@@ -1,7 +1,8 @@
 import {
   Component,
   Input,
-  OnInit
+  OnInit,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -16,21 +17,13 @@ import {
 
 
 @Component({
-
-  selector:'app-k-barcode',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule
-
-  ],
-
-  templateUrl:'./k-barcode.component.html',
-
-  styleUrl:'./k-barcode.component.scss'
-
+    selector: 'app-k-barcode',
+    imports: [
+        CommonModule
+    ],
+    templateUrl: './k-barcode.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-barcode.component.scss'
 })
 export class KBarcodeComponent implements OnInit {
 

@@ -3,12 +3,15 @@ import { ComputerService } from './computer.service';
 import { Computers } from './entities/computer.entity';
 import { AddComputerDto } from './dto/add-computer.dto';
 import { UpdateComputerDto } from './dto/update-computer.dto';
+import { Roles } from 'src/auth/roles.decorator';
+import { UserRole } from 'src/user/entities/user.entity';
 
 @Controller('inventory/computer')
 export class ComputerController {
     constructor(private readonly computerService: ComputerService) {}
 
     @Get()
+    @Roles(UserRole.MANAGER, UserRole.ADMIN)
     async findAll(): Promise<Computers[]> {
         return await this.computerService.getComputers();
     }

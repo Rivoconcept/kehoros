@@ -1,7 +1,8 @@
 import {
   Component,
   Input,
-  OnInit
+  OnInit,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 
@@ -38,29 +39,17 @@ import {
 
 
 @Component({
-
-  selector:'app-k-color',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatInputModule,
-
-    MatFormFieldModule,
-
-    FieldErrorsComponent
-
-  ],
-
-  templateUrl:'./k-color.component.html',
-
-  styleUrl:'./k-color.component.scss'
-
+    selector: 'app-k-color',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatFormFieldModule,
+        FieldErrorsComponent
+    ],
+    templateUrl: './k-color.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-color.component.scss'
 })
 export class KColorComponent implements OnInit {
 

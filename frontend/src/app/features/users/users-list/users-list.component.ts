@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MatTableModule } from '@angular/material/table';
@@ -13,20 +13,20 @@ import { User } from '../models/user.model';
 import { UsersService } from '../services/users.service';
 
 @Component({
-  selector: 'app-users-list',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSelectModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule,
-  ],
-  templateUrl: './users-list.component.html',
-  styleUrl: './users-list.component.scss',
+    selector: 'app-users-list',
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatSelectModule,
+        MatProgressSpinnerModule,
+        MatTooltipModule,
+    ],
+    templateUrl: './users-list.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './users-list.component.scss'
 })
 export class UsersListComponent implements OnInit {
 

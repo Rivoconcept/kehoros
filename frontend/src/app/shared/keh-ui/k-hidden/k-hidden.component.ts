@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -19,23 +20,14 @@ import {
 
 
 @Component({
-
-  selector:'app-k-hidden',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule
-
-  ],
-
-  templateUrl:'./k-hidden.component.html',
-
-  styleUrl:'./k-hidden.component.scss'
-
+    selector: 'app-k-hidden',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule
+    ],
+    templateUrl: './k-hidden.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-hidden.component.scss'
 })
 export class KHiddenComponent {
 

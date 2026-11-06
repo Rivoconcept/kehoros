@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -11,21 +11,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterLink,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatCheckboxModule,
-  ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+    selector: 'app-login',
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterLink,
+        MatInputModule,
+        MatButtonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatCheckboxModule,
+    ],
+    templateUrl: './login.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './login.component.scss'
 })
 export class LoginComponent {
 

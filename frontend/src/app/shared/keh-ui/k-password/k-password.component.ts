@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -36,31 +37,18 @@ import {
 
 
 @Component({
-
-  selector:'app-k-password',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatFormFieldModule,
-
-    MatInputModule,
-
-    MatIconModule,
-
-    MatButtonModule
-
-  ],
-
-  templateUrl:'./k-password.component.html',
-
-  styleUrl:'./k-password.component.scss'
-
+    selector: 'app-k-password',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        MatButtonModule
+    ],
+    templateUrl: './k-password.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-password.component.scss'
 })
 export class KPasswordComponent {
 

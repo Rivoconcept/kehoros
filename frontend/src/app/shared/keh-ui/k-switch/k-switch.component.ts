@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -27,27 +28,16 @@ import {
 
 
 @Component({
-
-  selector:'app-k-switch',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatSlideToggleModule,
-
-    FieldContainerComponent
-
-  ],
-
-  templateUrl:'./k-switch.component.html',
-
-  styleUrl:'./k-switch.component.scss'
-
+    selector: 'app-k-switch',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatSlideToggleModule,
+        FieldContainerComponent
+    ],
+    templateUrl: './k-switch.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-switch.component.scss'
 })
 export class KSwitchComponent {
 

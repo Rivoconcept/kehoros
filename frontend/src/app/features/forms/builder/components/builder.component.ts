@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 
@@ -28,35 +28,19 @@ import { QuestionType } from '../../models/question-type.enum';
 
 
 @Component({
-
-  selector:'app-builder',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    DragDropModule,
-
-    A11yModule,
-
-    ToolbarComponent,
-
-    QuestionPaletteComponent,
-
-    CanvasComponent,
-
-    PropertyEditorComponent,
-
-    QuestionPreviewComponent
-
-  ],
-
-  templateUrl:'./builder.component.html',
-
-  styleUrl:'./builder.component.scss'
-
+    selector: 'app-builder',
+    imports: [
+        CommonModule,
+        DragDropModule,
+        A11yModule,
+        ToolbarComponent,
+        CanvasComponent,
+        PropertyEditorComponent,
+        QuestionPreviewComponent
+    ],
+    templateUrl: './builder.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './builder.component.scss'
 })
 
 

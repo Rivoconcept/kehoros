@@ -1,10 +1,25 @@
-<header class="navHeader">
-    <div class="navSpace">
-        <div>
+<header class="navShadow p-3 mb-4">
+    <div class="flex w-full justify-content-between align-items-center">
+        <a class="navLogo flex gap-2 align-items-center">
+            <img ngSrc="/kehoros_blue.jpeg" alt="logo" width="36" height="36">
             ngCourse Prompt Hub
-        </div>
-        <div>
-            <button><i>I</i></button>
+        </a>
+        <div class="flex gap-2 align-items-center ">    
+            
+            <button
+                pButton
+                type="button"
+                size="small"
+                severity="secondary"
+                (click)="toggleDarkMode()"
+                [attr.aria-label]="isDark() ? 'Passer au thème clair' : 'Passer au thème sombre'">
+                <i class="pi" [class.pi-sun]="isDark()" [class.pi-moon]="!isDark()" aria-hidden="true"></i>
+            </button>
+
+            <button pButton type="button" size="small" aria-label="Profil"><i class="pi pi-user" aria-hidden="true"></i></button>
+            <button pButton type="button" size="small" aria-label="Ajouter"><i class="pi pi-plus" aria-hidden="true"></i></button>
         </div>
     </div>
 </header>
+
+

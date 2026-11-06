@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -31,29 +32,17 @@ import {
 
 
 @Component({
-
-  selector:'app-k-text',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatFormFieldModule,
-
-    MatInputModule,
-
-    FieldContainerComponent
-
-  ],
-
-  templateUrl:'./k-text.component.html',
-
-  styleUrl:'./k-text.component.scss'
-
+    selector: 'app-k-text',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        FieldContainerComponent
+    ],
+    templateUrl: './k-text.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-text.component.scss'
 })
 export class KTextComponent {
 

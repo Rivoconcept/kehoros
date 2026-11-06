@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -31,29 +32,17 @@ import {
 
 
 @Component({
-
-  selector:'app-k-url',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatFormFieldModule,
-
-    MatInputModule,
-
-    FieldContainerComponent
-
-  ],
-
-  templateUrl:'./k-url.component.html',
-
-  styleUrl:'./k-url.component.scss'
-
+    selector: 'app-k-url',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        FieldContainerComponent
+    ],
+    templateUrl: './k-url.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-url.component.scss'
 })
 export class KUrlComponent {
 

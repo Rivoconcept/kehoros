@@ -2,7 +2,8 @@ import {
   Component,
   Input,
   Output,
-  EventEmitter
+  EventEmitter,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -14,15 +15,15 @@ import { Question } from '../../../../models/question.model';
 
 
 @Component({
-  selector: 'app-paragraph-card',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatIconModule,
-    MatButtonModule
-  ],
-  templateUrl: './paragraph-card.component.html',
-  styleUrl: './paragraph-card.component.scss'
+    selector: 'app-paragraph-card',
+    imports: [
+        CommonModule,
+        MatIconModule,
+        MatButtonModule
+    ],
+    templateUrl: './paragraph-card.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './paragraph-card.component.scss'
 })
 export class ParagraphCardComponent {
 

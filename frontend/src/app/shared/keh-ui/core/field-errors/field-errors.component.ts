@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -18,21 +19,13 @@ import {
 
 
 @Component({
-
-  selector:'app-field-errors',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule
-
-  ],
-
-  templateUrl:'./field-errors.component.html',
-
-  styleUrl:'./field-errors.component.scss'
-
+    selector: 'app-field-errors',
+    imports: [
+        CommonModule
+    ],
+    templateUrl: './field-errors.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './field-errors.component.scss'
 })
 export class FieldErrorsComponent {
 

@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -27,27 +28,16 @@ import {
 
 
 @Component({
-
-  selector:'app-k-radio',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatRadioModule,
-
-    FieldContainerComponent
-
-  ],
-
-  templateUrl:'./k-radio.component.html',
-
-  styleUrl:'./k-radio.component.scss'
-
+    selector: 'app-k-radio',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatRadioModule,
+        FieldContainerComponent
+    ],
+    templateUrl: './k-radio.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-radio.component.scss'
 })
 export class KRadioComponent {
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -25,21 +25,21 @@ export interface FormAssignment {
 }
 
 @Component({
-  selector: 'app-assignments',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule,
-    MatChipsModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule,
-    MatSnackBarModule,
-  ],
-  templateUrl: './assignment.component.html',
-  styleUrl: './assignment.component.scss',
+    selector: 'app-assignments',
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCardModule,
+        MatChipsModule,
+        MatProgressSpinnerModule,
+        MatTooltipModule,
+        MatSnackBarModule,
+    ],
+    templateUrl: './assignment.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './assignment.component.scss'
 })
 export class AssignmentsComponent implements OnInit {
   loading = false;

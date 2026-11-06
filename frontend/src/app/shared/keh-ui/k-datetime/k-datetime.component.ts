@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -27,27 +28,16 @@ import {
 
 
 @Component({
-
-  selector:'app-k-datetime',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    MatFormFieldModule,
-
-    MatInputModule
-
-  ],
-
-  templateUrl:'./k-datetime.component.html',
-
-  styleUrl:'./k-datetime.component.scss'
-
+    selector: 'app-k-datetime',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule
+    ],
+    templateUrl: './k-datetime.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-datetime.component.scss'
 })
 export class KDatetimeComponent {
 

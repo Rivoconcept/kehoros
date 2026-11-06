@@ -2,7 +2,8 @@ import {
   Component,
   Input,
   Output,
-  EventEmitter
+  EventEmitter,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -14,21 +15,15 @@ import { Question } from '../../../../models/question.model';
 
 
 @Component({
-
-  selector:'app-section-card',
-
-  standalone:true,
-
-  imports:[
-    CommonModule,
-    MatIconModule,
-    MatButtonModule
-  ],
-
-  templateUrl:'./section-card.component.html',
-
-  styleUrl:'./section-card.component.scss'
-
+    selector: 'app-section-card',
+    imports: [
+        CommonModule,
+        MatIconModule,
+        MatButtonModule
+    ],
+    templateUrl: './section-card.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './section-card.component.scss'
 })
 export class SectionCardComponent {
 

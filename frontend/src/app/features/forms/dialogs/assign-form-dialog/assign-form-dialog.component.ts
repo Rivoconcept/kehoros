@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -16,20 +16,20 @@ export enum AssignmentTargetType {
 }
 
 @Component({
-  selector: 'app-assign-form-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,      // Nécessaire pour [formGroup]
-    MatDialogModule,         // Nécessaire pour mat-dialog-content
-    MatFormFieldModule,      // Nécessaire pour mat-form-field & mat-label
-    MatInputModule,          // Nécessaire pour matInput
-    MatSelectModule,         // Nécessaire pour mat-select & mat-option
-    MatButtonModule,
-    MatIconModule
-  ],
-  templateUrl: './assign-form-dialog.component.html',
-  styleUrl: './assign-form-dialog.component.scss',
+    selector: 'app-assign-form-dialog',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule, // Nécessaire pour [formGroup]
+        MatDialogModule, // Nécessaire pour mat-dialog-content
+        MatFormFieldModule, // Nécessaire pour mat-form-field & mat-label
+        MatInputModule, // Nécessaire pour matInput
+        MatSelectModule, // Nécessaire pour mat-select & mat-option
+        MatButtonModule,
+        MatIconModule
+    ],
+    templateUrl: './assign-form-dialog.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './assign-form-dialog.component.scss'
 })
 export class AssignFormDialogComponent implements OnInit {
   assignForm!: FormGroup;

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,18 +15,18 @@ import { QuestionApiMapper } from '../builder/services/builder/builder-question/
 import { TemplateApiMapper } from '../builder/services/builder/builder-template/template-api.mapper';
 
 @Component({
-  selector: 'app-form-player',
-  standalone: true,
-  imports: [
-    CommonModule,
-    QuestionPreviewComponent,
-    MatButtonModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule,
-  ],
-  templateUrl: './form-player.component.html',
-  styleUrl: './form-player.component.scss',
+    selector: 'app-form-player',
+    imports: [
+        CommonModule,
+        QuestionPreviewComponent,
+        MatButtonModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
+        MatSnackBarModule,
+    ],
+    templateUrl: './form-player.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './form-player.component.scss'
 })
 export class FormPlayerComponent implements OnInit {
   private route = inject(ActivatedRoute);

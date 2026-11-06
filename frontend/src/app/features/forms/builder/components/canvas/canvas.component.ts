@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import {
@@ -21,33 +21,19 @@ import { BuilderService } from '../../services/builder.service';
 
 
 @Component({
-
-  selector:'app-canvas',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    CdkDropList,
-
-    CdkDrag,
-
-    QuestionCardComponent,
-
-    TitleCardComponent,
-
-    SectionCardComponent,
-
-    ParagraphCardComponent
-
-  ],
-
-  templateUrl:'./canvas.component.html',
-
-  styleUrl:'./canvas.component.scss'
-
+    selector: 'app-canvas',
+    imports: [
+        CommonModule,
+        CdkDropList,
+        CdkDrag,
+        QuestionCardComponent,
+        TitleCardComponent,
+        SectionCardComponent,
+        ParagraphCardComponent
+    ],
+    templateUrl: './canvas.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './canvas.component.scss'
 })
 export class CanvasComponent {
 

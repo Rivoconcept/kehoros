@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -19,23 +20,14 @@ import {
 
 
 @Component({
-
-  selector:'app-k-image',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule
-
-  ],
-
-  templateUrl:'./k-image.component.html',
-
-  styleUrl:'./k-image.component.scss'
-
+    selector: 'app-k-image',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule
+    ],
+    templateUrl: './k-image.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-image.component.scss'
 })
 export class KImageComponent {
 

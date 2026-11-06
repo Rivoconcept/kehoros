@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { FormsModule } from './forms/forms.module';
 import { InventoryModule } from './inventory/inventory.module';
 import { UserDepartmentModule } from './user-department/user-department.module';
+import { CollaboratorsModule } from './collaborators/collaborators.module';
 
 function parseDatabaseUrl(url: string) {
   const u = new URL(url.replace('?schema=public', ''));
@@ -34,6 +35,7 @@ function parseDatabaseUrl(url: string) {
     AuthModule,
     FormsModule,
     InventoryModule,
+    CollaboratorsModule,
   ],
   controllers: [],
   providers: [],

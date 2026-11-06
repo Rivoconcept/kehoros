@@ -72,6 +72,17 @@ au redémarrage et cette version doit être utilisée avec une seule instance du
 backend. Une mise à l'échelle horizontale nécessite un stockage partagé pour
 les codes et les limites de renvoi.
 
+## Réinitialisation du mot de passe
+
+Depuis `/forgot-password`, l'utilisateur demande un code envoyé par e-mail,
+puis le saisit avec son nouveau mot de passe sur `/reset-password`. L'API
+utilise `POST /auth/password-reset/request` avec `{ "email": "..." }`, puis
+`POST /auth/password-reset/confirm` avec `{ "email": "...", "code": "123456",
+"newPassword": "..." }`. Le code expire après 10 minutes, est limité à cinq
+tentatives et ne peut être utilisé qu'une fois. Comme les codes OTP de
+connexion, les codes de réinitialisation sont conservés en mémoire et
+nécessitent une configuration SMTP valide.
+
 ## Compile and run the project
 
 ```bash

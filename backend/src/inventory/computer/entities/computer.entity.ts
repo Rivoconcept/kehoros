@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from '../../../user/entities/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { AssetStatus } from '../../dto/createInventory.dto';
 import { ComputerType } from '../../enums/computer-type.enum';
 import { TechnicalStatus } from '../../enums/technical-status.enum';
 import { TimestampEntities } from 'src/generics/timestamp.entities';
+import { Collaborators } from 'src/collaborators/entities/collaborators.entity';
 
 @Entity('computers')
 export class Computers extends TimestampEntities {
@@ -45,12 +45,16 @@ export class Computers extends TimestampEntities {
   @Column({ type: 'date', nullable: true, name: 'purchase_date' })
   purchaseDate: Date;
 
-  @Column({ nullable: true, name: 'user_id' })
-  userId: string;
+  // 🔗 Liaison avec Collaborators
+  @Column({ nullable: true, name: 'collaborator_id' })
+  collaboratorId: string;
 
-  @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })
-  @JoinColumn({ name: 'user_id' })
-  user: User;
+  @ManyToOne(() => Collaborators, (collaborator: Collaborators) => collaborator.computers, { 
+    onDelete: 'SET NULL', 
+    nullable: true 
+  })
+  @JoinColumn({ name: 'collaborator_id' })
+  collaborator: Collaborators;
 
   @Column({ nullable: true })
   location: string; // Bureau, bâtiment, pays
@@ -71,5 +75,4 @@ export class Computers extends TimestampEntities {
     name: 'technical_status',
   })
   technicalStatus: TechnicalStatus;
-
 }

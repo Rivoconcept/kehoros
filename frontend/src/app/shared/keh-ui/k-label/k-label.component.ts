@@ -1,6 +1,7 @@
 import {
   Component,
-  Input
+  Input,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -14,21 +15,13 @@ import {
 
 
 @Component({
-
-  selector:'app-k-label',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule
-
-  ],
-
-  templateUrl:'./k-label.component.html',
-
-  styleUrl:'./k-label.component.scss'
-
+    selector: 'app-k-label',
+    imports: [
+        CommonModule
+    ],
+    templateUrl: './k-label.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-label.component.scss'
 })
 export class KLabelComponent {
 

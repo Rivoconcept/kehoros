@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -28,21 +28,21 @@ interface DepartmentOption extends SelectOption {}
 interface ManagerOption extends SelectOption {}
 
 @Component({
-  selector: 'app-register',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterLink,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatSelectModule,
-  ],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.scss',
+    selector: 'app-register',
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterLink,
+        MatInputModule,
+        MatButtonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatSelectModule,
+    ],
+    templateUrl: './register.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './register.component.scss'
 })
 export class RegisterComponent implements OnInit {
 

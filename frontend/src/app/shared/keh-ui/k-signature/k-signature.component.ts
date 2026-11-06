@@ -2,7 +2,8 @@ import {
   Component,
   Input,
   ElementRef,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -25,25 +26,15 @@ import {
 
 
 @Component({
-
-  selector:'app-k-signature',
-
-  standalone:true,
-
-  imports:[
-
-    CommonModule,
-
-    ReactiveFormsModule,
-
-    FieldContainerComponent
-
-  ],
-
-  templateUrl:'./k-signature.component.html',
-
-  styleUrl:'./k-signature.component.scss'
-
+    selector: 'app-k-signature',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FieldContainerComponent
+    ],
+    templateUrl: './k-signature.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './k-signature.component.scss'
 })
 export class KSignatureComponent {
 

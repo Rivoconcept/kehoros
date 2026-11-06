@@ -26,6 +26,7 @@
   </div>
 
   <!-- ONGLET 1 & 2 : Grid Layout des Cartes -->
+  <p-menu #templateActionMenu [popup]="true" [model]="templateMenuItems"></p-menu>
   <div *ngIf="activeTab !== 'assigned'" class="cards-grid">
     <mat-card *ngFor="let template of filteredTemplates" class="template-card" [class.is-archived]="template.status === 'archived'">
       <div class="card-header">
@@ -37,34 +38,14 @@
           <p class="description" *ngIf="template.description">{{ template.description }}</p>
         </div>
 
-        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Action menu">
-          <mat-icon>more_vert</mat-icon>
+        <button
+          pButton
+          type="button"
+          class="p-button-text p-button-rounded p-button-icon-only"
+          aria-label="Action menu"
+          (click)="openTemplateMenu($event, template)">
+          <i class="pi pi-ellipsis-v"></i>
         </button>
-
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="edit(template)" [disabled]="template.status === 'archived'">
-            <mat-icon>edit</mat-icon>
-            <span>Edit</span>
-          </button>
-          <button mat-menu-item (click)="duplicate(template)">
-            <mat-icon>content_copy</mat-icon>
-            <span>Duplicate</span>
-          </button>
-          
-          <button mat-menu-item (click)="restore(template)" *ngIf="template.status === 'archived'">
-            <mat-icon>unarchive</mat-icon>
-            <span>Restore</span>
-          </button>
-          <button mat-menu-item (click)="archive(template)" *ngIf="template.status !== 'archived'">
-            <mat-icon>archive</mat-icon>
-            <span>Archive</span>
-          </button>
-
-          <button mat-menu-item (click)="delete(template)" class="text-warn">
-            <mat-icon color="warn">delete</mat-icon>
-            <span>Delete</span>
-          </button>
-        </mat-menu>
       </div>
 
       <div class="chips">

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -11,20 +11,20 @@ import { BuilderService } from '../../services/builder.service';
 import { QuestionType } from '../../../models/question-type.enum';
 
 @Component({
-  selector: 'app-toolbar',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    FormsModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatDividerModule,
-    QuestionPaletteComponent
-  ],
-  templateUrl: './toolbar.component.html',
-  styleUrl: './toolbar.component.scss'
+    selector: 'app-toolbar',
+    imports: [
+        CommonModule,
+        RouterLink,
+        FormsModule,
+        MatIconModule,
+        MatButtonModule,
+        MatMenuModule,
+        MatDividerModule,
+        QuestionPaletteComponent
+    ],
+    templateUrl: './toolbar.component.html',
+    changeDetection: ChangeDetectionStrategy.Default,
+    styleUrl: './toolbar.component.scss'
 })
 export class ToolbarComponent {
   @Input() title: string = '';
