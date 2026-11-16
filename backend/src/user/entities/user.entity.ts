@@ -4,11 +4,14 @@ import {
   Column,
   CreateDateColumn,
   ManyToOne,
+  OneToOne,
   OneToMany,
   JoinColumn,
+  Index,
 } from 'typeorm';
 
 import { Department } from '../../user-department/entities/user-department.entity';
+import { Collaborators } from '../../collaborators/entities/collaborators.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -17,6 +20,7 @@ export enum UserRole {
 }
 
 @Entity('users')
+@Index('UQ_users_collaborator_id', ['collaborator_id'], { unique: true })
 export class User {
 
   @PrimaryGeneratedColumn('uuid')
@@ -46,6 +50,19 @@ export class User {
   })
   matricule?: string;
 
+  @Column({ type: 'uuid', nullable: true })
+  collaborator_id?: string | null;
+
+  @OneToOne(() => Collaborators, {
+    nullable: true,
+    onDelete: 'RESTRICT',
+  })
+  @JoinColumn({
+    name: 'collaborator_id',
+    foreignKeyConstraintName: 'FK_users_collaborator_id',
+  })
+  collaborator?: Collaborators | null;
+
   @Column({
     nullable: true,
   })
@@ -65,7 +82,7 @@ export class User {
   @Column({
     nullable: true,
   })
-  manager_id?: string;
+  manager_id?: string | null;
 
   @ManyToOne(() => User, user => user.directReports, {
     nullable: true,

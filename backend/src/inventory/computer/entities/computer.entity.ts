@@ -47,7 +47,7 @@ export class Computers extends TimestampEntities {
 
   // 🔗 Liaison avec Collaborators
   @Column({ nullable: true, name: 'collaborator_id' })
-  collaboratorId: string;
+  collaboratorId: string | null;
 
   @ManyToOne(() => Collaborators, (collaborator: Collaborators) => collaborator.computers, { 
     onDelete: 'SET NULL', 

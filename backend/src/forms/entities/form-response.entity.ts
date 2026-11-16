@@ -24,7 +24,7 @@ export class FormResponse {
   template_id: string;
 
   @Column({ name: 'assignment_id', type: 'uuid', nullable: true })
-  assignment_id: string;
+  assignment_id: string | null;
 
   @Column({ name: 'user_id', type: 'uuid', nullable: true })
   user_id: string;

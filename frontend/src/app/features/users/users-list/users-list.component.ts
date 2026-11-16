@@ -53,6 +53,7 @@ export class UsersListComponent implements OnInit {
   twoFactorUpdatingIds = new Set<string>();
   twoFactorBulkLoading = false;
   twoFactorError = '';
+  deleteError = '';
 
   constructor(
     private usersService: UsersService,
@@ -226,9 +227,22 @@ export class UsersListComponent implements OnInit {
   }
 
   deleteUser(user: User) {
-    if (!confirm(`Delete ${user.first_name} ${user.last_name} ?`)) return;
-    this.usersService.delete(user.id).subscribe(() => {
-      this.users = this.users.filter(u => u.id !== user.id);
+    const confirmed = confirm(
+      `Supprimer ${user.first_name} ${user.last_name} ? Cette action supprimera ses réponses et assignations, et remettra ses ordinateurs en stock.`,
+    );
+    if (!confirmed) return;
+
+    this.deleteError = '';
+    this.usersService.delete(user.id).subscribe({
+      next: () => {
+        this.users = this.users.filter(u => u.id !== user.id);
+      },
+      error: (err) => {
+        this.deleteError = this.getRequestError(
+          err,
+          'Impossible de supprimer cet utilisateur.',
+        );
+      },
     });
   }
 

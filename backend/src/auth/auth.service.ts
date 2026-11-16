@@ -44,17 +44,17 @@ export class AuthService {
 
   async register(dto: RegisterReq) {
     const email = dto.email.trim().toLowerCase();
-    const existing = await this.userService.findByEmail(email);
-    if (existing) throw new ConflictException('Email already used');
+    const matricule = dto.matricule?.trim();
+    if (!matricule) {
+      throw new BadRequestException('Le matricule est obligatoire pour créer un compte.');
+    }
 
     const password_hash = await bcrypt.hash(dto.password, 10);
-    await this.userService.create({
+    await this.userService.registerFromCollaborator({
       email,
+      matricule,
       password_hash,
-      first_name: dto.first_name,
-      last_name: dto.last_name,
-      manager_id: dto.manager_id,
-      department_id: dto.department_id,
+      phone: dto.phone,
     });
     
     return { message: 'Compte créé. Connectez-vous pour vérifier votre adresse e-mail.' };

@@ -27,20 +27,7 @@
           <input matInput [(ngModel)]="matricule" name="matricule" placeholder="K0001" />
           <mat-icon matSuffix>badge</mat-icon>
         </mat-form-field>
-
-        <!-- Prénom / Nom -->
-        <div class="section-label">Identité</div>
-        <div class="row">
-          <mat-form-field appearance="outline">
-            <mat-label>Prénom</mat-label>
-            <input matInput [(ngModel)]="first_name" name="first_name" placeholder="Rivo" />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Nom</mat-label>
-            <input matInput [(ngModel)]="last_name" name="last_name" placeholder="Dev" />
-          </mat-form-field>
-        </div>
+        <p class="card-subtitle">Utilisez l’e-mail et le matricule associés à votre fiche collaborateur.</p>
 
         <!-- Contact -->
         <div class="section-label">Contact</div>
@@ -48,28 +35,6 @@
           <mat-label>Email</mat-label>
           <input matInput type="email" [(ngModel)]="email" name="email" placeholder="vous@kehoros.mg" />
           <mat-icon matSuffix>email</mat-icon>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Département</mat-label>
-          <mat-select [(ngModel)]="department_id" name="department_id">
-            <mat-option value="">Aucun</mat-option>
-            @for (option of departmentOptions; track option.value) {
-              <mat-option [value]="option.value">{{ option.label }}</mat-option>
-            }
-          </mat-select>
-          <mat-icon matSuffix>business</mat-icon>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full">
-          <mat-label>Manager</mat-label>
-          <mat-select [(ngModel)]="manager_id" name="manager_id">
-            <mat-option value="">Aucun</mat-option>
-            @for (option of managerOptions; track option.value) {
-              <mat-option [value]="option.value">{{ option.label }}</mat-option>
-            }
-          </mat-select>
-          <mat-icon matSuffix>supervisor_account</mat-icon>
         </mat-form-field>
 
         <!-- Phone avec code pays -->
@@ -86,7 +51,7 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="phone-number">
-            <mat-label>Phone</mat-label>
+            <mat-label>Téléphone</mat-label>
             <input
               matInput
               [(ngModel)]="phoneNumber"

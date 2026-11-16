@@ -12,12 +12,8 @@ export interface LoginDto {
 export interface RegisterDto {
   email: string;
   password: string;
-  first_name: string;
-  last_name: string;
-  matricule?: string;
+  matricule: string;
   phone?: string;
-  manager_id?: string;
-  department_id?: string;
 }
 
 export interface AuthResponse {

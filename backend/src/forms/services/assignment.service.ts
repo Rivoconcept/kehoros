@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 
 import { FormAssignment } from '../entities/form-assignment.entity';
 import { FormTemplate } from '../entities/form-template.entity';
@@ -43,6 +43,7 @@ export class AssignmentService {
     private readonly templateRepo: Repository<FormTemplate>,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async assign(input: AssignTemplateInput): Promise<FormAssignment[]> {
@@ -209,19 +210,76 @@ export class AssignmentService {
     return this.findOne(id);
   }
 
-  async cancel(id: string): Promise<FormAssignment> {
-    const assignment = await this.findOne(id);
+  async remove(id: string): Promise<void> {
+    await this.dataSource.transaction(async (manager) => {
+      const assignmentRepo = manager.getRepository(FormAssignment);
+      const assignment = await assignmentRepo.findOne({ where: { id } });
+      if (!assignment) {
+        throw new NotFoundException(`Assignment with id ${id} not found`);
+      }
 
-    if (assignment.status === 'cancelled') {
-      return assignment;
+      await manager.query(
+        'UPDATE "form_responses" SET "assignment_id" = NULL WHERE "assignment_id" = $1',
+        [id],
+      );
+      await assignmentRepo.delete(id);
+    });
+  }
+
+  async removeByTemplate(templateId: string): Promise<number> {
+    return this.dataSource.transaction(async (manager) => {
+      const template = await manager
+        .getRepository(FormTemplate)
+        .findOne({ where: { id: templateId } });
+      if (!template) {
+        throw new NotFoundException(`Template with id ${templateId} not found`);
+      }
+
+      const assignmentRepo = manager.getRepository(FormAssignment);
+      const assignments = await assignmentRepo.find({
+        where: { template_id: templateId },
+        select: { id: true },
+      });
+      const assignmentIds = assignments.map(({ id }) => id);
+      if (!assignmentIds.length) return 0;
+
+      await manager.query(
+        'UPDATE "form_responses" SET "assignment_id" = NULL WHERE "assignment_id" = ANY($1::uuid[])',
+        [assignmentIds],
+      );
+      const result = await assignmentRepo.delete({ template_id: templateId });
+      return result.affected ?? assignmentIds.length;
+    });
+  }
+
+  async findEligibleUsers(templateId: string): Promise<Partial<User>[]> {
+    const template = await this.templateRepo.findOne({
+      where: { id: templateId },
+    });
+    if (!template) {
+      throw new NotFoundException(`Template with id ${templateId} not found`);
     }
 
-    await this.assignmentRepo.update(id, {
-      status: 'cancelled',
-      completed_at: undefined,
+    const existing = await this.assignmentRepo.find({
+      where: { template_id: templateId },
+      select: { user_id: true },
+    });
+    const assignedUserIds = new Set(
+      existing.map(({ user_id }) => user_id).filter((id): id is string => Boolean(id)),
+    );
+    const users = await this.userRepo.find({
+      select: {
+        id: true,
+        matricule: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+        is_active: true,
+      },
+      order: { last_name: 'ASC', first_name: 'ASC' },
     });
 
-    return this.findOne(id);
+    return users.filter((user) => user.is_active && !assignedUserIds.has(user.id));
   }
 
   private async resolveTargetUsers(input: AssignTemplateInput): Promise<User[]> {

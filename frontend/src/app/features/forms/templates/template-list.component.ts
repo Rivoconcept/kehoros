@@ -369,7 +369,9 @@ export class TemplateListComponent implements OnInit {
   }
 
   delete(template: TemplateCard): void {
-    if (confirm(`Are you sure you want to delete "${template.title}"?`)) {
+    if (confirm(
+      `Delete "${template.title}" permanently? This also deletes all assignments, responses, results, and sessions for this form.`,
+    )) {
       this.templates = this.templates.filter((t) => t.id !== template.id);
       this.formsService.deleteTemplate(template.id).subscribe({
         next: () => {
@@ -378,7 +380,12 @@ export class TemplateListComponent implements OnInit {
         },
         error: (err: any) => {
           console.error('Error deleting template', err);
-          this.showNotification('Error deleting template');
+          const message = err?.error?.message;
+          this.showNotification(
+            Array.isArray(message)
+              ? message.join(' ')
+              : message ?? 'Error deleting template',
+          );
           this.loadTemplates();
         },
       });

@@ -4,9 +4,29 @@
       <mat-icon>{{ isAdminOrManager ? 'assignment' : 'assignment_ind' }}</mat-icon>
       {{ isAdminOrManager ? 'Assigned Employees Progress' : 'My Assigned Forms' }}
     </h2>
-    <button mat-stroked-button color="primary" (click)="goBack()">
-      <mat-icon>arrow_back</mat-icon> Back to Templates
-    </button>
+    <div class="flex flex-wrap gap-2 justify-end">
+      @if (templateIdFilter && isAdminOrManager) {
+        <button
+          mat-flat-button
+          color="primary"
+          [disabled]="assignmentActionLoading"
+          (click)="addIndividualAssignment()">
+          <mat-icon>person_add</mat-icon>
+          Add Individual Assignment
+        </button>
+        <button
+          mat-stroked-button
+          color="warn"
+          [disabled]="assignmentActionLoading || assignments.length === 0"
+          (click)="removeAllAssignments()">
+          <mat-icon>delete_sweep</mat-icon>
+          Delete All Assignments
+        </button>
+      }
+      <button mat-stroked-button color="primary" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon> Back to Templates
+      </button>
+    </div>
   </div>
 
   <!-- Loading Spinner -->
@@ -82,13 +102,13 @@
                 Results
               </button>
 
-              <!-- Cancel Assignment -->
+              <!-- Delete Assignment -->
               <button 
                 *ngIf="isAdminOrManager" 
                 mat-icon-button 
                 color="warn" 
-                (click)="cancelAssignment(element)"
-                matTooltip="Cancel this assignment">
+                (click)="removeAssignment(element)"
+                matTooltip="Delete this assignment">
                 <mat-icon>delete_outline</mat-icon>
               </button>
             </div>

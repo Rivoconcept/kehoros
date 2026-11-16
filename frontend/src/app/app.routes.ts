@@ -98,6 +98,14 @@ export const routes: Routes = [
         (m) => m.FormPlayerComponent
       ),
   },
+  {
+    path: 'collaborators',
+    canActivate: [roleGuard(['admin', 'manager'])],
+    loadComponent: () =>
+      import('./features/collaborators/collaborators-list/collaborators-list.component').then(
+        (m) => m.CollaboratorsListComponent
+      ),
+  },
 
   //COURSE
   {

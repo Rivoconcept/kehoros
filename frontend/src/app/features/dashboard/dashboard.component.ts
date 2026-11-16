@@ -50,6 +50,11 @@ export class DashboardComponent implements OnInit {
     },
     {
       icon: 'people',
+      label: 'Collaborateurs',
+      route: '/collaborators'
+    },
+    {
+      icon: 'people',
       label: 'Utilisateurs',
       route: '/users'
     },

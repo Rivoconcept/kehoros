@@ -125,6 +125,12 @@ export class FormsService {
     return this.http.get<any[]>(`${this.apiUrl}/assignments`);
   }
 
+  getEligibleUsers(templateId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/assignments/eligible-users`, {
+      params: { templateId },
+    });
+  }
+
   getAssignmentResult(assignmentId: string): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}/assignments/${assignmentId}/result`,
@@ -141,13 +147,13 @@ export class FormsService {
     return this.http.post<any[]>(`${this.apiUrl}/assignments`, data);
   }
 
-  /**
-   * Annule / Supprime une assignation par son ID
-   */
-  cancelAssignment(assignmentId: string): Observable<any> {
-    return this.http.patch<any>(
-      `${this.apiUrl}/assignments/${assignmentId}/cancel`,
-      {},
+  deleteAssignment(assignmentId: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/assignments/${assignmentId}`);
+  }
+
+  deleteAssignmentsForTemplate(templateId: string): Observable<{ deleted: number }> {
+    return this.http.delete<{ deleted: number }>(
+      `${this.apiUrl}/assignments/template/${templateId}`,
     );
   }
 

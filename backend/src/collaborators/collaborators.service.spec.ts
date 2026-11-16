@@ -1,4 +1,9 @@
 import { ConflictException } from '@nestjs/common';
+import { DataSource, EntityManager } from 'typeorm';
+import { Collaborators } from './entities/collaborators.entity';
+import { Computers } from '../inventory/computer/entities/computer.entity';
+import { User } from '../user/entities/user.entity';
+import { AssetStatus } from '../inventory/dto/createInventory.dto';
 import { CollaboratorService } from './collaborators.service';
 
 describe('CollaboratorService', () => {
@@ -14,9 +19,16 @@ describe('CollaboratorService', () => {
       ...repoOverrides,
     };
 
+    const dataSource = {};
+    const userService = { deleteUserInTransaction: jest.fn() };
+
     return {
       collaboratorRepo,
-      service: new CollaboratorService(collaboratorRepo as any),
+      service: new CollaboratorService(
+        collaboratorRepo as any,
+        dataSource as DataSource,
+        userService as any,
+      ),
     };
   };
 
@@ -75,6 +87,57 @@ describe('CollaboratorService', () => {
       matricule: 'K1729',
       email: 'old@example.test',
       fonction: 'TEST',
+    });
+  });
+
+  it('deletes the linked user and returns the collaborator computer to stock', async () => {
+    const collaborator = {
+      id: 'collaborator-id',
+      matricule: 'K1729',
+      email: 'person@example.test',
+    };
+    const collaboratorRepo = {
+      findOneBy: jest.fn().mockResolvedValue(collaborator),
+      delete: jest.fn(),
+    };
+    const userRepo = {
+      findOne: jest.fn().mockResolvedValue({
+        id: 'user-id',
+        collaborator_id: collaborator.id,
+      }),
+    };
+    const computerRepo = { update: jest.fn() };
+    const manager = {
+      getRepository: jest.fn((entity: Function) => {
+        if (entity === Collaborators) return collaboratorRepo;
+        if (entity === User) return userRepo;
+        return computerRepo;
+      }),
+    };
+    const dataSource = {
+      transaction: jest.fn((callback: (manager: typeof manager) => unknown) =>
+        callback(manager),
+      ),
+    };
+    const userService = { deleteUserInTransaction: jest.fn() };
+    const service = new CollaboratorService(
+      {} as any,
+      dataSource as unknown as DataSource,
+      userService as any,
+    );
+
+    await service.remove(collaborator.matricule);
+
+    expect(userService.deleteUserInTransaction).toHaveBeenCalledWith(
+      manager,
+      'user-id',
+    );
+    expect(computerRepo.update).toHaveBeenCalledWith(
+      { collaboratorId: collaborator.id },
+      { collaboratorId: null, status: AssetStatus.IN_STOCK },
+    );
+    expect(collaboratorRepo.delete).toHaveBeenCalledWith({
+      id: collaborator.id,
     });
   });
 });

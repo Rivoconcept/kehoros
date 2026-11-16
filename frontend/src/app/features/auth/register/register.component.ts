@@ -2,9 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
-import { ApiService } from '../../../core/services/api.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,14 +16,6 @@ interface Country {
   dial: string;
   flag: string;
 }
-
-interface SelectOption {
-  value: string;
-  label: string;
-}
-
-interface DepartmentOption extends SelectOption {}
-interface ManagerOption extends SelectOption {}
 
 @Component({
     selector: 'app-register',
@@ -48,18 +38,11 @@ export class RegisterComponent implements OnInit {
 
   // Champs
   matricule      = '';
-  first_name     = '';
-  last_name      = '';
   email          = '';
   password       = '';
   confirmPassword = '';
   countryCode    = '+261';
   phoneNumber    = '';
-  manager_id = '';
-  department_id = '';
-
-  departmentOptions: DepartmentOption[] = [];
-  managerOptions: ManagerOption[] = [];
 
   // UI state
   loading      = false;
@@ -86,37 +69,12 @@ export class RegisterComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private api: ApiService,
     private router: Router,
     private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
     this.email = this.route.snapshot.queryParamMap.get('email') ?? '';
-    this.loadOptions();
-  }
-
-  private loadOptions() {
-    forkJoin({
-      departments: this.api.get<{ id: string; name: string }[]>('/departments'),
-      managers: this.api.get<{ id: string; first_name: string; last_name: string }[]>('/users/managers'),
-    }).subscribe({
-      next: ({ departments, managers }) => {
-        this.departmentOptions = departments.map(department => ({
-          value: department.id,
-          label: department.name,
-        }));
-
-        this.managerOptions = managers.map(manager => ({
-          value: manager.id,
-          label: `${manager.first_name} ${manager.last_name}`,
-        }));
-      },
-      error: () => {
-        this.departmentOptions = [];
-        this.managerOptions = [];
-      },
-    });
   }
 
   // Validation Phone
@@ -162,7 +120,7 @@ export class RegisterComponent implements OnInit {
   onSubmit() {
     this.error = '';
 
-    if (!this.first_name || !this.last_name || !this.email || !this.password || !this.confirmPassword) {
+    if (!this.matricule || !this.email || !this.password || !this.confirmPassword) {
       this.error = 'Veuillez remplir tous les champs obligatoires.';
       return;
     }
@@ -180,14 +138,10 @@ export class RegisterComponent implements OnInit {
     this.loading = true;
 
     this.authService.register({
-      first_name:  this.first_name,
-      last_name:   this.last_name,
       email:       this.email,
       password:    this.password,
-      matricule:   this.matricule   || undefined,
+      matricule:   this.matricule,
       phone:       this.fullPhone   || undefined,
-      manager_id:  this.manager_id || undefined,
-      department_id: this.department_id || undefined,
     }).subscribe({
       next: () => {
         this.loading = false;

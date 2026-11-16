@@ -104,6 +104,8 @@ export class UserController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   async delete(
     @Param('id') id: string,
   ) {

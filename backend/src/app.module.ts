@@ -26,6 +26,8 @@ function parseDatabaseUrl(url: string) {
         ...parseDatabaseUrl(process.env.DATABASE_URL!),
         schema: 'public',
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        migrations: [__dirname + '/migrations/*{.ts,.js}'],
+        migrationsRun: true,
         synchronize: process.env.NODE_ENV === 'development',
         logging: process.env.NODE_ENV === 'development',
       }),
@@ -41,4 +43,3 @@ function parseDatabaseUrl(url: string) {
   providers: [],
 })
 export class AppModule {}
-

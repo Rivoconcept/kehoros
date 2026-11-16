@@ -229,6 +229,9 @@ export class ResponseService {
     if (response.submitted_at) {
       throw new BadRequestException('This response has already been submitted');
     }
+    if (!response.assignment_id) {
+      throw new BadRequestException('This response is no longer linked to an assignment');
+    }
 
     for (const answer of input.answers ?? []) {
       const entity = this.answerRepo.create({
@@ -259,6 +262,9 @@ export class ResponseService {
 
   async saveDraft(input: SubmitResponseInput): Promise<FormResponse> {
     const response = await this.findOne(input.response_id);
+    if (!response.assignment_id) {
+      throw new BadRequestException('This response is no longer linked to an assignment');
+    }
 
     for (const answer of input.answers ?? []) {
       const entity = this.answerRepo.create({

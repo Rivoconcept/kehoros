@@ -10,8 +10,11 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import { FormsService } from '../services/forms.services';
+import { AssignFormDialogComponent } from '../dialogs/assign-form-dialog/assign-form-dialog.component';
+import { AuthService } from '../../../core/services/auth.service';
 
 export interface FormAssignment {
   id: string;
@@ -36,6 +39,7 @@ export interface FormAssignment {
         MatProgressSpinnerModule,
         MatTooltipModule,
         MatSnackBarModule,
+        MatDialogModule,
     ],
     templateUrl: './assignment.component.html',
     changeDetection: ChangeDetectionStrategy.Default,
@@ -43,6 +47,7 @@ export interface FormAssignment {
 })
 export class AssignmentsComponent implements OnInit {
   loading = false;
+  assignmentActionLoading = false;
   isAdminOrManager = true; // À lier à votre service d'authentification
   templateIdFilter: string | null = null;
 
@@ -54,7 +59,9 @@ export class AssignmentsComponent implements OnInit {
     private router: Router,
     private location: Location,
     private formsService: FormsService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -95,19 +102,126 @@ export class AssignmentsComponent implements OnInit {
     this.router.navigate(['/forms/results', assignment.id]);
   }
 
-  cancelAssignment(assignment: FormAssignment): void {
-    if (confirm(`Cancel assignment for ${assignment.user?.first_name || 'this user'}?`)) {
-      this.formsService.cancelAssignment(assignment.id).subscribe({
+  removeAssignment(assignment: FormAssignment): void {
+    const userName = assignment.user?.first_name || 'this user';
+    if (confirm(`Delete the assignment for ${userName}?`)) {
+      this.formsService.deleteAssignment(assignment.id).subscribe({
         next: () => {
-          this.snackBar.open('Assignment cancelled', 'Close', { duration: 3000 });
+          this.snackBar.open('Assignment deleted', 'Close', { duration: 3000 });
           this.loadAssignments();
         },
         error: (err: any) => {
-          console.error('Error cancelling assignment', err);
-          this.snackBar.open('Error cancelling assignment', 'Close', { duration: 3000 });
+          console.error('Error deleting assignment', err);
+          this.snackBar.open('Error deleting assignment', 'Close', { duration: 3000 });
         },
       });
     }
+  }
+
+  removeAllAssignments(): void {
+    if (!this.templateIdFilter || !this.assignments.length) return;
+
+    const count = this.assignments.length;
+    if (!confirm(`Delete all ${count} assignment(s) for this form?`)) return;
+
+    this.assignmentActionLoading = true;
+    this.formsService.deleteAssignmentsForTemplate(this.templateIdFilter).subscribe({
+      next: ({ deleted }) => {
+        this.assignmentActionLoading = false;
+        this.snackBar.open(`${deleted} assignment(s) deleted`, 'Close', {
+          duration: 3000,
+        });
+        this.loadAssignments();
+      },
+      error: (err: any) => {
+        console.error('Error deleting form assignments', err);
+        this.assignmentActionLoading = false;
+        this.snackBar.open(
+          err?.error?.message ?? 'Error deleting form assignments',
+          'Close',
+          { duration: 3000 },
+        );
+      },
+    });
+  }
+
+  addIndividualAssignment(): void {
+    if (!this.templateIdFilter || this.assignmentActionLoading) return;
+
+    this.assignmentActionLoading = true;
+    this.formsService.getEligibleUsers(this.templateIdFilter).subscribe({
+      next: (users: any[]) => {
+        this.assignmentActionLoading = false;
+        if (!users.length) {
+          this.snackBar.open('There are no eligible users to assign', 'Close', {
+            duration: 3000,
+          });
+          return;
+        }
+
+        const dialogRef = this.dialog.open(AssignFormDialogComponent, {
+          width: '600px',
+          data: {
+            templateId: this.templateIdFilter,
+            templateTitle:
+              this.assignments[0]?.template?.title ?? 'Selected form',
+            employees: users.map((user) => ({
+              id: user.id,
+              name: `${user.first_name} ${user.last_name}`,
+              matricule: user.matricule,
+            })),
+            individualOnly: true,
+          },
+        });
+
+        dialogRef.afterClosed().subscribe((result) => {
+          if (!result?.user_id) return;
+
+          const payload = this.authService.getPayload();
+          const assignedBy = payload?.sub || payload?.email;
+          if (!assignedBy) {
+            this.snackBar.open('Unable to identify the current user', 'Close', {
+              duration: 3000,
+            });
+            return;
+          }
+
+          this.assignmentActionLoading = true;
+          this.formsService.createAssignment({
+            template_id: this.templateIdFilter!,
+            assigned_by: assignedBy,
+            target_type: 'INDIVIDUAL',
+            user_ids: [result.user_id],
+          }).subscribe({
+            next: () => {
+              this.assignmentActionLoading = false;
+              this.snackBar.open('Assignment added', 'Close', {
+                duration: 3000,
+              });
+              this.loadAssignments();
+            },
+            error: (err: any) => {
+              console.error('Error adding assignment', err);
+              this.assignmentActionLoading = false;
+              this.snackBar.open(
+                err?.error?.message ?? 'Error adding assignment',
+                'Close',
+                { duration: 3000 },
+              );
+            },
+          });
+        });
+      },
+      error: (err: any) => {
+        console.error('Error loading eligible users', err);
+        this.assignmentActionLoading = false;
+        this.snackBar.open(
+          err?.error?.message ?? 'Error loading eligible users',
+          'Close',
+          { duration: 3000 },
+        );
+      },
+    });
   }
 
   goBack(): void {

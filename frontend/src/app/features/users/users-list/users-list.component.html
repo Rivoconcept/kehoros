@@ -18,6 +18,15 @@
       </button>
     </div>
   }
+  @if (deleteError) {
+    <div class="recovery-request-error" role="alert">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ deleteError }}</span>
+      <button mat-icon-button aria-label="Fermer le message" (click)="deleteError = ''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  }
 
   <div class="page-header">
     <div>

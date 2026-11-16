@@ -5,11 +5,16 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, In, Repository } from 'typeorm';
+import { FormAssignment } from '../entities/form-assignment.entity';
 
 import { CreateTemplateDto } from '../dto/create-template.dto';
+import { FormAnswer } from '../entities/form-answer.entity';
 import { FormOption } from '../entities/form-option.entity';
 import { FormQuestion } from '../entities/form-question.entity';
+import { FormResponse } from '../entities/form-response.entity';
+import { FormResult } from '../entities/form-result.entity';
+import { FormSession } from '../entities/form-session.entity';
 import { FormTemplate } from '../entities/form-template.entity';
 import { FormStatus } from '../enums/form-status.enum';
 
@@ -241,8 +246,67 @@ export class TemplateService {
   }
 
   async remove(id: string): Promise<void> {
-    const template = await this.findOne(id);
-    await this.templateRepo.remove(template);
+    await this.dataSource.transaction(async (manager) => {
+      const template = await manager
+        .getRepository(FormTemplate)
+        .findOne({ where: { id } });
+      if (!template) {
+        throw new NotFoundException(`Template with id ${id} not found`);
+      }
+
+      const [responses, sessions] = await Promise.all([
+        manager.getRepository(FormResponse).find({
+          where: { template_id: id },
+          select: { id: true },
+        }),
+        manager.getRepository(FormSession).find({
+          where: { form_id: id },
+          select: { id: true },
+        }),
+      ]);
+      const responseIds = responses.map(({ id: responseId }) => responseId);
+      const sessionIds = sessions.map(({ id: sessionId }) => sessionId);
+
+      const questions = await manager.getRepository(FormQuestion).find({
+        where: { template_id: id },
+        select: { id: true },
+      });
+      const questionIds = questions.map(({ id: questionId }) => questionId);
+
+      const answerConditions: FindOptionsWhere<FormAnswer>[] = [];
+      if (responseIds.length) {
+        answerConditions.push({ response_id: In(responseIds) });
+      }
+      if (sessionIds.length) {
+        answerConditions.push({ session_id: In(sessionIds) });
+      }
+      if (questionIds.length) {
+        answerConditions.push({ question_id: In(questionIds) });
+      }
+      if (answerConditions.length) {
+        await manager.getRepository(FormAnswer).delete(answerConditions);
+      }
+      if (responseIds.length) {
+        await manager.getRepository(FormResult).delete({
+          response_id: In(responseIds),
+        });
+        await manager.getRepository(FormResponse).delete({
+          id: In(responseIds),
+        });
+      }
+      if (sessionIds.length) {
+        await manager.getRepository(FormSession).delete({ id: In(sessionIds) });
+      }
+
+      await manager.getRepository(FormAssignment).delete({ template_id: id });
+      if (questionIds.length) {
+        await manager.getRepository(FormOption).delete({
+          question_id: In(questionIds),
+        });
+      }
+      await manager.getRepository(FormQuestion).delete({ template_id: id });
+      await manager.getRepository(FormTemplate).delete({ id });
+    });
   }
 
   private normalizePayload(

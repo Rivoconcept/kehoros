@@ -41,10 +41,21 @@ export class AssignFormDialogComponent implements OnInit {
     { value: AssignmentTargetType.DEPARTMENT, label: 'Department' },
   ];
 
+  get visibleTargetTypes() {
+    return this.data.individualOnly
+      ? this.targetTypes.filter((type) => type.value === AssignmentTargetType.USERS)
+      : this.targetTypes;
+  }
+
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AssignFormDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { templateId: string; templateTitle: string; employees?: any[] }
+    @Inject(MAT_DIALOG_DATA) public data: {
+      templateId: string;
+      templateTitle: string;
+      employees?: { id: string; name: string; matricule?: string }[];
+      individualOnly?: boolean;
+    }
   ) {
     this.shareableLink = `${window.location.origin}/forms/player/${data.templateId}`;
   }
@@ -55,8 +66,12 @@ export class AssignFormDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.assignForm = this.fb.group({
-      target_type: [AssignmentTargetType.ALL, Validators.required],
+      target_type: [
+        this.data.individualOnly ? AssignmentTargetType.USERS : AssignmentTargetType.ALL,
+        Validators.required,
+      ],
       user_ids: [[]],
+      user_id: [this.data.individualOnly ? '' : null, this.data.individualOnly ? Validators.required : []],
     });
   }
 

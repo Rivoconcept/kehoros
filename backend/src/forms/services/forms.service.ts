@@ -92,8 +92,8 @@ export class FormsService {
     return this.assignmentService.renew(id, deadline);
   }
 
-  cancelAssignment(id: string) {
-    return this.assignmentService.cancel(id);
+  removeAssignment(id: string) {
+    return this.assignmentService.remove(id);
   }
 
   // Response orchestration
