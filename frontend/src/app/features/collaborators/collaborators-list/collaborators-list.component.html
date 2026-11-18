@@ -1,2 +1,67 @@
-<app-navbar-collaborators/>
-<p>collaborators-list works!</p>
+<section class="collaborators-page">
+  <header class="page-header">
+    <div>
+      <h1>Collaborateurs</h1>
+      <p>{{ filteredCollaborators().length }} collaborateur(s) affiché(s)</p>
+    </div>
+
+    <input
+      pInputText
+      type="search"
+      class="search-input"
+      placeholder="Rechercher un collaborateur..."
+      aria-label="Rechercher un collaborateur"
+      (input)="setSearch($event)" />
+  </header>
+
+  @if (error()) {
+    <div class="error-message" role="alert">
+      <span>{{ error() }}</span>
+      <button type="button" class="retry-button" (click)="loadCollaborators()">Réessayer</button>
+    </div>
+  }
+
+  <p-table
+    [value]="filteredCollaborators()"
+    [loading]="loading()"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [tableStyle]="{ 'min-width': '48rem' }"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="{first} à {last} sur {totalRecords} collaborateurs">
+    <ng-template #header>
+      <tr>
+        <th>Matricule</th>
+        <th>Nom</th>
+        <th>E-mail</th>
+        <th>Fonction</th>
+        <th>Département</th>
+        <th>Équipe</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-collaborator>
+      <tr>
+        <td>{{ collaborator.matricule }}</td>
+        <td>{{ getFullName(collaborator) }}</td>
+        <td>{{ collaborator.email }}</td>
+        <td>{{ collaborator.fonction || '—' }}</td>
+        <td>{{ collaborator.departement || '—' }}</td>
+        <td>{{ collaborator.equipeFr || '—' }}</td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6" class="empty-message">
+          @if (search()) {
+            Aucun collaborateur ne correspond à la recherche.
+          } @else {
+            Aucun collaborateur enregistré.
+          }
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</section>

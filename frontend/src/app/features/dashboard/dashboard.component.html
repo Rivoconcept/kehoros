@@ -259,14 +259,17 @@
         </p-sidebar>
 
         <!-- MAIN CONTENT -->
-        <p-sidebar-main class="w-full flex flex-col flex-1">
+        <p-sidebar-main class="w-full min-w-0 flex flex-col flex-1">
             <app-navbar-dashboard
                 [activeSection]="activeSection()"
                 [user]="currentUser()"
                 (toggleSidebar)="open.update(v => !v)"
                 (logout)="logout()" />
 
-            <app-dashboard-content [activeSection]="activeSection()" />
+            <app-dashboard-content
+                class="w-full min-w-0 flex-1"
+                [activeSection]="activeSection()"
+                (sectionSelected)="selectSection($event)" />
         </p-sidebar-main>
 
     </p-sidebar-layout>

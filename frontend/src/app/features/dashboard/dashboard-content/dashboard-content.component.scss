@@ -1,3 +1,10 @@
+:host {
+  display: block;
+  flex: 1 1 0%;
+  width: 100%;
+  min-width: 0;
+}
+
 // Main content background
 .content {
   background: var(--p-surface-50, #f7fafc);

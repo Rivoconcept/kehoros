@@ -1,23 +1,21 @@
-import { Component, OnInit, ViewChild, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { trigger, state, style, transition, animate } from '@angular/animations';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { Menu, MenuModule } from 'primeng/menu';
-import { ButtonDirective } from 'primeng/button';
-
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { TagModule } from 'primeng/tag';
+import { TabsModule } from 'primeng/tabs';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
+import { TableModule } from 'primeng/table';
+import { TooltipModule } from 'primeng/tooltip';
+import { ToastModule } from 'primeng/toast';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatTableModule } from '@angular/material/table';
+import { finalize, timeout } from 'rxjs';
 
 import { FormsService } from '../services/forms.services';
 import { AssignFormDialogComponent } from '../dialogs/assign-form-dialog/assign-form-dialog.component';
@@ -46,42 +44,52 @@ export interface FormAssignmentGroup {
 }
 
 @Component({
-    selector: 'app-template-list',
-    imports: [
-        CommonModule,
-        FormsModule,
-        MatButtonModule,
-        MatIconModule,
-        MatCardModule,
-        MenuModule,
-        ButtonDirective,
-        MatChipsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatTabsModule,
-        MatSnackBarModule,
-        MatTooltipModule,
-        MatDialogModule,
-        MatTableModule,
-    ],
-    templateUrl: './template-list.component.html',
-    changeDetection: ChangeDetectionStrategy.Default,
-    styleUrl: './template-list.component.scss'
+  selector: 'app-template-list',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MenuModule,
+    ButtonModule,
+    CardModule,
+    TagModule,
+    TabsModule,
+    IconFieldModule,
+    InputIconModule,
+    InputTextModule,
+    TableModule,
+    TooltipModule,
+    ToastModule,
+    MatDialogModule,
+  ],
+  providers: [MessageService],
+  templateUrl: './template-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Default,
+  styleUrl: './template-list.component.scss'
 })
 export class TemplateListComponent implements OnInit {
   @ViewChild('templateActionMenu') private templateActionMenu!: Menu;
 
-  private snackBar = inject(MatSnackBar);
+  private messageService = inject(MessageService);
   private dialog = inject(MatDialog);
   private authService = inject(AuthService);
 
   search = '';
   templates: TemplateCard[] = [];
+  templatesLoading = true;
+  templatesLoadError = '';
+  templatesRefreshError = '';
+  private hasCachedTemplates = false;
   templateMenuItems: MenuItem[] = [];
   activeTab: 'active' | 'archived' | 'assigned' = 'active';
+  selectedTab = '0';
+  assignedLoading = true;
+  assignedLoadError = '';
+  assignedRefreshError = '';
+  hasCachedAssignments = false;
+  embedded = input(false);
+  createRequested = output<void>();
 
-  // Table Master
-  assignedColumns: string[] = ['title', 'targetType', 'progress', 'actions'];
   assignedGroups: FormAssignmentGroup[] = [];
 
   constructor(
@@ -90,78 +98,223 @@ export class TemplateListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.restoreCachedTemplates();
+    this.restoreCachedAssignments();
+
+    const savedTab = sessionStorage.getItem('template_list_selected_tab');
+    if (savedTab === '0' || savedTab === '1' || savedTab === '2') {
+      this.selectedTab = savedTab;
+      this.activeTab = savedTab === '1' ? 'archived' : savedTab === '2' ? 'assigned' : 'active';
+    }
+
     this.loadTemplates();
     this.loadAssignedForms();
   }
 
   loadTemplates(): void {
-    this.formsService.getTemplates().subscribe({
-      next: (data: any[]) => {
-        this.templates = data.map((template) => {
-          const rawStatus = (template.status || 'draft').toLowerCase();
+    this.templatesLoading = !this.hasCachedTemplates;
+    this.templatesLoadError = '';
+    this.templatesRefreshError = '';
 
-          let statusLabel = 'Draft';
-          if (rawStatus === 'published') statusLabel = 'Published';
-          if (rawStatus === 'archived') statusLabel = 'Archived';
+    this.formsService.getTemplates().pipe(
+      timeout({ first: 15000 }),
+      finalize(() => {
+        this.templatesLoading = false;
+      }),
+    ).subscribe({
+      next: (data: unknown) => {
+        const mappedTemplates = this.mapTemplates(data);
+        if (!mappedTemplates) {
+          const errorMessage = 'The server returned an invalid questionnaire list.';
+          if (this.hasCachedTemplates) {
+            this.templatesRefreshError = errorMessage;
+          } else {
+            this.templatesLoadError = errorMessage;
+          }
+          return;
+        }
 
-          return {
-            id: template.id,
-            title: template.title,
-            description: template.description ?? '',
-            category: template.category ?? 'General',
-            status: rawStatus as 'draft' | 'published' | 'archived',
-            statusLabel,
-            Questions:
-              template.questions?.length ??
-              template.Questions?.length ??
-              0,
-            responses: template.responses?.length ?? 0,
-            createdBy: template.createdBy ?? template.created_by ?? 'System',
-            updatedAt: new Date(template.updated_at ?? template.updatedAt),
-          };
-        });
+        this.templates = mappedTemplates;
+        this.hasCachedTemplates = true;
+        const cacheKey = this.getTemplatesCacheKey();
+        if (cacheKey) {
+          try {
+            sessionStorage.setItem(cacheKey, JSON.stringify(data));
+          } catch (error) {
+            console.warn('Unable to cache questionnaires for the current session', error);
+          }
+        }
       },
-      error: (error: any) => {
+      error: (error: unknown) => {
         console.error('Error fetching templates', error);
-        this.showNotification('Error loading templates');
+        const errorMessage = 'Unable to refresh questionnaires. Check your connection and retry.';
+        if (this.hasCachedTemplates) {
+          this.templatesRefreshError = errorMessage;
+        } else {
+          this.templatesLoadError = 'Unable to load questionnaires. Check your connection and retry.';
+        }
+        this.showNotification('error', 'Error loading templates');
       },
     });
   }
 
+  private getTemplatesCacheKey(): string | null {
+    const userId = this.authService.getPayload()?.sub;
+    return userId ? `form_templates_cache_${userId}` : null;
+  }
+
+  private restoreCachedTemplates(): void {
+    const cacheKey = this.getTemplatesCacheKey();
+    if (!cacheKey) return;
+
+    const cachedData = sessionStorage.getItem(cacheKey);
+    if (!cachedData) return;
+
+    try {
+      const templates = this.mapTemplates(JSON.parse(cachedData));
+      if (!templates) {
+        throw new Error('Cached questionnaire list has an invalid format.');
+      }
+
+      this.templates = templates;
+      this.hasCachedTemplates = true;
+      this.templatesLoading = false;
+    } catch (error) {
+      console.warn('Unable to restore cached questionnaires', error);
+      sessionStorage.removeItem(cacheKey);
+    }
+  }
+
+  private mapTemplates(data: unknown): TemplateCard[] | null {
+    if (!Array.isArray(data)) return null;
+
+    return data.map((item: any) => {
+      const template = item ?? {};
+      const rawStatus = String(template.status || 'draft').toLowerCase();
+
+      let statusLabel = 'Draft';
+      if (rawStatus === 'published') statusLabel = 'Published';
+      if (rawStatus === 'archived') statusLabel = 'Archived';
+
+      return {
+        id: String(template.id ?? ''),
+        title: String(template.title ?? ''),
+        description: template.description ?? '',
+        category: template.category ?? 'General',
+        status: rawStatus as TemplateCard['status'],
+        statusLabel,
+        Questions: template.questions?.length ?? template.Questions?.length ?? 0,
+        responses: template.responses?.length ?? 0,
+        createdBy: template.createdBy ?? template.created_by ?? 'System',
+        updatedAt: new Date(template.updated_at ?? template.updatedAt),
+      };
+    });
+  }
+
+  private getAssignmentsCacheKey(): string | null {
+    const userId = this.authService.getPayload()?.sub;
+    return userId ? `form_assignments_cache_${userId}` : null;
+  }
+
+  private restoreCachedAssignments(): void {
+    const cacheKey = this.getAssignmentsCacheKey();
+    if (!cacheKey) return;
+
+    const cachedData = sessionStorage.getItem(cacheKey);
+    if (!cachedData) return;
+
+    try {
+      const groups = this.mapAssignments(JSON.parse(cachedData));
+      if (!groups) {
+        throw new Error('Cached assignment list has an invalid format.');
+      }
+
+      this.assignedGroups = groups;
+      this.hasCachedAssignments = true;
+      this.assignedLoading = false;
+    } catch (error) {
+      console.warn('Unable to restore cached form assignments', error);
+      sessionStorage.removeItem(cacheKey);
+    }
+  }
+
   loadAssignedForms(): void {
-    this.formsService.getAssignments().subscribe({
-      next: (assignments: any[]) => {
-        const groupsMap = new Map<string, FormAssignmentGroup>();
+    this.assignedLoading = !this.hasCachedAssignments;
+    this.assignedLoadError = '';
+    this.assignedRefreshError = '';
 
-        assignments.forEach((assignment) => {
-          const tId = assignment.template_id || assignment.template?.id;
-          const tTitle = assignment.template?.title || 'Untitled Form';
-          const category = assignment.template?.category || 'General';
-
-          if (!groupsMap.has(tId)) {
-            groupsMap.set(tId, {
-              templateId: tId,
-              templateTitle: tTitle,
-              category: category,
-              targetTypeLabel: assignment.target_type || 'All Users',
-              totalAssigned: 0,
-              completedCount: 0,
-            });
+    this.formsService.getAssignments().pipe(
+      timeout({ first: 15000 }),
+      finalize(() => {
+        this.assignedLoading = false;
+      }),
+    ).subscribe({
+      next: (assignments: unknown) => {
+        const groups = this.mapAssignments(assignments);
+        if (!groups) {
+          const errorMessage = 'The server returned an invalid assigned forms list.';
+          if (this.hasCachedAssignments) {
+            this.assignedRefreshError = errorMessage;
+          } else {
+            this.assignedLoadError = errorMessage;
           }
+          return;
+        }
 
-          const group = groupsMap.get(tId)!;
-          group.totalAssigned++;
-          if (assignment.status === 'completed') {
-            group.completedCount++;
+        this.assignedGroups = groups;
+        this.hasCachedAssignments = true;
+        const cacheKey = this.getAssignmentsCacheKey();
+        if (cacheKey) {
+          try {
+            sessionStorage.setItem(cacheKey, JSON.stringify(assignments));
+          } catch (error) {
+            console.warn('Unable to cache form assignments for the current session', error);
           }
-        });
-
-        this.assignedGroups = Array.from(groupsMap.values());
+        }
       },
-      error: (err: any) => {
-        console.error('Error fetching assignments', err);
+      error: (error: unknown) => {
+        console.error('Error fetching assignments', error);
+        if (this.hasCachedAssignments) {
+          this.assignedRefreshError = 'Unable to refresh assigned forms. Showing the last loaded list.';
+        } else {
+          this.assignedLoadError = 'Unable to load assigned forms. Check your connection and retry.';
+        }
       },
     });
+  }
+
+  private mapAssignments(assignments: unknown): FormAssignmentGroup[] | null {
+    if (!Array.isArray(assignments)) return null;
+
+    const groupsMap = new Map<string, FormAssignmentGroup>();
+    assignments.forEach((item: any) => {
+      const assignment = item ?? {};
+      const templateId = assignment.template_id ?? assignment.template?.id;
+      if (typeof templateId !== 'string' || !templateId) return;
+
+      const templateTitle = assignment.template?.title || 'Untitled Form';
+      const category = assignment.template?.category || 'General';
+      if (!groupsMap.has(templateId)) {
+        groupsMap.set(templateId, {
+          templateId,
+          templateTitle,
+          category,
+          targetTypeLabel: assignment.target_type || 'All Users',
+          totalAssigned: 0,
+          completedCount: 0,
+        });
+      }
+
+      const group = groupsMap.get(templateId)!;
+      group.totalAssigned++;
+      if (assignment.status?.toLowerCase() === 'completed') {
+        group.completedCount++;
+      }
+    });
+
+    if (assignments.length > 0 && groupsMap.size === 0) return null;
+
+    return Array.from(groupsMap.values());
   }
 
   getCreatedByLabel(createdBy: any): string {
@@ -200,10 +353,17 @@ export class TemplateListComponent implements OnInit {
     );
   }
 
-  onTabChange(index: number): void {
-    if (index === 0) this.activeTab = 'active';
-    else if (index === 1) this.activeTab = 'archived';
-    else if (index === 2) {
+  onTabChange(value: string | number | undefined): void {
+    if (value === undefined) return;
+    const selectedTab = String(value);
+    if (selectedTab !== '0' && selectedTab !== '1' && selectedTab !== '2') return;
+
+    this.selectedTab = selectedTab;
+    sessionStorage.setItem('template_list_selected_tab', selectedTab);
+
+    if (this.selectedTab === '0') this.activeTab = 'active';
+    else if (this.selectedTab === '1') this.activeTab = 'archived';
+    else if (this.selectedTab === '2') {
       this.activeTab = 'assigned';
       this.loadAssignedForms();
     }
@@ -229,18 +389,23 @@ export class TemplateListComponent implements OnInit {
         if (selected) {
           this.router.navigate(['/forms/results', selected.id]);
         } else {
-          this.showNotification('No assignments found for this form');
+          this.showNotification('warn', 'No assignments found for this form');
         }
       },
       error: (err: any) => {
         console.error('Error fetching form results', err);
-        this.showNotification('Error loading form results');
+        this.showNotification('error', 'Error loading form results');
       },
     });
   }
 
   createTemplate(): void {
-    this.router.navigate(['/forms/builder', 'new']);
+    if (this.embedded()) {
+      this.createRequested.emit();
+      return;
+    }
+
+    void this.router.navigate(['/forms/builder', 'new']);
   }
 
   edit(template: TemplateCard): void {
@@ -298,7 +463,7 @@ export class TemplateListComponent implements OnInit {
       const payload = this.authService.getPayload();
       const assignedBy = payload?.sub || payload?.email;
       if (!assignedBy) {
-        this.showNotification('Unable to identify the current user');
+        this.showNotification('error', 'Unable to identify the current user');
         return;
       }
 
@@ -310,12 +475,12 @@ export class TemplateListComponent implements OnInit {
         department_ids: result.department_ids || [],
       }).subscribe({
         next: () => {
-          this.showNotification('Form assigned successfully');
+          this.showNotification('success', 'Form assigned successfully');
           this.loadAssignedForms();
         },
         error: (err: any) => {
           console.error('Error assigning form', err);
-          this.showNotification(err.error?.message || 'Error assigning form');
+          this.showNotification('error', err.error?.message || 'Error assigning form');
         },
       });
     });
@@ -324,12 +489,12 @@ export class TemplateListComponent implements OnInit {
   duplicate(template: TemplateCard): void {
     this.formsService.duplicateTemplate(template.id).subscribe({
       next: () => {
-        this.showNotification('Template duplicated successfully');
+        this.showNotification('success', 'Template duplicated successfully');
         this.loadTemplates();
       },
       error: (err: any) => {
         console.error('Error duplicating template', err);
-        this.showNotification('Error duplicating template');
+        this.showNotification('error', 'Error duplicating template');
       },
     });
   }
@@ -341,11 +506,12 @@ export class TemplateListComponent implements OnInit {
 
     this.formsService.archiveTemplate(template.id).subscribe({
       next: () => {
-        this.showNotification('Template archived');
+        this.showNotification('success', 'Template archived');
         this.loadTemplates();
       },
       error: (err: any) => {
         console.error('Error archiving template', err);
+        this.showNotification('error', 'Error archiving template');
         this.loadTemplates();
       },
     });
@@ -358,11 +524,12 @@ export class TemplateListComponent implements OnInit {
 
     this.formsService.restoreTemplate(template.id).subscribe({
       next: () => {
-        this.showNotification('Template restored');
+        this.showNotification('success', 'Template restored');
         this.loadTemplates();
       },
       error: (err: any) => {
         console.error('Error restoring template', err);
+        this.showNotification('error', 'Error restoring template');
         this.loadTemplates();
       },
     });
@@ -375,13 +542,14 @@ export class TemplateListComponent implements OnInit {
       this.templates = this.templates.filter((t) => t.id !== template.id);
       this.formsService.deleteTemplate(template.id).subscribe({
         next: () => {
-          this.showNotification('Template deleted successfully');
+          this.showNotification('success', 'Template deleted successfully');
           this.loadTemplates();
         },
         error: (err: any) => {
           console.error('Error deleting template', err);
           const message = err?.error?.message;
           this.showNotification(
+            'error',
             Array.isArray(message)
               ? message.join(' ')
               : message ?? 'Error deleting template',
@@ -392,7 +560,12 @@ export class TemplateListComponent implements OnInit {
     }
   }
 
-  private showNotification(message: string): void {
-    this.snackBar.open(message, 'Close', { duration: 3000 });
+  private showNotification(severity: 'success' | 'error' | 'warn', detail: string): void {
+    this.messageService.add({
+      severity,
+      summary: severity === 'error' ? 'Error' : 'Notification',
+      detail,
+      life: 3000,
+    });
   }
 }

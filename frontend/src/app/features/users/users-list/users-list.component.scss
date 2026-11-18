@@ -1,4 +1,13 @@
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
 .page {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
   padding: 2rem;
   background: #f7fafc;
   min-height: 100vh;
@@ -46,6 +55,15 @@
   display: flex;
   justify-content: center;
   padding: 3rem;
+}
+
+.users-load-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  color: #c53030;
 }
 
 // Table

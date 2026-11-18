@@ -1,32 +1,86 @@
 <div class="w-full flex-1 flex flex-col p-6 overflow-y-auto">
-    @if (activeSection() === 'Tableau de bord') {
-        <div class="w-full flex flex-col">
-            <div class="stats-grid">
-                @for (stat of stats(); track stat.label) {
-                    <p-card class="stat-card">
-                        <div class="stat-card-content">
-                            <div class="stat-icon" [style.background]="stat.color + '20'">
-                                <i class="pi" [ngClass]="stat.icon" [style.color]="stat.color" aria-hidden="true"></i>
+    @switch (activeSection()) {
+        
+        <!-- 1. Tableau de bord -->
+        @case ('Tableau de bord') {
+            <div class="w-full flex flex-col">
+                <h2 class="section-title">Vue d'ensemble</h2>
+                <div class="stats-grid">
+                    @for (stat of stats(); track stat.label) {
+                        <p-card class="stat-card">
+                            <div class="stat-card-content">
+                                <div class="stat-icon" [style.background]="stat.color + '20'">
+                                    <i class="pi" [ngClass]="stat.icon" [style.color]="stat.color" aria-hidden="true"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value">{{ stat.value }}</span>
+                                    <span class="stat-label">{{ stat.label }}</span>
+                                </div>
                             </div>
-                            <div class="stat-info">
-                                <span class="stat-value">{{ stat.value }}</span>
-                                <span class="stat-label">{{ stat.label }}</span>
-                            </div>
-                        </div>
-                    </p-card>
-                }
+                        </p-card>
+                    }
+                </div>
             </div>
-        </div>
-    } @else if (activeSection() === 'Forms / Templates') {
-        <div class="w-full flex-1 flex flex-col">
-            <app-template-list />
-        </div>
-    } @else {
-        <div class="w-full flex-1 flex flex-col gap-4">
-            <div class="rounded-lg bg-surface-100 dark:bg-surface-800 h-48 p-4 flex items-center justify-center text-sm text-muted-color">
-                Contenu de la section : <strong class="ml-1">{{ activeSection() }}</strong>
+        }
+
+        <!-- 2. Formulaires / Templates -->
+        @case ('Forms / Templates') {
+            <div class="w-full min-w-0 flex-1 flex flex-col">
+                <app-template-list
+                    [embedded]="true"
+                    (createRequested)="sectionSelected.emit('Forms / Builder')" />
             </div>
-            <div class="rounded-lg bg-surface-100 dark:bg-surface-800 flex-1"></div>
-        </div>
+        }
+
+        @case ('Forms / Builder') {
+            <div class="w-full min-w-0 flex-1 flex flex-col">
+                <app-builder />
+            </div>
+        }
+
+        <!-- 3. Matériels / Computer (route /assets) -->
+        @case ('Inventory / Computer') {
+            <div class="w-full flex-1 flex flex-col gap-4">
+                <div class="rounded-lg bg-surface-100 dark:bg-surface-800 p-4 text-sm text-muted-color">
+                    Section : <strong>Matériels / Computer</strong> (/assets)
+                </div>
+                <div class="rounded-lg bg-surface-100 dark:bg-surface-800 flex-1"></div>
+            </div>
+        }
+
+        <!-- 4. Collaborateurs (route /collaborators) -->
+        @case ('Accounts / Collaborators') {
+            <div class="w-full min-w-0 flex-1 flex flex-col">
+                <app-collaborators-list />
+            </div>
+        }
+
+        <!-- 5. Utilisateurs (route /users) -->
+        @case ('Accounts / Users') {
+            <div class="w-full flex-1 flex flex-col">
+                <app-users-list />
+            </div>
+        }
+
+        <!-- 6. Licences (route /licenses) -->
+        @case ('Software / Licenses') {
+            <div class="w-full flex-1 flex flex-col gap-4">
+                <div class="rounded-lg bg-surface-100 dark:bg-surface-800 p-4 text-sm text-muted-color">
+                    Section : <strong>Licences</strong> (/licenses)
+                </div>
+                <div class="rounded-lg bg-surface-100 dark:bg-surface-800 flex-1"></div>
+            </div>
+        }
+
+        <!-- Default : Pour toutes les autres sous-sections non listées ci-dessus -->
+        @default {
+            <div class="w-full flex-1 flex flex-col gap-4">
+                <div class="rounded-lg bg-surface-100 dark:bg-surface-800 h-48 p-4 flex items-center justify-center text-sm text-muted-color">
+                    Contenu de la section : <strong class="ml-1">{{ activeSection() }}</strong>
+                </div>
+                <div class="rounded-lg bg-surface-100 dark:bg-surface-800 flex-1"></div>
+            </div>
+        }
+
     }
 </div>

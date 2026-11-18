@@ -1,156 +1,231 @@
-<div class="page">
-  <div class="page-header">
+<p-toast position="top-right" />
+
+<section class="page">
+  <header class="page-header">
     <div class="header-title">
       <h1>Questionnaires</h1>
       <p>Manage your questionnaires, skills tests, and HR surveys.</p>
     </div>
-    <button mat-raised-button color="primary" class="create-btn" (click)="createTemplate()">
-      <mat-icon>add</mat-icon>
-      New Questionnaire
+    <button
+      pButton
+      type="button"
+      class="create-btn"
+      (click)="createTemplate()">
+      <i class="pi pi-plus" aria-hidden="true"></i>
+      <span>New Questionnaire</span>
     </button>
-  </div>
+  </header>
 
-  <!-- Toolbar with 3 Tabs & Right Search Input -->
   <div class="toolbar">
-    <mat-tab-group class="custom-tabs" (selectedTabChange)="onTabChange($event.index)">
-      <mat-tab label="Active"></mat-tab>
-      <mat-tab label="Archived"></mat-tab>
-      <mat-tab label="Assigned Forms"></mat-tab>
-    </mat-tab-group>
+    <p-tabs [value]="selectedTab" (valueChange)="onTabChange($event)">
+      <p-tablist>
+        <p-tab value="0">Active</p-tab>
+        <p-tab value="1">Archived</p-tab>
+        <p-tab value="2">Assigned Forms</p-tab>
+      </p-tablist>
+    </p-tabs>
 
-    <mat-form-field appearance="outline" class="search-field" subscriptSizing="dynamic">
-      <mat-label>Search</mat-label>
-      <input matInput [(ngModel)]="search" placeholder="Search by title..." />
-      <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+    <p-iconfield iconPosition="left" class="search-field">
+      <p-inputicon>
+        <i class="pi pi-search" aria-hidden="true"></i>
+      </p-inputicon>
+      <input
+        pInputText
+        type="search"
+        [(ngModel)]="search"
+        placeholder="Search by title..."
+        aria-label="Search questionnaires" />
+    </p-iconfield>
   </div>
 
-  <!-- ONGLET 1 & 2 : Grid Layout des Cartes -->
-  <p-menu #templateActionMenu [popup]="true" [model]="templateMenuItems"></p-menu>
-  <div *ngIf="activeTab !== 'assigned'" class="cards-grid">
-    <mat-card *ngFor="let template of filteredTemplates" class="template-card" [class.is-archived]="template.status === 'archived'">
-      <div class="card-header">
-        <div class="title-container">
-          <h2>
-            <mat-icon class="card-icon">description</mat-icon>
-            <span class="title-text">{{ template.title }}</span>
-          </h2>
-          <p class="description" *ngIf="template.description">{{ template.description }}</p>
-        </div>
+  <p-menu #templateActionMenu [popup]="true" [model]="templateMenuItems" />
 
-        <button
-          pButton
-          type="button"
-          class="p-button-text p-button-rounded p-button-icon-only"
-          aria-label="Action menu"
-          (click)="openTemplateMenu($event, template)">
-          <i class="pi pi-ellipsis-v"></i>
+  @if (activeTab !== 'assigned') {
+    @if (templatesLoading) {
+      <div class="loading-state" role="status" aria-live="polite">
+        <i class="pi pi-spinner pi-spin" aria-hidden="true"></i>
+        <span>Loading questionnaires...</span>
+      </div>
+    } @else if (templatesLoadError) {
+      <div class="error-state" role="alert">
+        <span>{{ templatesLoadError }}</span>
+        <button pButton type="button" (click)="loadTemplates()">
+          <span class="p-button-label">Retry</span>
         </button>
       </div>
-
-      <div class="chips">
-        <span class="badge badge-category">{{ template.category }}</span>
-        <span class="badge" [ngClass]="{
-          'badge-published': template.status === 'published',
-          'badge-draft': template.status === 'draft',
-          'badge-archived': template.status === 'archived'
-        }">
-          {{ template.statusLabel }}
-        </span>
-      </div>
-
-      <div class="stats">
-        <div class="stat-item">
-          <strong>{{ template.Questions }}</strong>
-          <span>Questions</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <strong>{{ template.responses }}</strong>
-          <span>Responses</span>
-        </div>
-      </div>
-
-      <div class="footer">
-        <div class="meta-item">
-          <small>Created by</small>
-          <strong>{{ getCreatedByLabel(template.createdBy) }}</strong>
-        </div>
-        <div class="meta-item text-right">
-          <small>Updated</small>
-          <strong>{{ template.updatedAt | date:'MM/dd/yyyy' }}</strong>
-        </div>
-      </div>
-
-      <div class="card-actions">
-        <button 
-          mat-stroked-button 
-          color="accent" 
-          (click)="assign(template)"
-          [disabled]="template.status === 'archived'"
-          matTooltip="Configure assignment and target audience">
-          <mat-icon>tune</mat-icon> Assign
-        </button>
-        <button mat-flat-button color="primary" (click)="viewResults(template)">
-          <mat-icon>bar_chart</mat-icon> Results
-        </button>
-      </div>
-    </mat-card>
-  </div>
-
-  <!-- ONGLET 3 : Tableau Synthétique des Formulaires Assignés -->
-  <div *ngIf="activeTab === 'assigned'" class="assigned-table-container">
-    <table mat-table [dataSource]="filteredAssignedGroups" class="mat-elevation-z2 w-100">
-      
-      <!-- Form Title -->
-      <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef> Form </th>
-        <td mat-cell *matCellDef="let element" class="font-bold">
-          {{ element.templateTitle }}
-        </td>
-      </ng-container>
-
-      <!-- Target Type -->
-      <ng-container matColumnDef="targetType">
-        <th mat-header-cell *matHeaderCellDef> Target Audience </th>
-        <td mat-cell *matCellDef="let element">
-          <span class="badge badge-category">{{ element.targetTypeLabel }}</span>
-        </td>
-      </ng-container>
-
-      <!-- Progress -->
-      <ng-container matColumnDef="progress">
-        <th mat-header-cell *matHeaderCellDef> Completion </th>
-        <td mat-cell *matCellDef="let element">
-          <strong>{{ element.completedCount }} / {{ element.totalAssigned }}</strong> completed
-        </td>
-      </ng-container>
-
-      <!-- Actions (Redirection vers la page dédiée d'analyse/progression) -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef class="text-right"> Action </th>
-        <td mat-cell *matCellDef="let element" class="text-right">
-          <button mat-flat-button color="primary" size="small" (click)="viewProgressPage(element)">
-            <mat-icon>bar_chart</mat-icon> Manage Progress
+    } @else {
+      @if (templatesRefreshError) {
+        <div class="refresh-warning" role="status">
+          <span>{{ templatesRefreshError }} Showing the last loaded list.</span>
+          <button pButton type="button" (click)="loadTemplates()">
+            <span class="p-button-label">Retry</span>
           </button>
-        </td>
-      </ng-container>
+        </div>
+      }
+      <div class="cards-grid">
+        @for (template of filteredTemplates; track template.id) {
+          <p-card
+            styleClass="template-card"
+            [class.is-archived]="template.status === 'archived'">
+            <ng-template #header>
+              <div class="card-header p-3 gap-2 flex">
+                <div class="title-container align-items-center">
+                  <h2>
+                    <i class="pi pi-file card-icon" size="small" severity="secondary" aria-hidden="true"></i>
+                    <span class="title-text">{{ template.title }}</span>
+                  </h2>
+                  @if (template.description) {
+                    <p class="description ml-6">{{ template.description }}</p>
+                  }
+                </div>
 
-      <tr mat-header-row *matHeaderRowDef="assignedColumns"></tr>
-      <tr mat-row *matRowDef="let element; columns: assignedColumns" class="master-row"></tr>
-    </table>
+                <button
+                  pButton
+                  type="button"
+                  [text]="true"
+                  [rounded]="true"
+                  class="template-actions-button"
+                  aria-label="Template actions"
+                  (click)="openTemplateMenu($event, template)">
+                  <i class="pi pi-ellipsis-v" aria-hidden="true"></i>
+                </button>
+              </div>
+            </ng-template>
 
-    <div *ngIf="filteredAssignedGroups.length === 0" class="empty-state mt-4">
-      <mat-icon>assignment_late</mat-icon>
-      <h3>No assigned forms found</h3>
-      <p>Assign a form from the "Active" tab to track employee responses.</p>
-    </div>
-  </div>
+            <div class="chips">
+              <p-tag [value]="template.category" severity="info" />
+              <p-tag
+                [value]="template.statusLabel"
+                [severity]="template.status === 'published' ? 'success' : template.status === 'draft' ? 'warn' : 'secondary'" />
+            </div>
 
-  <!-- Empty State (Templates) -->
-  <div *ngIf="activeTab !== 'assigned' && filteredTemplates.length === 0" class="empty-state">
-    <mat-icon>inbox</mat-icon>
-    <h3>No questionnaires found</h3>
-    <p>Try adjusting your search query or switching tabs.</p>
-  </div>
-</div>
+            <div class="stats">
+              <div class="stat-item">
+                <strong>{{ template.Questions }}</strong>
+                <span>Questions</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-item">
+                <strong>{{ template.responses }}</strong>
+                <span>Responses</span>
+              </div>
+            </div>
+
+            <div class="metadata">
+              <div class="meta-item">
+                <small>Created by</small>
+                <strong>{{ getCreatedByLabel(template.createdBy) }}</strong>
+              </div>
+              <div class="meta-item text-right">
+                <small>Updated</small>
+                <strong>{{ template.updatedAt | date:'MM/dd/yyyy' }}</strong>
+              </div>
+            </div>
+
+            <ng-template #footer>
+              <div class="card-actions">
+                <button
+                  pButton
+                  type="button"
+                  severity="secondary"
+                  [outlined]="true"
+                  (click)="assign(template)"
+                  [disabled]="template.status === 'archived'"
+                  pTooltip="Configure assignment and target audience">
+                  <i class="pi pi-sliders-h p-button-icon" aria-hidden="true"></i>
+                  <span class="p-button-label">Assign</span>
+                </button>
+                <button
+                  pButton
+                  type="button"
+                  severity="primary"
+                  (click)="viewResults(template)">
+                  <i class="pi pi-chart-bar p-button-icon" aria-hidden="true"></i>
+                  <span class="p-button-label">Results</span>
+                </button>
+              </div>
+            </ng-template>
+          </p-card>
+        } @empty {
+          <div class="empty-state">
+            <i class="pi pi-inbox" aria-hidden="true"></i>
+            <h3>No questionnaires found</h3>
+            <p>Try adjusting your search query or switching tabs.</p>
+          </div>
+        }
+      </div>
+    }
+  } @else {
+    @if (assignedLoading && !hasCachedAssignments) {
+      <div class="loading-state" role="status" aria-live="polite">
+        <i class="pi pi-spinner pi-spin" aria-hidden="true"></i>
+        <span>Loading assigned forms...</span>
+      </div>
+    } @else if (assignedLoadError) {
+      <div class="error-state" role="alert">
+        <span>{{ assignedLoadError }}</span>
+        <button pButton type="button" (click)="loadAssignedForms()">
+          <span class="p-button-label">Retry</span>
+        </button>
+      </div>
+    } @else {
+      @if (assignedLoading) {
+        <div class="refresh-warning" role="status" aria-live="polite">
+          <i class="pi pi-spinner pi-spin" aria-hidden="true"></i>
+          <span>Updating assigned forms...</span>
+        </div>
+      } @else if (assignedRefreshError) {
+        <div class="refresh-warning" role="status">
+          <span>{{ assignedRefreshError }}</span>
+          <button pButton type="button" (click)="loadAssignedForms()">
+            <span class="p-button-label">Retry</span>
+          </button>
+        </div>
+      }
+
+      <div class="assigned-table-container">
+        <p-table
+          [value]="filteredAssignedGroups"
+          [tableStyle]="{ 'min-width': '48rem' }"
+          styleClass="p-datatable-sm">
+          <ng-template #header>
+            <tr>
+              <th>Form</th>
+              <th>Target Audience</th>
+              <th>Completion</th>
+              <th class="text-right">Action</th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-element>
+            <tr>
+              <td class="font-bold">{{ element.templateTitle }}</td>
+              <td><p-tag [value]="element.targetTypeLabel" severity="info" /></td>
+              <td><strong>{{ element.completedCount }} / {{ element.totalAssigned }}</strong> completed</td>
+              <td class="text-right">
+                <button
+                  pButton
+                  type="button"
+                  size="small"
+                  (click)="viewProgressPage(element)">
+                  <i class="pi pi-chart-bar p-button-icon" aria-hidden="true"></i>
+                  <span class="p-button-label">Manage Progress</span>
+                </button>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template #emptymessage>
+            <tr>
+              <td colspan="4" class="empty-table-message">
+                @if (assignedGroups.length === 0) {
+                  No assigned forms found. Assign a form from the Active tab to track employee responses.
+                } @else {
+                  No assigned forms match your search.
+                }
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    }
+  }
+</section>

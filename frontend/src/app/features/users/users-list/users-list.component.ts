@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { finalize, timeout } from 'rxjs';
 
 import { User } from '../models/user.model';
 import { UsersService } from '../services/users.service';
@@ -35,7 +36,8 @@ export class UsersListComponent implements OnInit {
 
   displayedColumns = ['name', 'email', 'role', 'status', 'created', 'actions'];
   users: User[] = [];
-  loading = false;
+  loading = signal(false);
+  loadError = signal('');
   recoveryCode = '';
   recoveryCodeUser = '';
   recoveryCodeCopied = false;
@@ -64,15 +66,22 @@ export class UsersListComponent implements OnInit {
     this.loadUsers();
   }
 
-  loadUsers() {
-    this.loading = true;
-    this.usersService.getAll().subscribe({
+  loadUsers(): void {
+    this.loading.set(true);
+    this.loadError.set('');
+    this.usersService.getAll().pipe(
+      timeout({ first: 15000 }),
+      finalize(() => this.loading.set(false)),
+    ).subscribe({
       next: (users: User[]) => {
         this.users = users;
-        this.loading = false;
       },
-      error: () => {
-        this.loading = false;
+      error: (error: unknown) => {
+        this.loadError.set(
+          error instanceof Error && error.name === 'TimeoutError'
+            ? 'Le chargement des utilisateurs a dépassé le délai. Vérifiez la connexion puis réessayez.'
+            : this.getRequestError(error, 'Impossible de charger les utilisateurs.'),
+        );
       }
     });
   }

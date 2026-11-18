@@ -1,7 +1,10 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { TemplateListComponent } from '../../forms/templates/template-list.component';
+import { UsersListComponent } from '../../users/users-list/users-list.component';
+import { BuilderComponent } from '../../forms/builder/components/builder.component';
+import { CollaboratorsListComponent } from '../../collaborators/collaborators-list/collaborators-list.component';
 
 export interface StatCardItem {
   icon: string;
@@ -21,10 +24,19 @@ export const INITIAL_STATS: StatCardItem[] = [
   selector: 'app-dashboard-content',
   styleUrl: './dashboard-content.component.scss',
   templateUrl: './dashboard-content.component.html',
-  imports: [CommonModule, NgClass, CardModule, TemplateListComponent],
+  imports: [
+    CommonModule,
+    NgClass,
+    CardModule,
+    TemplateListComponent,
+    UsersListComponent,
+    BuilderComponent,
+    CollaboratorsListComponent,
+],
 })
 export class DashboardContentComponent {
   activeSection = input.required<string>();
-  
+  sectionSelected = output<string>();
+
   stats = input<StatCardItem[]>(INITIAL_STATS);
 }

@@ -1,28 +1,15 @@
 import { Component, OnInit, ChangeDetectionStrategy, signal, OnDestroy, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
+import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
+import { filter } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { NavbarDashboardComponent } from './navbar-dashboard/navbar-dashboard.component';
 import type { CurrentUser } from './navbar-dashboard/navbar-dashboard.component';
 import { SidebarModule } from 'primeng/sidebar';
-import { Home } from '@primeicons/angular/home';
-import { Database } from '@primeicons/angular/database';
-import { Key } from '@primeicons/angular/key';
-import { Server } from '@primeicons/angular/server';
-import { Globe } from '@primeicons/angular/globe';
-import { Code } from '@primeicons/angular/code';
-import { Cog } from '@primeicons/angular/cog';
-import { ExternalLink } from '@primeicons/angular/external-link';
-import { NgClass } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { TemplateListComponent } from '../forms/templates/template-list.component';
 import { DashboardContentComponent } from './dashboard-content/dashboard-content.component';
+
 interface NavMenuItem {
   icon: string;
   label: string;
@@ -39,22 +26,12 @@ interface NavMenuItem {
     CardModule,
     NavbarDashboardComponent,
     DashboardContentComponent,
-],
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  menuItems: NavMenuItem[] = [
-    { icon: 'pi-chart-bar', label: 'Tableau de bord', route: '/dashboard' },
-    { icon: 'pi-file-edit', label: 'Formulaires',     route: '/forms/templates' },
-    { icon: 'pi-desktop',   label: 'Matériels',       route: '/assets' },
-    { icon: 'pi-users',     label: 'Collaborateurs',  route: '/collaborators' },
-    { icon: 'pi-user',      label: 'Utilisateurs',    route: '/users' },
-    { icon: 'pi-key',       label: 'Licences',        route: '/licenses' },
-  ];
-
-
 
   constructor(private router: Router, private authService: AuthService) {}
 
@@ -90,11 +67,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
   accessoriesOpen = signal(false);
   adapterOpen = signal(false);
 
+  private routerSub?: any;
   private mql?: MediaQueryList;
   private mqlListener?: (e: MediaQueryListEvent) => void;
 
   ngOnInit() {
+    // 1. Restauration prioritaire depuis sessionStorage (évite la perte au F5)
+    const savedSection = sessionStorage.getItem('active_dashboard_section');
+    if (savedSection) {
+      this.activeSection.set(savedSection);
+    }
+
     if (typeof window === 'undefined') return;
+
+    // 2. Gestion de la taille d'écran (Media Query Mobile)
     this.mql = window.matchMedia('(max-width: 1023px)');
     this.isMobile.set(this.mql.matches);
 
@@ -105,9 +91,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     };
     this.mql.addEventListener('change', this.mqlListener);
+
+    // 3. Écoute des changements de route pour synchronisation URL
+    this.routerSub = this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.updateActiveSectionFromUrl(event.urlAfterRedirects);
+    });
   }
 
   ngOnDestroy() {
+    if (this.routerSub) {
+      this.routerSub.unsubscribe();
+    }
+
     if (this.mql && this.mqlListener) {
       this.mql.removeEventListener('change', this.mqlListener);
     }
@@ -117,18 +114,32 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
-  selectSection(section: string) {
-    this.activeSection.set(section);
-    if (this.isMobile()) {
-      this.open.set(false);
-    }
-  }
-
   toggleAccessories() {
     this.accessoriesOpen.update((v) => !v);
   }
 
   toggleAdapter() {
     this.adapterOpen.update((v) => !v);
+  }
+
+  // Méthode pour mapper une URL à une section active
+  private updateActiveSectionFromUrl(url: string) {
+    if (url.includes('/forms/templates')) {
+      this.selectSection('Forms / Templates');
+    } else if (url.includes('/dashboard')) {
+      const savedSection = sessionStorage.getItem('active_dashboard_section');
+      if (savedSection) {
+        this.selectSection(savedSection);
+      }
+    }
+
+  }
+
+  selectSection(section: string) {
+    this.activeSection.set(section);
+    sessionStorage.setItem('active_dashboard_section', section);
+    if (this.isMobile()) {
+      this.open.set(false);
+    }
   }
 }

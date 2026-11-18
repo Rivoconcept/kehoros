@@ -1,3 +1,10 @@
+:host {
+    display:block;
+    flex:1 1 0%;
+    width:100%;
+    min-width:0;
+}
+
 .builder-page,
 .builder-page * {
     box-sizing:border-box;
@@ -8,6 +15,9 @@
     display:flex;
 
     flex-direction:column;
+
+    width:100%;
+    min-width:0;
 
     height:100vh;
 
@@ -37,6 +47,8 @@
 
     flex:1;
 
+    min-width:0;
+
     overflow:hidden;
 
 }
@@ -48,6 +60,8 @@
 .preview-panel {
 
     width:40%;
+
+    min-width:0;
 
     overflow:auto;
 
@@ -65,6 +79,8 @@
 
     width:40%;
 
+    min-width:0;
+
     overflow:auto;
 
     padding:16px;
@@ -78,6 +94,8 @@
 .property-panel {
 
     width:20%;
+
+    min-width:0;
 
     overflow:auto;
 
