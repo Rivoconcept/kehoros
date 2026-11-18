@@ -1,0 +1,30 @@
+.logo {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.logo-icon {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #27EBF5, #27F573);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    line-height: 1;
+    color: #1a202c;
+}
+
+.logo-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+}
+
+.navShadow {
+    box-shadow: 0 4px 6px -2px var(--p-primary-500);
+}

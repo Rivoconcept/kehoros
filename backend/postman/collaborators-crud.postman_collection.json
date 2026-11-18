@@ -183,10 +183,10 @@
       ]
     },
     {
-      "name": "Administrateur",
+      "name": "Administrator",
       "item": [
         {
-          "name": "1 - Connexion administrateur",
+          "name": "1 - Connexion Administrator",
           "event": [
             {
               "listen": "test",
@@ -195,7 +195,7 @@
                 "exec": [
                   "pm.test('Connexion reussie', function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
                   "const result = pm.response.json();",
-                  "pm.test('Le compte est administrateur', function () { pm.expect(result.user.role).to.eql('admin'); });",
+                  "pm.test('Le compte est Administrator', function () { pm.expect(result.user.role).to.eql('admin'); });",
                   "pm.collectionVariables.set('adminToken', result.access_token);",
                   "const id = pm.variables.replaceIn('{{$guid}}').replace(/-/g, '');",
                   "pm.collectionVariables.set('adminTestMatricule', 'PM-A-' + id.slice(0, 10));",

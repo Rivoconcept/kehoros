@@ -51,7 +51,7 @@
             <mat-icon>vpn_key</mat-icon>
             <span>
               <strong>Saisir un code de secours</strong>
-              <small>Code remis par votre administrateur</small>
+              <small>Code remis par votre Administrator</small>
             </span>
           </button>
         </div>
@@ -67,7 +67,7 @@
               [(ngModel)]="code"
               name="code"
               [maxlength]="verificationMethod === 'email' ? 6 : 18"
-              [placeholder]="verificationMethod === 'email' ? '000000' : 'Code fourni par l’administrateur'"
+              [placeholder]="verificationMethod === 'email' ? '000000' : 'Code fourni par l’Administrator'"
               [pattern]="verificationMethod === 'email' ? '[0-9]{6}' : '[a-fA-F0-9]{18}'"
               required
             />

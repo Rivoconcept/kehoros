@@ -5,32 +5,48 @@
   height: 100vh;
 }
 
-// Sidebar
-.sidenav {
-  width: 240px;
-  background: #1a202c;
-  display: flex;
-  flex-direction: column;
+/* =========================================================
+   1. COMPORTEMENT EN MODE REPLIÉ (ICON COLLAPSED)
+   ========================================================= */
+
+:host p-sidebar-layout[data-collapsed="true"]:not(:hover) .menu-label {
+  display: none;
 }
+
+:host p-sidebar-layout[data-collapsed="true"]:not(:hover) p-sidebar-menu-item:has(.menu-label):not(:has(.pi)):not(:has(.logo-icon)),
+:host p-sidebar-layout[data-collapsed="true"]:not(:hover) p-sidebar-menu-sub {
+  display: none;
+}
+
+:host p-sidebar-layout[data-collapsed="true"]:not(:hover) button[pSidebarMenuButton] {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* =========================================================
+   2. LOGO KEHOROS
+   ========================================================= */
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 1.5rem 1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .logo-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  flex-shrink: 0;
+  border-radius: 8px;
   background: linear-gradient(135deg, #27EBF5, #27F573);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 18px;
+  font-size: 14px;
+  line-height: 1;
   color: #1a202c;
 }
 
@@ -40,117 +56,71 @@
   color: white;
 }
 
-mat-nav-list {
+/* =========================================================
+   3. NAVIGATION ET ÉTATS ACTIFS (GLOBAL & SOUS-MENUS)
+   ========================================================= */
+
+:host p-sidebar-content {
   flex: 1;
   padding-top: 8px;
 
-  a {
-    color: rgba(255,255,255,0.65);
+  button[pSidebarMenuButton],
+  button[pSidebarMenuSubButton] {
     border-radius: 8px;
-    margin: 2px 8px;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 
-    mat-icon { color: rgba(255,255,255,0.5); }
+    .pi {
+      transition: color 0.2s ease;
+    }
 
     &:hover {
-      background: rgba(255,255,255,0.06);
-      color: white;
-      mat-icon { color: white; }
+      background: rgba(39, 235, 245, 0.08);
     }
 
+    /* S'applique à TOUS les éléments actifs (Tableau de bord, Forms, Inventory, Accounts) */
+    &[data-active="true"],
     &.active {
-      background: linear-gradient(135deg, rgba(39,235,245,0.15), rgba(39,245,115,0.15));
-      color: #27EBF5;
-      mat-icon { color: #27EBF5; }
+      background: linear-gradient(135deg, rgba(39, 235, 245, 0.15), rgba(39, 245, 115, 0.15));
+      color: #0ea5e9;
+      font-weight: 600;
+
+      .pi {
+        color: #0ea5e9;
+      }
     }
   }
 }
 
-.sidenav-footer {
-  padding: 1rem;
-  border-top: 1px solid rgba(255,255,255,0.08);
+/* Adaptation thème sombre pour l'état actif */
+:host-context(.dark) p-sidebar-content {
+  button[pSidebarMenuButton],
+  button[pSidebarMenuSubButton] {
+    &[data-active="true"],
+    &.active {
+      color: #27EBF5;
+
+      .pi {
+        color: #27EBF5;
+      }
+    }
+  }
 }
 
-.logout-btn {
+:host {
+  display: block;
   width: 100%;
-  color: rgba(255,255,255,0.5);
-  justify-content: flex-start;
-  gap: 8px;
-
-  &:hover { color: #fc8181; }
+  height: 100vh;
 }
 
-// Main content
-.content {
-  background: #f7fafc;
+p-sidebar-layout {
+  width: 100% !important;
+  height: 100% !important;
 }
 
-.toolbar {
-  background: white;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  color: #1a202c;
-  font-weight: 600;
-}
-
-.main {
-  padding: 2rem;
-}
-
-.section-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #2d3748;
-  margin-bottom: 1.5rem;
-}
-
-// KPI cards
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  margin-bottom: 2rem;
-
-  @media (max-width: 900px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.stat-card {
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-
-  mat-card-content {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.25rem;
-  }
-}
-
-.stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.stat-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-value {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #1a202c;
-  line-height: 1;
-}
-
-.stat-label {
-  font-size: 0.8rem;
-  color: #718096;
-  margin-top: 4px;
+p-sidebar-main {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  min-width: 0; /* Évite les dépassements de grille flexbox */
 }

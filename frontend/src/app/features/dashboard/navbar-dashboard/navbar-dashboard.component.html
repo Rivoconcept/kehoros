@@ -1,0 +1,47 @@
+ <!-- <p-toolbar [pt]="{ start: { class: 'flex-wrap' } }" [style]="{ 'border-radius': '3rem', padding: '0.75rem 1rem 0.75rem 1.5rem', background: 'var(--p-surface-900)', border: 'none' }"> -->
+<header class="navShadow p-2 mb-1">
+    <div class="flex w-full justify-content-between align-items-center">
+
+        <div class="logo flex items-center gap-2 shrink-0">
+            <span class="logo-icon">K</span>
+            <span class="font-bold text-lg ml-2">Kehoros</span>
+            <span class="text-lg ml-1">/ {{ activeSection() }}</span>
+        </div>
+        <div class="ml-6 flex flex-wrap gap-1">
+            <button pButton variant="text" size="small" class="text-surface-0! hover:bg-surface-700!">Dashboard</button>
+            <button pButton variant="text" size="small" class="text-surface-0! hover:bg-surface-700!">Formulaires</button>
+            <button pButton variant="text" size="small" class="text-surface-0! hover:bg-surface-700!">Inventaire</button>
+            <button pButton variant="text" size="small" class="text-surface-0! hover:bg-surface-700!">Comptes</button>
+        </div>
+
+        <div class="flex gap-2 align-items-center ">    
+            <button
+                pButton
+                type="button"
+                size="small"
+                severity="secondary"
+                (click)="toggleDarkMode()"
+                [attr.aria-label]="isDark() ? 'Passer au thème clair' : 'Passer au thème sombre'">
+                <i class="pi" [class.pi-sun]="isDark()" [class.pi-moon]="!isDark()" aria-hidden="true"></i>
+            </button>
+
+            <button pButton type="button"  size="small" (click)="op.toggle($event)"><i class="pi pi-user" aria-hidden="true"></i></button>
+            <p-popover #op>
+                <div class="max-w-72 w-full">
+                    <div class="flex items-center justify-between">
+                        <span class="font-semibold text-sm">{{ user().email }}</span>
+                    </div>
+                    <p class="text-sm text-muted-color mt-2 mb-0!">{{ user().role }}</p>
+                    <div class="flex items-center justify-between mt-4">
+                        <div class="flex items-center gap-2">
+                            <button type="button" pButton severity="secondary" variant="outlined" size="small" (click)="op.hide()">Cancel</button>
+                            <button pButton type="button" size="small" aria-label="Ajouter" (click)="onLogout()"><i class="pi pi-sign-out" aria-hidden="true"></i>Déconnexion</button>
+                        </div>
+                    </div>
+                </div>
+            </p-popover>
+        </div>
+    </div>
+</header>
+<!-- </p-toolbar> -->
+

@@ -33,9 +33,9 @@ $ npm install
 
 ## Authentification en deux étapes
 
-Par défaut, tous les comptes, y compris les administrateurs, doivent saisir
+Par défaut, tous les comptes, y compris les Administrators, doivent saisir
 leur mot de passe puis un code à 6 chiffres envoyé par e-mail ou leur code de
-secours. Un administrateur peut activer ou désactiver cette exigence par
+secours. Un Administrator peut activer ou désactiver cette exigence par
 utilisateur ou pour tous les comptes depuis l'écran **Utilisateurs**. Quand la
 double authentification est désactivée pour un compte, le mot de passe seul
 suffit à ouvrir une session. Le code e-mail expire après 10 minutes, est
@@ -77,13 +77,13 @@ seule instance du backend. Une mise à l'échelle horizontale nécessite un
 stockage partagé pour les challenges et les limites de renvoi.
 
 Sur l'écran de vérification, l'utilisateur choisit entre le code envoyé par
-e-mail et **Saisir un code de secours**. Un administrateur peut générer ce code
+e-mail et **Saisir un code de secours**. Un Administrator peut générer ce code
 depuis l'écran **Utilisateurs** (icône de clé). Il est affiché une seule fois,
 doit être transmis à l'utilisateur de manière sécurisée et ne fonctionne qu'une
 fois. Le code précédent est invalidé à chaque génération. Seul son hash est
 conservé en base.
 
-Depuis cette liste, l'administrateur peut aussi définir un nouveau mot de passe
+Depuis cette liste, l'Administrator peut aussi définir un nouveau mot de passe
 pour un utilisateur avec le bouton de cadenas. L'API `PATCH /users/:id/password`
 reçoit `{ "password": "..." }`. Le mot de passe doit contenir 6 à 128 caractères
 et est enregistré sous forme de hash.

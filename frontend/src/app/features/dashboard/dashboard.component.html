@@ -1,63 +1,273 @@
-<mat-sidenav-container class="dashboard-container">
-
-  <!-- Sidebar -->
-  <mat-sidenav mode="side" opened class="sidenav">
-
-    <div class="logo">
-      <span class="logo-icon">K</span>
-      <span class="logo-text">Kehoros</span>
-    </div>
-
-    <mat-nav-list>
-      @for (item of menuItems; track item.route) {
-        <a mat-list-item [routerLink]="item.route" routerLinkActive="active">
-          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-          <span matListItemTitle>{{ item.label }}</span>
-        </a>
-      }
-    </mat-nav-list>
-
-    <div class="sidenav-footer">
-      <button mat-button (click)="logout()" class="logout-btn">
-        <mat-icon>logout</mat-icon>
-        Déconnexion
-      </button>
-    </div>
-
-  </mat-sidenav>
-
-  <!-- Main content -->
-  <mat-sidenav-content class="content">
-
-    <mat-toolbar class="toolbar">
-      <span>Tableau de bord</span>
-    </mat-toolbar>
-
-    <div class="main">
-
-      <h2 class="section-title">Vue d'ensemble</h2>
-
-      <!-- KPI Cards -->
-      <div class="stats-grid">
-        @for (stat of stats; track stat.label) {
-          <mat-card class="stat-card">
-            <mat-card-content>
-              <div class="stat-icon" [style.background]="stat.color + '20'">
-                <mat-icon [style.color]="stat.color">{{ stat.icon }}</mat-icon>
-              </div>
-              <div class="stat-info">
-                <span class="stat-value">{{ stat.value }}</span>
-                <span class="stat-label">{{ stat.label }}</span>
-              </div>
-            </mat-card-content>
-          </mat-card>
+<div class="border border-surface-200 dark:border-surface-700 rounded-lg overflow-hidden">
+    <p-sidebar-layout class="min-h-192! relative!" [attr.data-collapsed]="!open()">
+        @if (isMobile() && open()) {
+            <p-sidebar-backdrop class="absolute!" />
         }
-      </div>
 
-    </div>
+        <p-sidebar
+            id="main-sidebar"
+            side="left"
+            [collapsible]="isMobile() ? 'offcanvas' : 'icon'"
+            [overlay]="true"
+            [openOnHover]="!isMobile()"
+            width="16rem"
+            [(open)]="open">
+            <p-sidebar-spacer />
+            <p-sidebar-aside>
+                <p-sidebar-panel>
 
-  </mat-sidenav-content>
+                    <!-- HEADER : KEHOROS -->
+                    <p-sidebar-header>
+                        <p-sidebar-menu>
+                            <p-sidebar-menu-item>
+                                <button pSidebarMenuButton class="p-1! gap-2.5">
+                                    <span class="logo-icon">K</span>
+                                    <span class="font-bold text-base tracking-tight menu-label">Kehoros</span>
+                                </button>
+                            </p-sidebar-menu-item>
+                        </p-sidebar-menu>
+                    </p-sidebar-header>
 
-</mat-sidenav-container>
+                    <!-- CONTENU -->
+                    <p-sidebar-content>
 
+                        <!-- 1. TABLEAU DE BORD -->
+                        <p-sidebar-group>
+                            <p-sidebar-group-content>
+                                <p-sidebar-menu>
+                                    <p-sidebar-menu-item>
+                                        <button
+                                            pSidebarMenuButton
+                                            [isActive]="activeSection() === 'Tableau de bord'"
+                                            (click)="selectSection('Tableau de bord')">
+                                            <i class="pi pi-chart-bar"></i>
+                                            <span class="menu-label text-base font-bold">Tableau de bord</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                </p-sidebar-menu>
+                            </p-sidebar-group-content>
+                        </p-sidebar-group>
 
+                        <!-- 2. Forms -->
+                        <p-sidebar-group>
+                            <p-sidebar-group-content>
+                                <p-sidebar-menu>
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton>
+                                            <i class="pi pi-file-edit"></i>
+                                            <span class="menu-label font-semibold">Forms</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                    <p-sidebar-menu-item>
+                                        <button
+                                            pSidebarMenuButton
+                                            class="pl-5"
+                                            [isActive]="activeSection() === 'Forms / Templates'"
+                                            (click)="selectSection('Forms / Templates')">
+                                            <span class="menu-label">Templates</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                    <p-sidebar-menu-item>
+                                        <button
+                                            pSidebarMenuButton
+                                            class="pl-5"
+                                            [isActive]="activeSection() === 'Forms / Builder'"
+                                            (click)="selectSection('Forms / Builder')">
+                                            <span class="menu-label">Builder</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                    <p-sidebar-menu-item>
+                                        <button
+                                            pSidebarMenuButton
+                                            class="pl-5"
+                                            [isActive]="activeSection() === 'Forms / Assignments'"
+                                            (click)="selectSection('Forms / Assignments')">
+                                            <span class="menu-label">Assignments</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                </p-sidebar-menu>
+                            </p-sidebar-group-content>
+                        </p-sidebar-group>
+
+                        <!-- 3. Inventory -->
+                        <p-sidebar-group>
+                            <p-sidebar-group-content>
+                                <p-sidebar-menu>
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton>
+                                            <i class="pi pi-box"></i>
+                                            <span class="menu-label font-semibold">Inventory</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton class="pl-5 font-semibold text-xs uppercase tracking-wider opacity-70 pointer-events-none">
+                                            <span class="menu-label">Materials</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton class="pl-6" [isActive]="activeSection() === 'Inventory / Computer'" (click)="selectSection('Inventory / Computer')">
+                                            <span class="menu-label">Computer</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton class="pl-6" [isActive]="activeSection() === 'Inventory / Screen'" (click)="selectSection('Inventory / Screen')">
+                                            <span class="menu-label">Screen</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton class="pl-6" [isActive]="activeSection() === 'Inventory / Inverter'" (click)="selectSection('Inventory / Inverter')">
+                                            <span class="menu-label">Inverter</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton class="pl-6" [isActive]="activeSection() === 'Inventory / Tables'" (click)="selectSection('Inventory / Tables')">
+                                            <span class="menu-label">Tables</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton class="pl-6" [isActive]="activeSection() === 'Inventory / Chairs'" (click)="selectSection('Inventory / Chairs')">
+                                            <span class="menu-label">Chairs</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton class="pl-6" [isActive]="activeSection() === 'Inventory / Fans'" (click)="selectSection('Inventory / Fans')">
+                                            <span class="menu-label">Fans</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+
+                                    <!-- Accessories -->
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton class="pl-6" (click)="toggleAccessories()">
+                                            <span class="menu-label">Accessories</span>
+                                            <i class="pi pi-chevron-down ml-auto text-xs transition-transform menu-label" [class.rotate-180]="accessoriesOpen()"></i>
+                                        </button>
+                                        @if (accessoriesOpen()) {
+                                            <p-sidebar-menu-sub class="pl-6">
+                                                <p-sidebar-menu-sub-item>
+                                                    <button pSidebarMenuSubButton [isActive]="activeSection() === 'Accessories / Keyboard'" (click)="selectSection('Accessories / Keyboard')"><span class="menu-label">Keyboard</span></button>
+                                                </p-sidebar-menu-sub-item>
+                                                <p-sidebar-menu-sub-item>
+                                                    <button pSidebarMenuSubButton [isActive]="activeSection() === 'Accessories / Mouse'" (click)="selectSection('Accessories / Mouse')"><span class="menu-label">Mouse</span></button>
+                                                </p-sidebar-menu-sub-item>
+                                                <p-sidebar-menu-sub-item>
+                                                    <button pSidebarMenuSubButton [isActive]="activeSection() === 'Accessories / Headset microphone'" (click)="selectSection('Accessories / Headset microphone')"><span class="menu-label">Headset microphone</span></button>
+                                                </p-sidebar-menu-sub-item>
+                                            </p-sidebar-menu-sub>
+                                        }
+                                    </p-sidebar-menu-item>
+
+                                    <!-- Adapter -->
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton class="pl-6" (click)="toggleAdapter()">
+                                            <span class="menu-label">Adapter</span>
+                                            <i class="pi pi-chevron-down ml-auto text-xs transition-transform menu-label" [class.rotate-180]="adapterOpen()"></i>
+                                        </button>
+                                        @if (adapterOpen()) {
+                                            <p-sidebar-menu-sub class="pl-6">
+                                                <p-sidebar-menu-sub-item>
+                                                    <button pSidebarMenuSubButton [isActive]="activeSection() === 'Adapter / USB - USB'" (click)="selectSection('Adapter / USB - USB')"><span class="menu-label">USB - USB</span></button>
+                                                </p-sidebar-menu-sub-item>
+                                                <p-sidebar-menu-sub-item>
+                                                    <button pSidebarMenuSubButton [isActive]="activeSection() === 'Adapter / Type C - USB'" (click)="selectSection('Adapter / Type C - USB')"><span class="menu-label">Type C - USB</span></button>
+                                                </p-sidebar-menu-sub-item>
+                                                <p-sidebar-menu-sub-item>
+                                                    <button pSidebarMenuSubButton [isActive]="activeSection() === 'Adapter / Type C - Multiport'" (click)="selectSection('Adapter / Type C - Multiport')"><span class="menu-label">Type C - Multiport</span></button>
+                                                </p-sidebar-menu-sub-item>
+                                                <p-sidebar-menu-sub-item>
+                                                    <button pSidebarMenuSubButton [isActive]="activeSection() === 'Adapter / Type C - RJ45'" (click)="selectSection('Adapter / Type C - RJ45')"><span class="menu-label">Type C - RJ45</span></button>
+                                                </p-sidebar-menu-sub-item>
+                                                <p-sidebar-menu-sub-item>
+                                                    <button pSidebarMenuSubButton [isActive]="activeSection() === 'Adapter / Type C - HDMI'" (click)="selectSection('Adapter / Type C - HDMI')"><span class="menu-label">Type C - HDMI</span></button>
+                                                </p-sidebar-menu-sub-item>
+                                                <p-sidebar-menu-sub-item>
+                                                    <button pSidebarMenuSubButton [isActive]="activeSection() === 'Adapter / USB - RJ45'" (click)="selectSection('Adapter / USB - RJ45')"><span class="menu-label">USB - RJ45</span></button>
+                                                </p-sidebar-menu-sub-item>
+                                                <p-sidebar-menu-sub-item>
+                                                    <button pSidebarMenuSubButton [isActive]="activeSection() === 'Adapter / HDMI - VGA'" (click)="selectSection('Adapter / HDMI - VGA')"><span class="menu-label">HDMI - VGA</span></button>
+                                                </p-sidebar-menu-sub-item>
+                                                <p-sidebar-menu-sub-item>
+                                                    <button pSidebarMenuSubButton [isActive]="activeSection() === 'Adapter / Câble HDMI'" (click)="selectSection('Adapter / Câble HDMI')"><span class="menu-label">Câble HDMI</span></button>
+                                                </p-sidebar-menu-sub-item>
+                                                <p-sidebar-menu-sub-item>
+                                                    <button pSidebarMenuSubButton [isActive]="activeSection() === 'Adapter / Câble VGA'" (click)="selectSection('Adapter / Câble VGA')"><span class="menu-label">Câble VGA</span></button>
+                                                </p-sidebar-menu-sub-item>
+                                            </p-sidebar-menu-sub>
+                                        }
+                                    </p-sidebar-menu-item>
+
+                                    <!-- Software -->
+                                    <p-sidebar-menu-item class="mt-2">
+                                        <button pSidebarMenuButton class="pl-5 font-semibold text-xs uppercase tracking-wider opacity-70 pointer-events-none">
+                                            <span class="menu-label">Software</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton class="pl-6" [isActive]="activeSection() === 'Software / Licenses'" (click)="selectSection('Software / Licenses')">
+                                            <span class="menu-label">Licenses</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton class="pl-6" [isActive]="activeSection() === 'Software / Tools'" (click)="selectSection('Software / Tools')">
+                                            <span class="menu-label">Tools</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                </p-sidebar-menu>
+                            </p-sidebar-group-content>
+                        </p-sidebar-group>
+
+                        <!-- 4. Accounts -->
+                        <p-sidebar-group>
+                            <p-sidebar-group-content>
+                                <p-sidebar-menu>
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton>
+                                            <i class="pi pi-users"></i>
+                                            <span class="menu-label font-semibold">Accounts</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton class="pl-5" [isActive]="activeSection() === 'Accounts / Collaborators'" (click)="selectSection('Accounts / Collaborators')">
+                                            <span class="menu-label">Collaborators</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                    <p-sidebar-menu-item>
+                                        <button pSidebarMenuButton class="pl-5" [isActive]="activeSection() === 'Accounts / Users'" (click)="selectSection('Accounts / Users')">
+                                            <span class="menu-label">Users</span>
+                                        </button>
+                                    </p-sidebar-menu-item>
+                                </p-sidebar-menu>
+                            </p-sidebar-group-content>
+                        </p-sidebar-group>
+
+                    </p-sidebar-content>
+
+                    <!-- 5. Logout -->
+                    <p-sidebar-footer>
+                        <p-sidebar-menu>
+                            <p-sidebar-menu-item>
+                                <button pSidebarMenuButton class="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30" (click)="logout()">
+                                    <i class="pi pi-sign-out"></i>
+                                    <span class="menu-label">Logout</span>
+                                </button>
+                            </p-sidebar-menu-item>
+                        </p-sidebar-menu>
+                    </p-sidebar-footer>
+
+                </p-sidebar-panel>
+            </p-sidebar-aside>
+        </p-sidebar>
+
+        <!-- MAIN CONTENT -->
+        <p-sidebar-main class="w-full flex flex-col flex-1">
+            <app-navbar-dashboard
+                [activeSection]="activeSection()"
+                [user]="currentUser()"
+                (toggleSidebar)="open.update(v => !v)"
+                (logout)="logout()" />
+
+            <app-dashboard-content [activeSection]="activeSection()" />
+        </p-sidebar-main>
+
+    </p-sidebar-layout>
+</div>
